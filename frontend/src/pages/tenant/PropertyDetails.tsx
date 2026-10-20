@@ -49,6 +49,8 @@ useEffect(() => {
       const response = await api.get(`/api/properties/${id}`);
 
       setProperty(response.data.property);
+      console.log(response.data.property);
+      
       setActiveImage(0);
     } catch (error) {
       console.error("Failed to fetch property:", error);
@@ -150,7 +152,7 @@ if (error || !property) {
 
         {/* Property Image Gallery */}
         <section className="grid gap-3 overflow-hidden rounded-2xl sm:grid-cols-4 sm:grid-rows-2">
-          <div className="group relative h-64 overflow-hidden bg-slate-200 sm:col-span-2 sm:row-span-2 sm:h-[440px]">
+          <div className="group relative h-64 overflow-hidden bg-slate-200 sm:col-span-2 sm:row-span-2 sm:h-110">
             <img
               src={propertyImages[activeImage]}
               alt="Property interior"
@@ -191,7 +193,7 @@ if (error || !property) {
               key={image}
               type="button"
               onClick={() => setActiveImage(index + 1)}
-              className="group relative hidden h-[213px] overflow-hidden bg-slate-200 sm:block"
+              className="group relative hidden h-53.25 overflow-hidden bg-slate-200 sm:block"
               aria-label={`View property photo ${index + 2}`}
             >
               <img
@@ -342,7 +344,7 @@ if (error || !property) {
 
               <div className="mt-2 flex flex-wrap items-baseline gap-2">
                 <h2 className="text-2xl font-bold text-slate-900">
-                  {formatPrice(3500000)}
+                  {formatPrice(property.price)}
                 </h2>
                 <span className="text-sm text-slate-500">/ year</span>
               </div>
