@@ -5,19 +5,20 @@ import TenantBottomNav from "../components/common/TenantBottomNav";
 const TenantLayout = () => {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Desktop / Tablet */}
-      <div className="flex min-h-screen">
+      {/* Fixed Desktop Sidebar */}
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 md:block">
         <TenantSidebar />
+      </aside>
 
-        <main className="min-w-0 flex-1 pb-16 md:pb-0">
-          <Outlet />
-        </main>
-      </div>
+      {/* Main Content */}
+      <main className="min-h-screen min-w-0 pb-20 md:ml-64 md:pb-0">
+        <Outlet />
+      </main>
 
-      {/* Mobile */}
+      {/* Mobile Bottom Navigation */}
       <TenantBottomNav />
     </div>
   );
 };
 
-export default TenantLayout;  
+export default TenantLayout;

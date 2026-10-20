@@ -1,6 +1,6 @@
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary.js";
 import Property from "../models/Property.js";
-
+import mongoose from "mongoose";
 export async function addProperty(req, res) {
   try {
     const {
@@ -92,3 +92,57 @@ export async function getProperties(req, res) {
     });
   }
 }
+export async function getAllProperties(req, res) {
+  try {
+    const properties = await Property.find();
+
+    return res.status(200).json({
+      success: true,
+      count: properties.length,
+      properties,
+    });
+  } catch (error) {
+    console.error("Get all properties error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get all properties",
+    });
+  }
+}
+
+
+export const getPropertyById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate MongoDB ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid property ID",
+      });
+    }
+
+    const property = await Property.findById(id);
+
+    if (!property) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      property,
+    });
+  } catch (error) {
+    console.error("Get property by ID error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to retrieve property",
+    });
+  }
+};

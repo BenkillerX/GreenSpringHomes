@@ -3,7 +3,7 @@ import PublicLayout from "./layouts/PublicLayout"
 import LandingPage from "./pages/public/LandingPage"
 import ExplorePage from "./pages/public/ExplorePage"
 import HowItWorks from "./pages/public/HowItWorks"
-import PropertyDetails from "./pages/public/PropertyDetails"
+// import PropertyDetails from "./pages/public/PropertyDetails"
 import Login from "./pages/auth/Login"
 import Register from "./pages/auth/Register"
 import Tenant from "./pages/auth/Tenant"
@@ -32,6 +32,7 @@ import ScrollToTop from "./components/common/ScrollToTop"
 import Help from "./pages/public/Help"
 import BackToTop from "./components/common/BackToTop"
 import VerifyEmail from "./pages/auth/VerifyEmail"
+import PropertyDetails from "./pages/tenant/PropertyDetails"
 
 const App = () => {
   return (
@@ -44,7 +45,7 @@ const App = () => {
           <Route path="/" element={<LandingPage/>}/>
           <Route path="/explore" element={<ExplorePage/>}/>
           <Route path="/How-it-works" element={<HowItWorks/>}/>
-          <Route path="/propertydetails/:id"  element={<PropertyDetails/>}/>
+          {/* <Route path="/propertydetails/:id"  element={<PropertyDetails/>}/> */}
           <Route path="/help" element={<Help/>}/>
         </Route>
         {/* Tenant Pages Routes */}
@@ -55,6 +56,7 @@ const App = () => {
           <Route path="/tenant/inspections" element={<Insepections/>}/>
           <Route path="/tenant/notifications" element={<Notifications/>}/>
           <Route path="/tenant/settings" element={<Settings/>}/>
+          <Route path="/tenant/details/:id" element={<PropertyDetails/>}/>
         </Route>
 
         <Route element={<OwnerLayout/>}>

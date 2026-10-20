@@ -21,7 +21,7 @@ app.use('/api/messages/conversations', messagesRoutes)
 app.use("/api/email", emailRouter);
 app.get('/', (_, res)=>{
     return res.json({
-        message:"Hello World and first live deployed backend and live"
+        message:"Welcome to GreenSpringHomes"
     })
 })
 console.log(PORT);

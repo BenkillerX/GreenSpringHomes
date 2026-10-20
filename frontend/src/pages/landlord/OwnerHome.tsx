@@ -1,10 +1,8 @@
 import {
   FiEye,
-  // FiUsers,
   FiMessageCircle,
   FiPlus,
   FiArrowRight,
-  // FiMapPin,
   FiCalendar,
   FiClock,
    FiHome, FiDroplet,
