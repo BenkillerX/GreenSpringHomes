@@ -66,6 +66,17 @@ useEffect(() => {
 
   getUserProperties();
 }, []);
+   async function handleDelete(id:string) {
+    try {
+      await api.delete(`/api/properties/${id}`)
+      alert('Delete successful')
+
+    } catch (error) {
+      console.log(error);
+      alert('An error while deleting Property')
+    }
+     
+    }
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
 
@@ -86,23 +97,8 @@ useEffect(() => {
         </div>
 
         <Link
-        to="/owner/properties/add"
-          className="
-            inline-flex
-            items-center
-            justify-center
-            gap-2
-            rounded-xl
-            bg-green-600
-            px-5
-            py-3
-            text-sm
-            font-semibold
-            text-white
-            transition
-            hover:bg-green-700
-            active:scale-[0.98]
-          "
+        to="/owner/properties/add" 
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700 active:scale-[0.98]"
         >
           <FiPlus size={18} />
           Add Property
@@ -346,6 +342,7 @@ useEffect(() => {
               </button>
 
               <button
+              onClick={()=>handleDelete(property._id)}
                 className="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50"
               >
                 Delete

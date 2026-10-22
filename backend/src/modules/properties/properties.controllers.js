@@ -1,6 +1,7 @@
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary.js";
 import Property from "../models/Property.js";
 import mongoose from "mongoose";
+
 export async function addProperty(req, res) {
   try {
     const {
@@ -29,9 +30,10 @@ export async function addProperty(req, res) {
     );
 
     // Extract only the URLs we need
-    const imageUrls = uploadedImages.map(
-      (image) => image.secure_url
-    );
+    const imageUrls = uploadedImages.map((image) => ({
+    url: image.secure_url,
+    publicId: image.public_id,
+  }));
 
     // Create property
     const property = new Property({
@@ -146,3 +148,77 @@ export const getPropertyById = async (req, res) => {
     });
   }
 };
+
+export async function deleteProperty(req, res) {
+  try {
+    const { id } = req.params;
+
+    // Validate property ID
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({
+        message: "Invalid property ID",
+      });
+    }
+
+    // Find the property
+    const property = await Property.findById(id);
+
+    if (!property) {
+      return res.status(404).json({
+        message: "Property not found",
+      });
+    }
+
+    // Check ownership
+    if (property.owner.toString() !== req.user.id.toString()) {
+      return res.status(403).json({
+        message: "You are not authorized to delete this property",
+      });
+    }
+
+    // Ensure every image has a Cloudinary public ID
+    const images = property.images || [];
+
+    if (images.some((image) => !image.publicId)) {
+      return res.status(409).json({
+        message: "Some images are missing Cloudinary public IDs",
+      });
+    }
+
+    // Delete images from Cloudinary
+    const results = await Promise.allSettled(
+      images.map((image) =>
+        cloudinary.uploader.destroy(image.publicId, {
+          resource_type: "image",
+        })
+      )
+    );
+
+    // Check whether Cloudinary deletion succeeded
+    const failed = results.some(
+      (result) =>
+        result.status === "rejected" ||
+        !["ok", "not found"].includes(result.value?.result)
+    );
+
+    if (failed) {
+      return res.status(502).json({
+        message: "Some property images could not be deleted. Please retry.",
+      });
+    }
+
+    // Delete property from MongoDB
+    await Property.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      message: "Property and images deleted successfully",
+    });
+
+  } catch (error) {
+    console.error("DELETE PROPERTY ERROR:", error);
+
+    return res.status(500).json({
+      message: "Unable to delete property",
+    });
+  }
+}

@@ -95,10 +95,17 @@ const propertySchema = new mongoose.Schema(
 
     // Property images
     images: [
-      {
-        type: String,
-      },
-    ],
+  {
+    url: {
+      type: String,
+      required: true,
+    },
+    publicId: {
+      type: String,
+      required: true,
+    },
+  },
+],
 
     // Listing status
     status: {
