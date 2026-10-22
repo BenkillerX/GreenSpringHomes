@@ -12,7 +12,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import api from "../../services/api";
-
+import toast from "react-hot-toast";
 const Addproperties = () => {
   const navigate = useNavigate();
 
@@ -116,19 +116,25 @@ for (const [key, value] of formData.entries()) {
       console.log("Property created:", response.data);
 
       navigate("/owner/properties");
-    }catch (error: unknown) {
-  console.error("Add property error:", error);
-
+    }
+// Inside your handleSubmit function
+catch (error) {
   if (axios.isAxiosError(error)) {
-    console.log("SERVER RESPONSE:", error.response?.data);
+    const errors = error.response?.data?.errors;
 
-    setError(
-      error.response?.data?.error ||
-      error.response?.data?.message ||
-      "Unable to add property. Please try again."
-    );
+    console.log("Backend validation errors:", errors);
+
+    if (Array.isArray(errors) && errors.length > 0) {
+      toast.error(errors[0].msg);
+    } else {
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to add property"
+      );
+    }
   } else {
-    setError("Something went wrong. Please try again.");
+    console.error(error);
+    toast.error("Something went wrong");
   }
 } finally {
       setLoading(false);
@@ -153,10 +159,6 @@ for (const [key, value] of formData.entries()) {
         <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
           Add Property
         </h1>
-
-        <p className="mt-1 text-sm text-gray-500">
-          Add your property to QuickStay and make it visible to potential tenants.
-        </p>
       </div>
 
       <form

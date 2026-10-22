@@ -12,6 +12,7 @@ import { useAuth } from "../../context/useAuth";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import toast from "react-hot-toast";
 
 export interface Property {
   _id: string;
@@ -27,7 +28,10 @@ export interface Property {
   bedrooms: number;
   bathrooms: number;
 
-  images: string[];
+  images: {
+  url: string;
+  publicId: string;
+}[];
 
   status: string;
   verificationStatus: string;
@@ -46,37 +50,56 @@ export interface Property {
 }
 
 const OwnerHome = () => {
-  const {currentUser} = useAuth()
-  const userInitial = currentUser?.lastname || "UnKnown";
-  const [userPorperties, setUserPorperties] = useState<Property[]>([]);
-  const [propertiesCount, setPropertiesCount] = useState<number>(0)
-  
+  const { currentUser } = useAuth();
+
+const userInitial = currentUser?.lastname || "Unknown";
+
+const [userPorperties, setUserPorperties] = useState<Property[]>([]);
+const [propertiesCount, setPropertiesCount] = useState<number>(0);
+
 useEffect(() => {
+  console.log("OwnerHome mounted");
+
   const getUserProperties = async () => {
+    console.log("Fetching owner properties...");
+
     try {
       const response = await api.get("/api/properties/");
-
-      setUserPorperties(response.data.properties);
-      setPropertiesCount(response.data.count)
-      
+      const properties: Property[] = response.data.properties;
+      setUserPorperties(properties);
+      setPropertiesCount(response.data.count);
     } catch (error) {
-      console.error(error);
+      console.error("FETCH PROPERTIES ERROR:", error);
     }
   };
 
   getUserProperties();
 }, []);
-   async function handleDelete(id:string) {
-    try {
-      await api.delete(`/api/properties/${id}`)
-      alert('Delete successful')
 
-    } catch (error) {
-      console.log(error);
-      alert('An error while deleting Property')
-    }
-     
-    }
+async function handleDelete(id: string) {
+  const toastId = toast.loading("Deleting property...");
+
+  try {
+    await api.delete(`/api/properties/${id}`);
+
+    setUserPorperties((prev) =>
+      prev.filter((property) => property._id !== id)
+    );
+
+    setPropertiesCount((prev) => prev - 1);
+
+    toast.success("Property deleted successfully!", {
+      id: toastId,
+    });
+  } catch (error) {
+    console.error(error);
+
+    toast.error("Failed to delete property", {
+      id: toastId,
+    });
+  }
+}
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
 
@@ -232,13 +255,26 @@ useEffect(() => {
       <div className="flex flex-col md:flex-row">
 
         {/* Property Image */}
-        <div className="w-full md:w-52 h-48 md:h-auto shrink-0">
-          <img
-            src={property.images?.[0]}
-            alt={property.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
+<div className="w-full md:w-52 h-48 md:h-48 shrink-0 bg-gray-100">
+  <img
+    src={property.images?.[0]?.url}
+    alt={property.title}
+    className="block w-full h-full object-cover"
+    onLoad={() => {
+      console.log(
+        "IMAGE LOADED SUCCESSFULLY:",
+        property.images?.[0]?.url
+      );
+    }}
+    onError={(e) => {
+      console.error("IMAGE FAILED TO LOAD:", {
+        property: property.title,
+        url: e.currentTarget.currentSrc,
+        naturalWidth: e.currentTarget.naturalWidth,
+      });
+    }}
+  />
+</div>
 
         {/* Property Details */}
         <div className="flex-1 p-5">

@@ -33,13 +33,22 @@ import Help from "./pages/public/Help"
 import BackToTop from "./components/common/BackToTop"
 import VerifyEmail from "./pages/auth/VerifyEmail"
 import PropertyDetails from "./pages/tenant/PropertyDetails"
-
+import { Toaster } from "react-hot-toast";
 const App = () => {
   return (
     <>
     <ScrollToTop/>
+     <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#fff",
+            color: "#333",
+          },
+        }}
+      />
       <Routes>
-        
         {/* Public Pages Routes */}
         <Route element={<PublicLayout/>}>
           <Route path="/" element={<LandingPage/>}/>

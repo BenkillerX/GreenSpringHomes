@@ -173,17 +173,29 @@ const TenantHome = () => {
           className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
         >
           {/* Property Image */}
-          <div className="relative h-52 bg-slate-100">
-            <img
-              src={property.images?.[0] || "/placeholder-property.jpg"}
-              alt={property.title}
-              className="h-full w-full object-cover"
-            />
+<div className="relative h-52 overflow-hidden bg-slate-100">
+  <img
+    src={
+      property.images?.[0]?.url ||
+      "/placeholder-property.jpg"
+    }
+    alt={property.title}
+    loading="lazy"
+    className="block h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+    onError={(e) => {
+      const img = e.currentTarget;
 
-            <span className="absolute left-4 top-4 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 shadow-sm">
-              Available
-            </span>
-          </div>
+      console.error("Failed to load property image:", img.currentSrc);
+
+      img.onerror = null;
+      img.src = "/placeholder-property.jpg";
+    }}
+  />
+
+  <span className="absolute left-4 top-4 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 shadow-sm">
+    Available
+  </span>
+</div>
 
           {/* Property Details */}
           <div className="space-y-4 p-5">

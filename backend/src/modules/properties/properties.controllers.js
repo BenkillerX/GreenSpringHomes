@@ -1,7 +1,7 @@
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary.js";
 import Property from "../models/Property.js";
 import mongoose from "mongoose";
-
+import { deleteFromCloudinary } from "../../utils/deleteFromCloudinary.js";
 export async function addProperty(req, res) {
   try {
     const {
@@ -160,7 +160,7 @@ export async function deleteProperty(req, res) {
       });
     }
 
-    // Find the property
+    // Find property
     const property = await Property.findById(id);
 
     if (!property) {
@@ -176,25 +176,23 @@ export async function deleteProperty(req, res) {
       });
     }
 
-    // Ensure every image has a Cloudinary public ID
     const images = property.images || [];
 
+    // Ensure all images have public IDs
     if (images.some((image) => !image.publicId)) {
       return res.status(409).json({
         message: "Some images are missing Cloudinary public IDs",
       });
     }
 
-    // Delete images from Cloudinary
+    // Delete all images from Cloudinary
     const results = await Promise.allSettled(
       images.map((image) =>
-        cloudinary.uploader.destroy(image.publicId, {
-          resource_type: "image",
-        })
+        deleteFromCloudinary(image.publicId)
       )
     );
 
-    // Check whether Cloudinary deletion succeeded
+    // Check deletion results
     const failed = results.some(
       (result) =>
         result.status === "rejected" ||
@@ -202,6 +200,8 @@ export async function deleteProperty(req, res) {
     );
 
     if (failed) {
+      console.error("CLOUDINARY DELETE RESULTS:", results);
+
       return res.status(502).json({
         message: "Some property images could not be deleted. Please retry.",
       });

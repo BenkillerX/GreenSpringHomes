@@ -1,15 +1,20 @@
 import { validationResult } from "express-validator";
 
 export function validateRequest(req, res, next) {
-    const errors = validationResult(req);
+  const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            message: "Validation failed.",
-            errors: errors.array()
-        });
-    }
+  if (!errors.isEmpty()) {
+    const validationErrors = errors.array();
 
-    next();
+    // Log detailed validation errors
+    console.error("VALIDATION FAILED:", validationErrors);
+
+    return res.status(400).json({
+      success: false,
+      message: "Validation failed.",
+      errors: validationErrors,
+    });
+  }
+
+  next();
 }
-

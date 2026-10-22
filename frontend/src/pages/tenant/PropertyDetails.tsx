@@ -151,66 +151,98 @@ if (error || !property) {
         </section>
 
         {/* Property Image Gallery */}
-        <section className="grid gap-3 overflow-hidden rounded-2xl sm:grid-cols-4 sm:grid-rows-2">
-          <div className="group relative h-64 overflow-hidden bg-slate-200 sm:col-span-2 sm:row-span-2 sm:h-110">
-            <img
-              src={propertyImages[activeImage]}
-              alt="Property interior"
-              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-            />
+        
+{/* Property Image Gallery */}
+<section className="grid gap-3 overflow-hidden rounded-2xl sm:grid-cols-4 sm:grid-rows-2">
 
-            <button
-              type="button"
-              onClick={() =>
-                setActiveImage((prev) =>
-                  prev === 0 ? propertyImages.length - 1 : prev - 1
-                )
-              }
-              aria-label="Previous image"
-              className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-800 shadow-sm transition hover:bg-white"
-            >
-              <ArrowLeft size={18} />
-            </button>
+  {/* Main Image */}
+  <div className="group relative h-64 overflow-hidden bg-slate-200 sm:col-span-2 sm:row-span-2 sm:h-[440px]">
 
-            <button
-              type="button"
-              onClick={() =>
-                setActiveImage((prev) => (prev + 1) % propertyImages.length)
-              }
-              aria-label="Next image"
-              className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-800 shadow-sm transition hover:bg-white"
-            >
-              <ArrowRight size={18} />
-            </button>
+    <img
+      src={
+        propertyImages[activeImage]?.url ||
+        "/placeholder-property.jpg"
+      }
+      alt={`${property.title} - Photo ${activeImage + 1}`}
+      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+      onError={(e) => {
+        e.currentTarget.onerror = null;
+        e.currentTarget.src = "/placeholder-property.jpg";
+      }}
+    />
 
-            <span className="absolute bottom-4 left-4 rounded-lg bg-black/55 px-3 py-2 text-xs font-medium text-white">
-              {activeImage + 1} / {propertyImages.length} photos
-            </span>
-          </div>
+    {/* Previous Image */}
+    {propertyImages.length > 1 && (
+      <button
+        type="button"
+        onClick={() =>
+          setActiveImage((prev) =>
+            prev === 0 ? propertyImages.length - 1 : prev - 1
+          )
+        }
+        aria-label="Previous image"
+        className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-800 shadow-sm transition hover:bg-white"
+      >
+        <ArrowLeft size={18} />
+      </button>
+    )}
 
-          {propertyImages.slice(1, 5).map((image, index) => (
-            <button
-              key={image}
-              type="button"
-              onClick={() => setActiveImage(index + 1)}
-              className="group relative hidden h-53.25 overflow-hidden bg-slate-200 sm:block"
-              aria-label={`View property photo ${index + 2}`}
-            >
-              <img
-                src={image}
-                alt={`Property view ${index + 2}`}
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-              />
+    {/* Next Image */}
+    {propertyImages.length > 1 && (
+      <button
+        type="button"
+        onClick={() =>
+          setActiveImage((prev) =>
+            (prev + 1) % propertyImages.length
+          )
+        }
+        aria-label="Next image"
+        className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-800 shadow-sm transition hover:bg-white"
+      >
+        <ArrowRight size={18} />
+      </button>
+    )}
 
-              {index === 3 && (
-                <span className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 text-sm font-semibold text-white transition group-hover:bg-black/60">
-                  <Maximize2 size={18} />
-                  View gallery
-                </span>
-              )}
-            </button>
-          ))}
-        </section>
+    {/* Image Counter */}
+    {propertyImages.length > 0 && (
+      <span className="absolute bottom-4 left-4 rounded-lg bg-black/55 px-3 py-2 text-xs font-medium text-white">
+        {activeImage + 1} / {propertyImages.length} photos
+      </span>
+    )}
+
+  </div>
+
+  {/* Thumbnail Images */}
+  {propertyImages.slice(1, 5).map((image, index) => (
+    <button
+      key={image.publicId}
+      type="button"
+      onClick={() => setActiveImage(index + 1)}
+      className="group relative hidden h-[214px] overflow-hidden bg-slate-200 sm:block"
+      aria-label={`View property photo ${index + 2}`}
+    >
+      <img
+        src={image.url}
+        alt={`${property.title} - Photo ${index + 2}`}
+        loading="lazy"
+        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = "/placeholder-property.jpg";
+        }}
+      />
+
+      {index === 3 && propertyImages.length > 5 && (
+        <span className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 text-sm font-semibold text-white transition group-hover:bg-black/60">
+          <Maximize2 size={18} />
+          +{propertyImages.length - 5} more photos
+        </span>
+      )}
+    </button>
+  ))}
+
+</section>
+
 
         {/* Main Content and Sidebar */}
         <div className="grid items-start gap-8 lg:grid-cols-3">
