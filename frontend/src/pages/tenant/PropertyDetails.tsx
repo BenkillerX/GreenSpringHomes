@@ -156,7 +156,7 @@ if (error || !property) {
 <section className="grid gap-3 overflow-hidden rounded-2xl sm:grid-cols-4 sm:grid-rows-2">
 
   {/* Main Image */}
-  <div className="group relative h-64 overflow-hidden bg-slate-200 sm:col-span-2 sm:row-span-2 sm:h-[440px]">
+  <div className="group relative h-64 overflow-hidden bg-slate-200 sm:col-span-2 sm:row-span-2 sm:h-110">
 
     <img
       src={
@@ -218,7 +218,7 @@ if (error || !property) {
       key={image.publicId}
       type="button"
       onClick={() => setActiveImage(index + 1)}
-      className="group relative hidden h-[214px] overflow-hidden bg-slate-200 sm:block"
+      className="group relative hidden h-53.5 overflow-hidden bg-slate-200 sm:block"
       aria-label={`View property photo ${index + 2}`}
     >
       <img
