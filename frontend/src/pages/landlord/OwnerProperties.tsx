@@ -30,7 +30,10 @@ export interface Property {
   bedrooms: number;
   bathrooms: number;
 
-  images: string[];
+  images: {
+  url: string;
+  publicId: string;
+}[];
 
   status: string;
   verificationStatus: string;
@@ -89,22 +92,7 @@ const OwnerProperties = () => {
 
         <Link
         to="/owner/properties/add"
-          className="
-            inline-flex
-            items-center
-            justify-center
-            gap-2
-            rounded-xl
-            bg-green-600
-            px-5
-            py-3
-            text-sm
-            font-semibold
-            text-white
-            transition
-            hover:bg-green-700
-            active:scale-[0.98]
-          "
+          className=" inline-flex items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700 active:scale-[0.98] "
         >
           <FiPlus size={18} />
           Add Property
@@ -194,45 +182,14 @@ const OwnerProperties = () => {
           <input
             type="text"
             placeholder="Search your properties..."
-            className="
-              w-full
-              rounded-xl
-              border
-              border-gray-200
-              bg-white
-              py-3
-              pl-11
-              pr-4
-              text-sm
-              outline-none
-              transition
-              focus:border-green-500
-              focus:ring-2
-              focus:ring-green-100
-            "
+            className=" w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 "
           />
         </div>
 
 
         {/* Filter */}
         <button
-          className="
-            inline-flex
-            items-center
-            justify-center
-            gap-2
-            rounded-xl
-            border
-            border-gray-200
-            bg-white
-            px-5
-            py-3
-            text-sm
-            font-medium
-            text-gray-600
-            transition
-            hover:bg-gray-50
-          "
+          className=" inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50 "
         >
           <FiFilter size={17} />
           Filter
@@ -299,21 +256,7 @@ const OwnerProperties = () => {
 
       <Link
         to="/owner/properties/add"
-        className="
-          mt-6
-          inline-flex
-          items-center
-          gap-2
-          rounded-xl
-          bg-green-600
-          px-5
-          py-3
-          text-sm
-          font-semibold
-          text-white
-          transition
-          hover:bg-green-700
-        "
+        className=" mt-6 inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700 "
       >
         <FiPlus size={18} />
         Add Your First Property
@@ -344,13 +287,24 @@ const OwnerProperties = () => {
         >
 
           {/* Image */}
-          <div className="w-full md:w-56 h-48 md:h-auto shrink-0">
-            <img
-              src={property.images?.[0]}
-              alt={property.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          
+{/* Property Image */}
+<div className="w-full md:w-56 h-48 md:h-auto shrink-0 overflow-hidden bg-slate-100">
+  <img
+    src={
+      property.images?.[0]?.url ||
+      "/placeholder-property.jpg"
+    }
+    alt={property.title}
+    loading="lazy"
+    className="block w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+    onError={(e) => {
+      e.currentTarget.onerror = null;
+      e.currentTarget.src = "/placeholder-property.jpg";
+    }}
+  />
+</div>
+
 
 
           {/* Details */}
