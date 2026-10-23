@@ -10,7 +10,7 @@ import {
   Maximize2,
   ShieldCheck,
 //   Sofa,
-  CarFront,
+  // CarFront,
 //   Wifi,
 //   Zap,
 //   Droplets,
@@ -18,11 +18,11 @@ import {
 //   LockKeyhole,
   CalendarDays,
   MessageCircle,
-  Share2,
+  // Share2,
   Building2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import type { Property } from "../landlord/OwnerHome";
 import api from "../../services/api";
 const PropertyDetails = () => {
@@ -113,14 +113,16 @@ if (error || !property) {
               </span>
             </div>
 
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-              Modern 3-Bedroom Apartment
-            </h1>
+           <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          {property.title}
+        </h1>
 
-            <p className="mt-3 flex items-center gap-2 text-sm text-slate-500 sm:text-base">
-              <MapPin size={18} className="shrink-0 text-emerald-600" />
-              Lekki Phase 1, Lagos State, Nigeria
-            </p>
+        <p className="mt-3 flex items-center gap-2 text-sm text-slate-500 sm:text-base">
+          <MapPin size={18} className="shrink-0 text-emerald-600" />
+
+          {property.location.area}, {property.location.city},{" "}
+          {property.location.state}, Nigeria
+        </p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -140,13 +142,13 @@ if (error || !property) {
               {isSaved ? "Saved" : "Save"}
             </button>
 
-            <button
+            {/* <button
               type="button"
               className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
             >
               <Share2 size={18} />
               <span className="hidden sm:inline">Share</span>
-            </button>
+            </button> */}
           </div>
         </section>
 
@@ -251,6 +253,7 @@ if (error || !property) {
           <div className="space-y-8 lg:col-span-2">
 
             {/* Property Overview */}
+           
             <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
               <h2 className="text-lg font-bold text-slate-900">
                 Property overview
@@ -262,28 +265,60 @@ if (error || !property) {
               </p>
 
               <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {/* Bedrooms */}
                 <div className="rounded-xl bg-slate-50 p-4">
-                  <BedDouble className="mb-3 text-emerald-600" size={23} />
-                  <p className="text-lg font-bold text-slate-900">3</p>
-                  <p className="mt-1 text-xs text-slate-500">Bedrooms</p>
+                  <BedDouble
+                    className="mb-3 text-emerald-600"
+                    size={23}
+                  />
+                  <p className="text-lg font-bold text-slate-900">
+                    {property.bedrooms}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Bedrooms
+                  </p>
                 </div>
 
+                {/* Bathrooms */}
                 <div className="rounded-xl bg-slate-50 p-4">
-                  <Bath className="mb-3 text-emerald-600" size={23} />
-                  <p className="text-lg font-bold text-slate-900">3</p>
-                  <p className="mt-1 text-xs text-slate-500">Bathrooms</p>
+                  <Bath
+                    className="mb-3 text-emerald-600"
+                    size={23}
+                  />
+                  <p className="text-lg font-bold text-slate-900">
+                    {property.bathrooms}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Bathrooms
+                  </p>
                 </div>
 
+                {/* Listing Type */}
                 <div className="rounded-xl bg-slate-50 p-4">
-                  <CarFront className="mb-3 text-emerald-600" size={23} />
-                  <p className="text-lg font-bold text-slate-900">1</p>
-                  <p className="mt-1 text-xs text-slate-500">Parking space</p>
+                  <Building2
+                    className="mb-3 text-emerald-600"
+                    size={23}
+                  />
+                  <p className="text-lg font-bold capitalize text-slate-900">
+                    {property.listingType}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Listing type
+                  </p>
                 </div>
 
+                {/* Property Type */}
                 <div className="rounded-xl bg-slate-50 p-4">
-                  <Building2 className="mb-3 text-emerald-600" size={23} />
-                  <p className="text-lg font-bold text-slate-900">Apartment</p>
-                  <p className="mt-1 text-xs text-slate-500">Property type</p>
+                  <Building2
+                    className="mb-3 text-emerald-600"
+                    size={23}
+                  />
+                  <p className="text-lg font-bold capitalize text-slate-900">
+                    {property.propertyType}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Property type
+                  </p>
                 </div>
               </div>
             </section>
@@ -295,22 +330,7 @@ if (error || !property) {
               </h2>
 
               <div className="mt-4 space-y-4 text-sm leading-7 text-slate-600">
-                <p>
-                  Discover comfortable living in this contemporary
-                  three-bedroom apartment, designed with spacious interiors
-                  and practical features for everyday living.
-                </p>
-
-                <p>
-                  The property offers a welcoming living area, well-planned
-                  bedrooms, and a functional kitchen. Its location provides
-                  access to nearby shops, restaurants, and essential services.
-                </p>
-
-                <p>
-                  Contact the property owner to confirm availability, arrange
-                  an inspection, and learn more about the rental terms.
-                </p>
+                <p>{property.description}</p>
               </div>
             </section>
 
@@ -321,7 +341,7 @@ if (error || !property) {
               </h2>
 
               <p className="mt-2 text-sm text-slate-500">
-                Features listed for this property.
+                Coming Soon........
               </p>
 
               {/* <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -345,10 +365,17 @@ if (error || !property) {
                 Location
               </h2>
 
-              <p className="mt-2 flex items-center gap-2 text-sm text-slate-500">
-                <MapPin size={17} className="text-emerald-600" />
-                Lekki Phase 1, Lagos State, Nigeria
-              </p>
+             <p className="mt-2 flex items-start gap-2 text-sm text-slate-500">
+            <MapPin
+              size={17}
+              className="mt-0.5 shrink-0 text-emerald-600"
+            />
+
+            <span>
+              {property.location.address}, {property.location.area},{" "}
+              {property.location.city}, {property.location.state}, Nigeria
+            </span>
+          </p>
 
               <div className="mt-5 flex h-52 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50">
                 <div className="text-center">
@@ -360,7 +387,7 @@ if (error || !property) {
                     Property location
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
-                    A map can be integrated here later.
+                   Coming Soon.....
                   </p>
                 </div>
               </div>
@@ -457,13 +484,13 @@ if (error || !property) {
                 connect with property owners.
               </p>
 
-              <button
-                type="button"
+              <Link
+                to="/tenant/"
                 className="mt-4 text-sm font-semibold text-emerald-700 transition hover:text-emerald-800"
               >
                 Explore more properties
                 <ArrowRight size={16} className="ml-2 inline" />
-              </button>
+              </Link>
             </section>
           </aside>
         </div>
