@@ -2,34 +2,42 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { NavLink } from "react-router-dom";
-import {
-  FiLogOut,
-  FiChevronLeft,
-  FiChevronRight,
-  FiHome,
-  FiBell,
-  FiHeart,
-  FiClipboard,
-  FiMessageCircle,
-  FiSettings,
-} from "react-icons/fi";
+import { FiLogOut, FiChevronLeft, FiChevronRight, FiHome, FiBell, FiHeart, FiClipboard, FiMessageCircle, FiSettings, } from "react-icons/fi";
+
+import toast from "react-hot-toast";
 const TenantSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
   
     const userInitial = currentUser?.firstname?.charAt(0).toUpperCase() || "?";
     
-  const handleLogout = () => {
+ 
+const handleLogout = () => {
+  try {
+    setIsLoggingOut(true);
+
     logout();
-    navigate("/login");
-  };
+
+    setShowLogoutModal(false);
+
+    navigate("/login", { replace: true });
+  } catch (error) {
+    console.error("Logout failed:", error);
+    toast.error("Unable to log out. Please try again.");
+  } finally {
+    setIsLoggingOut(false);
+  }
+};
+
 
   return (
-    <aside
+    <>
+      <aside
       className={`hidden md:flex h-screen flex-col  bg-white border-r border-gray-200 transition-all duration-300 shrink-0
-        ${isCollapsed ? "w-25" : "w-65]"}
+        ${isCollapsed ? "w-25" : "w-64"}
       `}
     >
       {/* Header */}
@@ -42,11 +50,11 @@ const TenantSidebar = () => {
         `}
       >
        {/* Logo */}
-      <div
-        className={`flex items-center ml-6 ${
-          isCollapsed ? "justify-center" : "gap-2"
-        }`}
-      >
+     <div
+      className={`flex items-center ${
+        isCollapsed ? "justify-center" : "gap-2"
+      }`}
+    >
         <img
           src="/images/Quick4.jpg"
           alt="QuickStay"
@@ -169,34 +177,97 @@ const TenantSidebar = () => {
   />
 </nav>
 
-      {/* Logout */}
-      <div className="p-4 border-t border-gray-100">
-        <button
-          onClick={handleLogout}
-          className={`
-            w-full
-            flex items-center
-            rounded-xl
-            text-gray-600
-            hover:bg-red-50
-            hover:text-red-500
-            transition
-            ${isCollapsed
-              ? "justify-center p-3"
-              : "gap-3 px-4 py-3"
-            }
-          `}
-        >
-          <FiLogOut className="text-lg shrink-0" />
+      
+{/* Logout */}
+<div className="p-4 border-t border-gray-100">
+  <button
+    type="button"
+    onClick={() => setShowLogoutModal(true)}
+    className={`
+      w-full flex items-center rounded-xl
+      text-gray-600 hover:bg-red-50 hover:text-red-500
+      transition
+      ${
+        isCollapsed
+          ? "justify-center p-3"
+          : "gap-3 px-4 py-3"
+      }
+    `}
+  >
+    <FiLogOut className="text-lg shrink-0" />
 
-          {!isCollapsed && (
-            <span className="text-sm font-medium">
-              Logout
-            </span>
-          )}
+    {!isCollapsed && (
+      <span className="text-sm font-medium">
+        Logout
+      </span>
+    )}
+  </button>
+</div>
+
+    </aside>
+
+    
+{/* Logout Confirmation Modal */}
+{showLogoutModal && (
+  <div
+    className="fixed inset-0 z-9999 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm"
+    onClick={() => {
+      if (!isLoggingOut) setShowLogoutModal(false);
+    }}
+  >
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tenant-logout-title"
+      className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl sm:p-8"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Icon */}
+      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-red-500">
+        <FiLogOut size={26} />
+      </div>
+
+      {/* Heading */}
+      <h2
+        id="tenant-logout-title"
+        className="text-xl font-bold text-gray-900"
+      >
+        Confirm Logout
+      </h2>
+
+      {/* Description */}
+      <p className="mt-3 text-sm leading-6 text-gray-500">
+        Are you sure you want to log out of your
+        GreenSpringHomes account? You'll need to sign in
+        again to access your dashboard and saved properties.
+      </p>
+
+      {/* Actions */}
+      <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          disabled={isLoggingOut}
+          onClick={() => setShowLogoutModal(false)}
+          className="rounded-xl border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          disabled={isLoggingOut}
+          onClick={handleLogout}
+          className="flex items-center justify-center gap-2 rounded-xl bg-red-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <FiLogOut size={17} />
+          {isLoggingOut ? "Logging out..." : "Yes, Log Out"}
         </button>
       </div>
-    </aside>
+    </div>
+  </div>
+)}
+
+    </>
   );
 };
 
@@ -215,25 +286,19 @@ const SidebarLink = ({
 }: SidebarLinkProps) => {
 
   return (
-    <NavLink
-      to={to}
-      className={({ isActive }) => `
-        w-full
-        flex
-        items-center
-        rounded-xl
-        transition
-        ${collapsed
-          ? "justify-center p-3"
-          : "gap-3 px-4 py-3"
-        }
-        ${
-          isActive
-            ? "bg-green-50 text-green-600"
-            : "text-gray-600 hover:bg-gray-50 hover:text-green-600"
-        }
-      `}
-    >
+   <NavLink
+  to={to}
+  end
+  className={({ isActive }) => `
+    w-full flex items-center rounded-xl transition
+    ${collapsed ? "justify-center p-3" : "gap-3 px-4 py-3"}
+    ${
+      isActive
+        ? "bg-green-50 text-green-600"
+        : "text-gray-600 hover:bg-gray-50 hover:text-green-600"
+    }
+  `}
+>
       <span className="text-lg shrink-0">
         {icon}
       </span>
