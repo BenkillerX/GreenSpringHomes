@@ -222,3 +222,62 @@ export async function deleteProperty(req, res) {
     });
   }
 }
+
+
+export const searchProperties = async (req, res) => {
+  try {
+    const { location, propertyType, maxPrice } = req.query;
+
+    const filter = {
+      status: "active",
+    };
+
+    // Search across location fields
+    if (typeof location === "string" && location.trim()) {
+      const escapedLocation = location.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+      const locationRegex = new RegExp(escapedLocation, "i");
+
+      filter.$or = [
+        { "location.state": locationRegex },
+        { "location.city": locationRegex },
+        { "location.area": locationRegex },
+        { "location.address": locationRegex },
+      ];
+    }
+
+    // Filter by property type
+    if (typeof propertyType === "string" && propertyType.trim()) {
+      filter.propertyType = propertyType.trim().toLowerCase();
+    }
+
+    // Filter by maximum budget
+    if (maxPrice !== undefined && maxPrice !== "") {
+      const price = Number(maxPrice);
+
+      if (!Number.isFinite(price) || price < 0) {
+        return res.status(400).json({
+          message: "Invalid maximum price",
+        });
+      }
+
+      filter.price = { $lte: price };
+    }
+
+    const properties = await Property.find(filter)
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json({
+      message: "Search completed successfully",
+      count: properties.length,
+      properties,
+    });
+  } catch (error) {
+    console.error("PROPERTY SEARCH ERROR:", error);
+
+    return res.status(500).json({
+      message: "Unable to search properties",
+    });
+  }
+};

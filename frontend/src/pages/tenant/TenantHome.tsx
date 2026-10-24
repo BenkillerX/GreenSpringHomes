@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 import type { Property } from "../landlord/OwnerHome";
 import { Link } from "react-router-dom";
+import SearchProperties from "./SearchProperties";
 
 const TenantHome = () => {
    const [userPorperties, setUserPorperties] = useState<Property[]>([]);
-    const [propertiesCount, setPropertiesCount] = useState<number>(0)
+    const [activeCategory, setActiveCategory] = useState<string>("");
   useEffect(()=>{
      const getUserProperties = async () => {
     try {
       const response = await api.get("/api/properties/all");
 
       setUserPorperties(response.data.properties);
-      setPropertiesCount(response.data.count)
       
     } catch (error) {
       console.error(error);
@@ -28,130 +28,55 @@ const TenantHome = () => {
         {/* Welcome Section */}
 
         {/* Search Section */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <SearchProperties onSearchResults={setUserPorperties} />
+       
+{/* Property Categories */}
+<section>
+  <div className="mb-4">
+    <h2 className="text-lg font-bold text-slate-900">
+      Categories
+    </h2>
+  </div>
 
-            <div className="lg:col-span-2">
-              <label
-                htmlFor="location"
-                className="mb-2 block text-sm font-semibold text-slate-700"
-              >
-                Location
-              </label>
+  <div className="flex gap-3 overflow-x-auto pb-2">
+    {[
+      { label: "All Properties", value: "" },
+      { label: "Apartments", value: "apartment" },
+      { label: "Houses", value: "house" },
+      { label: "Duplexes", value: "duplex" },
+      { label: "Bungalows", value: "bungalow" },
+      { label: "Self Contained", value: "self-contained" },
+      { label: "Land", value: "land" },
+      { label: "Offices", value: "office" },
+      { label: "Shops", value: "shop" },
+      { label: "Others", value: "other" },
+    ].map((category) => (
+      <button
+        key={category.value}
+        type="button"
+        onClick={() => setActiveCategory(category.value)}
+        className={`shrink-0 rounded-full border px-5 py-2.5 text-sm font-medium transition ${
+          activeCategory === category.value
+            ? "border-emerald-600 bg-emerald-600 text-white"
+            : "border-slate-200 bg-white text-slate-600 hover:border-emerald-500 hover:text-emerald-700"
+        }`}
+      >
+        {category.label}
+      </button>
+    ))}
+  </div>
+</section>
 
-              <input
-                id="location"
-                type="text"
-                placeholder="Enter a city or neighborhood"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="propertyType"
-                className="mb-2 block text-sm font-semibold text-slate-700"
-              >
-                Property type
-              </label>
-
-              <select
-                id="propertyType"
-                defaultValue=""
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-              >
-                <option value="" disabled>
-                  All property types
-                </option>
-                <option value="apartment">Apartment</option>
-                <option value="house">House</option>
-                <option value="duplex">Duplex</option>
-                <option value="studio">Studio</option>
-              </select>
-            </div>
-
-            <div>
-              <label
-                htmlFor="budget"
-                className="mb-2 block text-sm font-semibold text-slate-700"
-              >
-                Maximum budget
-              </label>
-
-              <select
-                id="budget"
-                defaultValue=""
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-              >
-                <option value="" disabled>
-                  Select budget
-                </option>
-                <option value="500000">₦500,000</option>
-                <option value="1000000">₦1,000,000</option>
-                <option value="2000000">₦2,000,000</option>
-                <option value="5000000">₦5,000,000+</option>
-              </select>
-            </div>
-
-          </div>
-
-          <button
-            type="button"
-            className="mt-5 w-full rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-700 sm:w-auto"
-          >
-            Search properties
-          </button>
-        </section>
-
-        {/* Property Categories */}
-        <section>
-          <div className="mb-4">
-            <h2 className="text-lg font-bold text-slate-900">
-              Explore by category
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Find the right space for your needs.
-            </p>
-          </div>
-
-          <div className="flex gap-3 overflow-x-auto pb-2">
-            {[
-              "All properties",
-              "Apartments",
-              "Houses",
-              "Duplexes",
-              "Studio apartments",
-            ].map((category, index) => (
-              <button
-                key={category}
-                type="button"
-                className={`shrink-0 rounded-full border px-5 py-2.5 text-sm font-medium transition ${
-                  index === 0
-                    ? "border-emerald-600 bg-emerald-600 text-white"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-emerald-500 hover:text-emerald-700"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </section>
 
         {/* Featured Properties */}
 <section>
   <div className="mb-5 flex items-end justify-between gap-4">
     <div>
-      <p className="text-sm font-medium text-emerald-600">
-        Find your next home
-      </p>
 
       <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">
         Available Apartments
       </h2>
 
-      <p className="mt-1 text-sm text-slate-500">
-        {propertiesCount} properties available
-      </p>
     </div>
   </div>
 
