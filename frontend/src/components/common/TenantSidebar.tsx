@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { NavLink } from "react-router-dom";
-import { FiLogOut, FiChevronLeft, FiChevronRight, FiHome, FiBell, FiHeart, FiClipboard, FiMessageCircle, FiSettings, } from "react-icons/fi";
+import { FiLogOut, FiChevronLeft, FiChevronRight, FiHome, FiHeart, FiSettings, } from "react-icons/fi";
 
 import toast from "react-hot-toast";
 const TenantSidebar = () => {
@@ -142,32 +142,12 @@ const handleLogout = () => {
   />
 
   <SidebarLink
-    icon={<FiBell />}
-    label="Notifications"
-    to="/tenant/notifications"
-    collapsed={isCollapsed}
-  />
-
-  <SidebarLink
     icon={<FiHeart />}
     label="Saved"
     to="/tenant/saved-properties"
     collapsed={isCollapsed}
   />
 
-  <SidebarLink
-    icon={<FiClipboard />}
-    label="Inspections"
-    to="/tenant/inspections"
-    collapsed={isCollapsed}
-  />
-
-  <SidebarLink
-    icon={<FiMessageCircle />}
-    label="Messages"
-    to="/tenant/messages"
-    collapsed={isCollapsed}
-  />
 
   <SidebarLink
     icon={<FiSettings />}

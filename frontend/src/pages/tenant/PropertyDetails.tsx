@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import type { Property } from "../landlord/OwnerHome";
 import api from "../../services/api";
 import toast from "react-hot-toast";
+import DetailsSkeleton from "./DetailsSkeleton";
 const PropertyDetails = () => {
   const { id } = useParams();
 
@@ -129,9 +130,13 @@ const whatsappLink = whatsappNumber
   : null;
   const formatPrice = (price: number) =>
     `₦${price.toLocaleString("en-NG")}`;
+
 if (loading) {
-  return <div className="p-8 text-center">Loading property...</div>;
+  return (
+   <DetailsSkeleton/>
+  );
 }
+
 
 if (error || !property) {
   return (

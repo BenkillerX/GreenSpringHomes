@@ -12,9 +12,6 @@ import PropertyOwner from "./pages/auth/PropertyOwner"
 import TenantLayout from "./layouts/TenantLayout"
 import TenantHome from "./pages/tenant/TenantHome"
 import SavedProperties from "./pages/tenant/SavedProperties"
-import TenantMessages from "./pages/tenant/TenantMessages"
-import Insepections from "./pages/tenant/Insepections"
-import Notifications from "./pages/tenant/Notifications"
 import Settings from "./pages/tenant/Settings"
 import OwnerLayout from "./layouts/OwnerLayout"
 import OwnerHome from "./pages/landlord/OwnerHome"
@@ -62,9 +59,6 @@ const App = () => {
         <Route element={<TenantLayout/>}>
           <Route path="/tenant/" element={<TenantHome/>}/>
           <Route path="/tenant/saved-properties" element={<SavedProperties/>}/>
-          <Route path="/tenant/messages" element={<TenantMessages/>}/>
-          <Route path="/tenant/inspections" element={<Insepections/>}/>
-          <Route path="/tenant/notifications" element={<Notifications/>}/>
           <Route path="/tenant/settings" element={<Settings/>}/>
           <Route path="/tenant/details/:id" element={<PropertyDetails/>}/>
         </Route>
