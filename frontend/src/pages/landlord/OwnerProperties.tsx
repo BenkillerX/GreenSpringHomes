@@ -14,42 +14,8 @@ import {
 import { MdBed } from "react-icons/md";
 import { Link } from "react-router-dom";
 import api from "../../services/api";
+import type { Property } from "./OwnerHome";
 
-
-export interface Property {
-  _id: string;
-  owner: string;
-
-  title: string;
-  description: string;
-
-  propertyType: string;
-  listingType: string;
-
-  price: number;
-  bedrooms: number;
-  bathrooms: number;
-
-  images: {
-  url: string;
-  publicId: string;
-}[];
-
-  status: string;
-  verificationStatus: string;
-
-  views: number;
-
-  location: {
-    state: string;
-    city: string;
-    area: string;
-    address: string;
-  };
-
-  createdAt: string;
-  updatedAt: string;
-}
 const OwnerProperties = () => {
 
     const [userPorperties, setUserPorperties] = useState<Property[]>([]);

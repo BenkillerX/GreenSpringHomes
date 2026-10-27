@@ -13,10 +13,19 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
+import CompleteContactBanner from "./CompleteContactBanner";
 
 export interface Property {
   _id: string;
-  owner: string;
+    owner:
+  | string
+  | {
+      _id: string;
+      firstname: string;
+      lastname: string;
+      phoneNumber?: string | null;
+      whatsappNumber?: string | null;
+    };
 
   title: string;
   description: string;
@@ -102,13 +111,10 @@ async function handleDelete(id: string) {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-
+<CompleteContactBanner/>
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <p className="text-sm text-gray-500 mb-1">
-            Owner Dashboard
-          </p>
 
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Welcome back {userInitial}

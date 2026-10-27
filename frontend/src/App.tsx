@@ -34,6 +34,7 @@ import BackToTop from "./components/common/BackToTop"
 import VerifyEmail from "./pages/auth/VerifyEmail"
 import PropertyDetails from "./pages/tenant/PropertyDetails"
 import { Toaster } from "react-hot-toast";
+import UpdateInfo from "./pages/landlord/UpdateInfo"
 const App = () => {
   return (
     <>
@@ -75,6 +76,7 @@ const App = () => {
             <Route path="/owner/messages" element={<OwnerMessages/>}/>
             <Route path="/owner/notifications" element={<OwnerNotifications/>}/>
             <Route path="/owner/settings" element={<OwnerSettings/>}/>
+            <Route path="/owner/update" element={<UpdateInfo/>}/>
         </Route>
       <Route element={<ServiceProviderLayout/>}>
        <Route path="/service-provider/" element={<ServiceHome/>}/> 

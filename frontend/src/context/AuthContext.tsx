@@ -6,6 +6,9 @@ export interface User {
   email: string;
   role: "tenant" | "propertyOwner" | "serviceProvider" | "admin";
   onboardingCompleted: boolean;
+  phoneNumber?: string | null;
+  whatsappNumber?: string | null;
+  contactVisibility?: boolean;
 }
 
 export type VerifyEmailResponse = {

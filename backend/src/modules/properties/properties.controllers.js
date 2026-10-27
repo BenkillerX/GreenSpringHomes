@@ -114,6 +114,7 @@ export async function getAllProperties(req, res) {
 }
 
 
+
 export const getPropertyById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -126,7 +127,11 @@ export const getPropertyById = async (req, res) => {
       });
     }
 
-    const property = await Property.findById(id);
+    // Fetch property and populate owner information
+    const property = await Property.findById(id).populate(
+      "owner",
+      "firstname lastname phoneNumber whatsappNumber contactVisibility"
+    );
 
     if (!property) {
       return res.status(404).json({
@@ -135,9 +140,34 @@ export const getPropertyById = async (req, res) => {
       });
     }
 
+    // Convert Mongoose document to plain object
+    const propertyData = property.toObject();
+
+    // Protect owner's private contact information
+    if (propertyData.owner) {
+      const owner = propertyData.owner;
+
+      propertyData.owner = {
+        _id: owner._id,
+        firstname: owner.firstname,
+        lastname: owner.lastname,
+
+        // Only expose contact details if visibility is enabled
+        phoneNumber:
+          owner.contactVisibility === true
+            ? owner.phoneNumber ?? null
+            : null,
+
+        whatsappNumber:
+          owner.contactVisibility === true
+            ? owner.whatsappNumber ?? null
+            : null,
+      };
+    }
+
     return res.status(200).json({
       success: true,
-      property,
+      property: propertyData,
     });
   } catch (error) {
     console.error("Get property by ID error:", error);
@@ -148,6 +178,7 @@ export const getPropertyById = async (req, res) => {
     });
   }
 };
+
 
 export async function deleteProperty(req, res) {
   try {

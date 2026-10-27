@@ -282,84 +282,195 @@ export async function Login(req, res) {
 
 
 export async function getCurrentUser(req, res) {
-    try {
-        const user = await User.findById(req.user.id).select("-password");
+  try {
+    const user = await User.findById(req.user.id).select(
+      "-password -emailVerificationCode -emailVerificationExpires"
+    );
 
-        if (!user) {
-            return res.status(404).json({
-                message:"User Not Found"
-            })
-        }
-
-        return res.status(200).json({
-            user
-        })
-    } catch (error) {
-        return res.status(500).json({
-            message:"An error Occured On the server"
-        })
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
     }
+
+    return res.status(200).json({
+      user,
+    });
+  } catch (error) {
+    console.error("GET CURRENT USER ERROR:", error);
+
+    return res.status(500).json({
+      message: "An error occurred on the server",
+    });
+  }
 }
 
+
 export const updateCurrentUser = async (req, res) => {
-    try {
-        const { firstname, lastname, email } = req.body;
+  try {
+    const {
+      firstname,
+      lastname,
+      phoneNumber,
+      whatsappNumber,
+      contactVisibility,
+    } = req.body;
 
-        const user = await User.findById(req.user.id);
-
-        if (!user) {
-            return res.status(404).json({
-                message: "User not found"
-            });
-        }
-
-        // Update only fields that were provided
-        if (firstname !== undefined) {
-            user.firstname = firstname.trim();
-        }
-
-        if (lastname !== undefined) {
-            user.lastname = lastname.trim();
-        }
-
-        if (email !== undefined) {
-            const existingEmail = await User.findOne({
-                email: email.toLowerCase(),
-                _id: { $ne: req.user.id }
-            });
-
-            if (existingEmail) {
-                return res.status(400).json({
-                    message: "Email already in use"
-                });
-            }
-
-            user.email = email.toLowerCase().trim();
-        }
-
-        await user.save();
-
-        return res.status(200).json({
-            message: "Profile updated successfully",
-            user: {
-                id: user._id,
-                firstname: user.firstname,
-                lastname: user.lastname,
-                email: user.email,
-                role: user.role,
-                isEmailVerified: user.isEmailVerified,
-                onboardingCompleted: user.onboardingCompleted
-            }
-        });
-
-    } catch (error) {
-        console.error(error);
-
-        return res.status(500).json({
-            message: "An error occurred on the server"
-        });
+    // Disable email changes until verification is implemented
+    if (Object.prototype.hasOwnProperty.call(req.body, "email")) {
+      return res.status(400).json({
+        message: "Email changes are not available yet",
+      });
     }
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // Update first name
+    if (firstname !== undefined) {
+      if (typeof firstname !== "string" || !firstname.trim()) {
+        return res.status(400).json({
+          message: "Valid first name is required",
+        });
+      }
+
+      user.firstname = firstname.trim();
+    }
+
+    // Update last name
+    if (lastname !== undefined) {
+      if (typeof lastname !== "string" || !lastname.trim()) {
+        return res.status(400).json({
+          message: "Valid last name is required",
+        });
+      }
+
+      user.lastname = lastname.trim();
+    }
+
+    const contactFieldsProvided =
+      phoneNumber !== undefined ||
+      whatsappNumber !== undefined ||
+      contactVisibility !== undefined;
+
+    // Only property owners can update contact information
+    if (contactFieldsProvided && user.role !== "propertyOwner") {
+      return res.status(403).json({
+        message:
+          "Only property owners can update property contact information",
+      });
+    }
+
+    // Validate international phone number format
+    const phoneRegex = /^\+[1-9]\d{7,14}$/;
+
+    const normalizePhone = (value) => {
+      if (value === null) return null;
+
+      if (typeof value !== "string") {
+        throw new Error("Phone number must be a string");
+      }
+
+      const trimmed = value.trim();
+
+      if (!trimmed) return null;
+
+      const normalized = trimmed.replace(/[\s()-]/g, "");
+
+      if (!phoneRegex.test(normalized)) {
+        throw new Error(
+          "Use international phone format, e.g. +2348012345678"
+        );
+      }
+
+      return normalized;
+    };
+
+    // Update phone number
+    if (phoneNumber !== undefined) {
+      try {
+        user.phoneNumber = normalizePhone(phoneNumber);
+      } catch (error) {
+        return res.status(400).json({
+          message: error.message,
+        });
+      }
+    }
+
+    // Update WhatsApp number
+    if (whatsappNumber !== undefined) {
+      try {
+        user.whatsappNumber = normalizePhone(whatsappNumber);
+      } catch (error) {
+        return res.status(400).json({
+          message: error.message,
+        });
+      }
+    }
+
+    // Update contact visibility
+    if (contactVisibility !== undefined) {
+      if (typeof contactVisibility !== "boolean") {
+        return res.status(400).json({
+          message: "Contact visibility must be true or false",
+        });
+      }
+
+      user.contactVisibility = contactVisibility;
+    }
+
+    // Require at least one contact method before enabling visibility
+    if (
+      user.role === "propertyOwner" &&
+      user.contactVisibility === true &&
+      !user.phoneNumber &&
+      !user.whatsappNumber
+    ) {
+      return res.status(400).json({
+        message:
+          "Add a phone or WhatsApp number before enabling contact visibility",
+      });
+    }
+
+    await user.save();
+
+    // Exclude sensitive fields from response
+    const safeUser = user.toObject();
+
+    delete safeUser.password;
+    delete safeUser.emailVerificationCode;
+    delete safeUser.emailVerificationExpires;
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: safeUser,
+    });
+  } catch (error) {
+    console.error("UPDATE CURRENT USER ERROR:", error);
+
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: "A unique field value is already in use",
+      });
+    }
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: "Invalid profile information",
+      });
+    }
+
+    return res.status(500).json({
+      message: "An error occurred on the server",
+    });
+  }
 };
+
 
 export const emailValidation = async (req, res) => {
     try {

@@ -52,6 +52,22 @@ const userSchema = new mongoose.Schema(
         emailVerificationExpires: {
     type: Date,
     },
+        phoneNumber: {
+        type: String,
+        trim: true,
+        default: null,
+        },
+
+        whatsappNumber: {
+        type: String,
+        trim: true,
+        default: null,
+        },
+
+        contactVisibility: {
+        type: Boolean,
+        default: false,
+        },
         isActive: {
             type: Boolean,
             default: true

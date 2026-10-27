@@ -1,39 +1,79 @@
-import {
-  ArrowLeft,
-  ArrowRight,
-  Bath,
-  BedDouble,
-  CheckCircle2,
-  ChevronRight,
-  Heart,
-  MapPin,
-  Maximize2,
-  ShieldCheck,
-//   Sofa,
-  // CarFront,
-//   Wifi,
-//   Zap,
-//   Droplets,
-//   CookingPot,
-//   LockKeyhole,
-  CalendarDays,
-  MessageCircle,
-  // Share2,
-  Building2,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Bath, BedDouble, CheckCircle2, ChevronRight, Heart, MapPin, Maximize2, ShieldCheck, Phone, CalendarDays, MessageCircle, Building2, } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import type { Property } from "../landlord/OwnerHome";
 import api from "../../services/api";
+import toast from "react-hot-toast";
 const PropertyDetails = () => {
   const { id } = useParams();
 
 const [property, setProperty] = useState<Property | null>(null);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState("");
 
 const [isSaved, setIsSaved] = useState(false);
+const [saving, setSaving] = useState(false);
+const [checkingSaved, setCheckingSaved] = useState(Boolean(id));
 const [activeImage, setActiveImage] = useState(0);
+
+
+useEffect(() => {
+  if (!id) return;
+
+  let cancelled = false;
+
+  const checkSavedStatus = async () => {
+    try {
+      const response = await api.get(
+        `/api/saved-properties/${id}/status`
+      );
+
+      if (!cancelled) {
+        setIsSaved(response.data.isSaved);
+      }
+    } catch (error) {
+      console.error("CHECK SAVED STATUS ERROR:", error);
+    } finally {
+      if (!cancelled) {
+        setCheckingSaved(false);
+      }
+    }
+  };
+
+  checkSavedStatus();
+
+  return () => {
+    cancelled = true;
+  };
+}, [id]);
+
+const handleSaveProperty = async () => {
+  if (!id || saving || checkingSaved) return;
+
+  try {
+    setSaving(true);
+
+    if (isSaved) {
+      // Remove from saved properties
+      await api.delete(`/api/saved-properties/${id}`);
+
+      setIsSaved(false);
+      toast.success("Property removed from favourites");
+    } else {
+      // Save property
+      await api.post(`/api/saved-properties/${id}`);
+
+      setIsSaved(true);
+      toast.success("Property saved successfully!");
+    }
+  } catch (error) {
+    console.error("SAVE PROPERTY ERROR:", error);
+
+    toast.error("Unable to update saved property. Please try again.");
+  } finally {
+    setSaving(false);
+  }
+};
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState("");
 useEffect(() => {
   const fetchProperty = async () => {
     if (!id) {
@@ -63,6 +103,30 @@ useEffect(() => {
   fetchProperty();
 }, [id]);
 const propertyImages = property?.images ?? [];
+// Get populated owner information
+const owner =
+  property?.owner && typeof property.owner === "object"
+    ? property.owner
+    : null;
+
+const phoneNumber = owner?.phoneNumber ?? null;
+const whatsappNumber = owner?.whatsappNumber ?? null;
+
+// Open the device's phone dialer
+const callLink = phoneNumber
+  ? `tel:${phoneNumber}`
+  : null;
+
+// Open WhatsApp with a prefilled property enquiry
+const whatsappMessage = property
+  ? `Hello, I'm interested in your property "${property.title}" listed on GreenSpringHomes. Is it still available?`
+  : "";
+
+const whatsappLink = whatsappNumber
+  ? `https://wa.me/${whatsappNumber.replace(/\D/g, "")}?text=${encodeURIComponent(
+      whatsappMessage
+    )}`
+  : null;
   const formatPrice = (price: number) =>
     `₦${price.toLocaleString("en-NG")}`;
 if (loading) {
@@ -126,21 +190,30 @@ if (error || !property) {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setIsSaved(!isSaved)}
-              className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
-                isSaved
-                  ? "border-red-200 bg-red-50 text-red-600"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-emerald-300"
-              }`}
-            >
-              <Heart
-                size={18}
-                className={isSaved ? "fill-current" : ""}
-              />
-              {isSaved ? "Saved" : "Save"}
-            </button>
+           
+<button
+  type="button"
+  onClick={handleSaveProperty}
+  disabled={saving || checkingSaved}
+  aria-pressed={isSaved}
+  className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+    isSaved
+      ? "border-red-200 bg-red-50 text-red-600"
+      : "border-slate-200 bg-white text-slate-700 hover:border-emerald-300"
+  }`}
+>
+  <Heart
+    size={18}
+    className={isSaved ? "fill-current" : ""}
+  />
+  {saving
+    ? "Updating..."
+    : checkingSaved
+    ? "Checking..."
+    : isSaved
+    ? "Saved"
+    : "Save"}
+</button>
 
             {/* <button
               type="button"
@@ -447,25 +520,85 @@ if (error || !property) {
                 </div>
               </div>
 
-              <button
-                type="button"
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-              >
-                <MessageCircle size={18} />
-                Contact property owner
-              </button>
+              
+{/* Contact Property Owner */}
+<div className="mt-6 space-y-3">
+  <h3 className="text-sm font-semibold text-slate-900">
+    Contact Property Owner
+  </h3>
 
-              <button
-                type="button"
-                onClick={() => setIsSaved(!isSaved)}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-5 py-3.5 text-sm font-semibold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50"
-              >
-                <Heart
-                  size={18}
-                  className={isSaved ? "fill-red-500 text-red-500" : ""}
-                />
-                {isSaved ? "Saved to favourites" : "Save property"}
-              </button>
+  {owner && (
+    <p className="text-sm text-slate-500">
+      {owner.firstname} {owner.lastname}
+    </p>
+  )}
+
+  {/* WhatsApp Button */}
+  {whatsappLink && (
+    <a
+      href={whatsappLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-green-700"
+    >
+      <MessageCircle size={19} />
+      Chat on WhatsApp
+    </a>
+  )}
+
+  {/* Call Button */}
+  {callLink && (
+    <a
+      href={callLink}
+      className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-600 bg-white px-5 py-3.5 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
+    >
+      <Phone size={19} />
+      Call Property Owner
+    </a>
+  )}
+
+  {/* No Contact Information */}
+  {!whatsappLink && !callLink && (
+    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+      <p className="text-sm font-medium text-amber-800">
+        Contact information unavailable
+      </p>
+
+      <p className="mt-1 text-xs text-amber-700">
+        This property owner has not made their contact
+        information available yet.
+      </p>
+    </div>
+  )}
+</div>
+
+
+             
+<button
+  type="button"
+  onClick={handleSaveProperty}
+  disabled={saving || checkingSaved}
+  aria-pressed={isSaved}
+  className={`mt-3 flex w-full items-center justify-center gap-2 rounded-xl border px-5 py-3.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+    isSaved
+      ? "border-red-200 bg-red-50 text-red-600 hover:bg-red-100"
+      : "border-slate-200 text-slate-700 hover:border-emerald-300 hover:bg-emerald-50"
+  }`}
+>
+  <Heart
+    size={18}
+    className={isSaved ? "fill-current" : ""}
+  />
+
+  {saving
+    ? "Updating..."
+    : checkingSaved
+    ? "Checking..."
+    : isSaved
+    ? "Saved to favourites"
+    : "Save property"}
+</button>
+
 
               <p className="mt-4 text-center text-xs leading-5 text-slate-400">
                 Inspect the property and confirm all rental terms before
