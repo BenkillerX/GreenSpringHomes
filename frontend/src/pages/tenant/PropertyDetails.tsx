@@ -320,7 +320,7 @@ if (error || !property) {
 
 
         {/* Main Content and Sidebar */}
-        <div className="grid items-start gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3 lg:gap-8">
 
           {/* Main Property Information */}
           <div className="space-y-8 lg:col-span-2">
@@ -468,7 +468,7 @@ if (error || !property) {
           </div>
 
           {/* Booking / Contact Sidebar */}
-          <aside className="space-y-5 lg:sticky lg:top-6">
+          <aside className="w-full min-w-0 space-y-5 lg:sticky lg:top-6">
             <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
               <p className="text-sm text-slate-500">
                 Rental price
@@ -519,16 +519,14 @@ if (error || !property) {
                   </div>
                 </div>
               </div>
-
-              
-{/* Contact Property Owner */}
-<div className="mt-6 space-y-3">
+ {/* Contact Property Owner */}
+<div className="mt-6 w-full min-w-0 space-y-3">
   <h3 className="text-sm font-semibold text-slate-900">
     Contact Property Owner
   </h3>
 
   {owner && (
-    <p className="text-sm text-slate-500">
+    <p className="wrap-break-word text-sm text-slate-500">
       {owner.firstname} {owner.lastname}
     </p>
   )}
@@ -539,10 +537,10 @@ if (error || !property) {
       href={whatsappLink}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-green-700"
+      className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-green-700 sm:px-5"
     >
-      <MessageCircle size={19} />
-      Chat on WhatsApp
+      <MessageCircle size={19} className="shrink-0" />
+      <span>Chat on WhatsApp</span>
     </a>
   )}
 
@@ -550,16 +548,16 @@ if (error || !property) {
   {callLink && (
     <a
       href={callLink}
-      className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-600 bg-white px-5 py-3.5 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
+      className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-600 bg-white px-4 py-3.5 text-center text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50 sm:px-5"
     >
-      <Phone size={19} />
-      Call Property Owner
+      <Phone size={19} className="shrink-0" />
+      <span>Call Property Owner</span>
     </a>
   )}
 
   {/* No Contact Information */}
   {!whatsappLink && !callLink && (
-    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+    <div className="w-full rounded-xl border border-amber-200 bg-amber-50 p-4">
       <p className="text-sm font-medium text-amber-800">
         Contact information unavailable
       </p>
