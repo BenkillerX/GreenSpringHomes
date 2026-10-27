@@ -26,6 +26,10 @@ const [contactVisibility, setContactVisibility] = useState(
       toast.error("Enter at least one contact number");
       return;
     }
+    if (!contactVisibility) {
+  toast.error("Please enable contact visibility so tenants can reach you.");
+  return;
+}
 
     try {
       setSaving(true);
