@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { Search, Loader2 } from "lucide-react";
 import api from "../../services/api";
-import type { Property } from "../landlord/OwnerProperties";
+import type { Property } from "../landlord/OwnerHome";
+
 
 interface SearchPropertiesProps {
   onSearchResults: (properties: Property[]) => void;
