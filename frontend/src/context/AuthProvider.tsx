@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { AuthContext, type User, type VerifyEmailResponse } from "./AuthContext";
-
+import axios from "axios";
 
 export const AuthProvider = ({
   children,
@@ -12,34 +12,59 @@ export const AuthProvider = ({
   const [loading, setLoading] = useState(true);
 
   // Restore logged-in user when the app is refreshed
-  useEffect(() => {
-    const restoreUser = async () => {
-      const token = localStorage.getItem("token");
+useEffect(() => {
+  let cancelled = false;
 
-      if (!token) {
-        setLoading(false);
-        return;
+  const restoreUser = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setCurrentUser(null);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await api.get("/api/auth/me");
+
+      if (cancelled) return;
+
+      setCurrentUser(response.data.user);
+    } catch (error) {
+      if (cancelled) return;
+
+      console.error("Failed to restore user:", error);
+
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+
+        if (status === 401) {
+          // Server confirmed the token is invalid
+          localStorage.removeItem("token");
+          setCurrentUser(null);
+        } else {
+          // Network error, timeout, or server failure
+          // Keep the token for another attempt
+          console.warn(
+            "Unable to restore user right now. Token preserved."
+          );
+        }
       }
-
-      try {
-        const response = await api.get("/api/auth/me");
-
-        const user = response.data.user;
-
-        setCurrentUser(user);
-      } catch (error) {
-        console.error("Failed to restore user:", error);
-
-        // Token is no longer valid
-        localStorage.removeItem("token");
-        setCurrentUser(null);
-      } finally {
+    } finally {
+      if (!cancelled) {
         setLoading(false);
       }
-    };
+    }
+  };
 
-    restoreUser();
-  }, []);
+  restoreUser();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
 
   // Login existing user
   const login = async (

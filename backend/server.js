@@ -7,6 +7,7 @@ import onboardingRoutes from "./src/modules/onboarding/onboarding.routes.js";
 import propertyRoutes from "./src/modules/properties/properties.routes.js";
 import messagesRoutes from "./src/modules/messages/messages.routes.js";
 import emailRouter from "./src/modules/email/email.route.js";
+import savedPropertiesRoutes from "./src/modules/savedProperties/savedPropertyRoutes.js";
 
 
 
@@ -19,6 +20,7 @@ app.use('/api/onboarding', onboardingRoutes)
 app.use('/api/properties', propertyRoutes)
 app.use('/api/messages/conversations', messagesRoutes)
 app.use("/api/email", emailRouter);
+app.use("/api/saved-properties", savedPropertiesRoutes);
 app.get('/', (_, res)=>{
     return res.json({
         message:"Welcome to GreenSpringHomes"
