@@ -136,7 +136,7 @@ async function handleDelete(id: string) {
 
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 gap-4 mb-8">
 
         {/* Properties */}
         <div className="rounded-2xl bg-white border border-gray-100 p-5 shadow-sm">
@@ -180,54 +180,7 @@ async function handleDelete(id: string) {
             Property views
           </p>
         </div>
-
-
-        {/* Requests */}
-        <div className="rounded-2xl bg-white border border-gray-100 p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-green-600">
-              <FiCalendar size={20} />
-            </div>
-
-            <span className="text-xs font-medium text-gray-400">
-              Requests
-            </span>
-          </div>
-
-          <h2 className="text-2xl font-bold text-gray-900">
-            0
-          </h2>
-
-          <p className="text-sm text-gray-500 mt-1">
-            Inspection requests
-          </p>
-        </div>
-
-
-        {/* Messages */}
-        <div className="rounded-2xl bg-white border border-gray-100 p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-green-600">
-              <FiMessageCircle size={20} />
-            </div>
-
-            <span className="text-xs font-medium text-gray-400">
-              Messages
-            </span>
-          </div>
-
-          <h2 className="text-2xl font-bold text-gray-900">
-            0
-          </h2>
-
-          <p className="text-sm text-gray-500 mt-1">
-            Unread messages
-          </p>
-        </div>
-
       </div>
-
-
       {/* Main Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
