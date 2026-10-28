@@ -1,4 +1,3 @@
-
 const PopularDestinations = () => {
   return (
     <section className='px-8 py-20 lg:px-28'> 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FaStar } from 'react-icons/fa6'
-const ListOnQuickStay = () => {
+const ListOnGreenSpringHomes = () => {
     const stayPeriod = [
         {
         title:"Short stays",
@@ -24,7 +24,7 @@ const ListOnQuickStay = () => {
     {/* Text */}
     <div className="w-full lg:w-1/2">
       <h1 className="mb-4 text-xl font-medium leading-tight sm:text-2xl lg:text-4xl">
-        Have a property? List it on QuickStay.
+        Have a property? List it on Green<span className='text-green-500'>Spring</span>Homes.
       </h1>
 
       <p className="mb-8 max-w-140 text-sm leading-6 text-gray-400 sm:text-base">
@@ -99,4 +99,4 @@ const ListOnQuickStay = () => {
   )
 }
 
-export default ListOnQuickStay
+export default ListOnGreenSpringHomes

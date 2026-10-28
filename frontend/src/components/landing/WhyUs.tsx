@@ -19,7 +19,7 @@ const WhyUs = () => {
 ]
   return (
     <section className=' px-8 py-20 lg:px-28 border border-gray-300'>
-        <h1 className='text-2xl font-bold mb-4'>Why QuickStay</h1>
+        <h1 className='text-2xl font-bold mb-4'>Why Green<span className="text-green-500">Spring</span>Homes</h1>
         <div className='grid sm:grid-cols-2  md:grid-cols-4 gap-5'>
             {
                 reasons.map((reason)=>(
