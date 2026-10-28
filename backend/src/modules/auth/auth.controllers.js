@@ -540,3 +540,34 @@ export const emailValidation = async (req, res) => {
         });
     }
 };
+export const deleteCurrentUser = async ( req, res ) => {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({
+        message: "Authentication required.",
+      });
+      return;
+    }
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      res.status(404).json({
+        message: "User account not found.",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Your account has been deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Delete account error:", error);
+
+    res.status(500).json({
+      message: "Failed to delete account.",
+    });
+  }
+};

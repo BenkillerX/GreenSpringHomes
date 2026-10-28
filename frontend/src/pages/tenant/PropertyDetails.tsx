@@ -152,16 +152,16 @@ if (error || !property) {
 
         {/* Breadcrumbs */}
         <nav className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
-          <a href="/" className="transition hover:text-emerald-700">
+          <Link to="/tenant/" className="transition hover:text-emerald-700">
             Home
-          </a>
+          </Link>
           <ChevronRight size={15} />
-          <a
-            href="/tenant/dashboard"
+          <Link
+            to="/tenant/"
             className="transition hover:text-emerald-700"
           >
             Properties
-          </a>
+          </Link>
           <ChevronRight size={15} />
           <span className="font-medium text-slate-800">
             Property details
@@ -219,19 +219,8 @@ if (error || !property) {
     ? "Saved"
     : "Save"}
 </button>
-
-            {/* <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-            >
-              <Share2 size={18} />
-              <span className="hidden sm:inline">Share</span>
-            </button> */}
           </div>
-        </section>
-
-        {/* Property Image Gallery */}
-        
+        </section>        
 {/* Property Image Gallery */}
 <section className="grid gap-3 overflow-hidden rounded-2xl sm:grid-cols-4 sm:grid-rows-2">
 
@@ -410,31 +399,6 @@ if (error || !property) {
               <div className="mt-4 space-y-4 text-sm leading-7 text-slate-600">
                 <p>{property.description}</p>
               </div>
-            </section>
-
-            {/* Amenities */}
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
-              <h2 className="text-lg font-bold text-slate-900">
-                Amenities and features
-              </h2>
-
-              <p className="mt-2 text-sm text-slate-500">
-                Coming Soon........
-              </p>
-
-              {/* <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                {amenities.map(({ name, icon: Icon }) => (
-                  <div key={name} className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
-                      <Icon size={19} />
-                    </div>
-
-                    <span className="text-sm font-medium text-slate-700">
-                      {name}
-                    </span>
-                  </div>
-                ))}
-              </div> */}
             </section>
 
             {/* Location */}

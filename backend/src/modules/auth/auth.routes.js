@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getCurrentUser, Login, registerPropertyOwner, registerServiceProvider, registerTenant, updateCurrentUser, emailValidation } from "./auth.controllers.js";
+import { getCurrentUser, Login, registerPropertyOwner, registerServiceProvider, registerTenant, updateCurrentUser, emailValidation,deleteCurrentUser, } from "./auth.controllers.js";
 import { loginValidator, propertyOwnerValidator, serviceProviderValidator, tenantValidator } from "../../validators/auth.validator.js";
 import { validateRequest } from "../../middleware/validator.middleware.js";
 import { authenticateToken } from "../../middleware/auth.middleware.js";
@@ -14,4 +14,5 @@ authRoutes.post( "/register/service-provider", serviceProviderValidator, validat
 authRoutes.post("/verify-email", emailValidation)
 authRoutes.get('/me', authenticateToken, getCurrentUser)
 authRoutes.patch('/me',authenticateToken, updateCurrentUser)
+authRoutes.delete("/me", authenticateToken, deleteCurrentUser);
 export default authRoutes;

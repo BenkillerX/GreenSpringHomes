@@ -1,41 +1,73 @@
-import {
-  FiHome,
-  FiSearch,
-  FiHeart,
-  FiCalendar,
-  FiUser,
-} from "react-icons/fi";
+
+import { NavLink } from "react-router-dom";
+import { FiHome, FiHeart, FiUser, } from "react-icons/fi";
+
+const navItems = [
+  {
+    label: "Home",
+    to: "/tenant/",
+    icon: FiHome,
+    end: true,
+  },
+  {
+    label: "Saved",
+    to: "/tenant/saved-properties",
+    icon: FiHeart,
+    end: false,
+  },
+  {
+    label: "Profile",
+    to: "/tenant/settings",
+    icon: FiUser,
+    end: false,
+  },
+];
 
 const TenantBottomNav = () => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-gray-200">
-      <div className="flex items-center justify-around h-16">
+    <nav
+      aria-label="Tenant navigation"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-gray-200 bg-white/95 backdrop-blur-md md:hidden"
+    >
+      <div className="mx-auto flex h-16 max-w-lg items-stretch justify-around px-1">
+        {navItems.map(({ label, to, icon: Icon, end }) => (
+          <NavLink
+            key={label}
+            to={to}
+            end={end}
+            aria-label={label}
+            className={({ isActive }) =>
+              `relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1 transition-colors ${
+                isActive
+                  ? "text-green-600"
+                  : "text-gray-500 hover:text-green-600"
+              }`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <span className="absolute top-0 h-0.5 w-8 rounded-full bg-green-600" />
+                )}
 
-        <button className="flex flex-col items-center gap-1 text-green-500">
-          <FiHome className="text-xl" />
-          <span className="text-[10px]">Home</span>
-        </button>
+                <Icon
+                  aria-hidden="true"
+                  className={`text-xl transition-transform ${
+                    isActive ? "-translate-y-0.5" : ""
+                  }`}
+                />
 
-        <button className="flex flex-col items-center gap-1 text-gray-500">
-          <FiSearch className="text-xl" />
-          <span className="text-[10px]">Explore</span>
-        </button>
-
-        <button className="flex flex-col items-center gap-1 text-gray-500">
-          <FiHeart className="text-xl" />
-          <span className="text-[10px]">Saved</span>
-        </button>
-
-        <button className="flex flex-col items-center gap-1 text-gray-500">
-          <FiCalendar className="text-xl" />
-          <span className="text-[10px]">Bookings</span>
-        </button>
-
-        <button className="flex flex-col items-center gap-1 text-gray-500">
-          <FiUser className="text-xl" />
-          <span className="text-[10px]">Profile</span>
-        </button>
-
+                <span
+                  className={`max-w-full truncate text-[10px] ${
+                    isActive ? "font-semibold" : "font-medium"
+                  }`}
+                >
+                  {label}
+                </span>
+              </>
+            )}
+          </NavLink>
+        ))}
       </div>
     </nav>
   );

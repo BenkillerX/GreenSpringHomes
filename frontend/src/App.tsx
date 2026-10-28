@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout"
 import LandingPage from "./pages/public/LandingPage"
 import ExplorePage from "./pages/public/ExplorePage"
@@ -33,10 +33,20 @@ import PropertyDetails from "./pages/tenant/PropertyDetails"
 import { Toaster } from "react-hot-toast";
 import UpdateInfo from "./pages/landlord/UpdateInfo"
 const App = () => {
+  const { pathname } = useLocation();
+
+  const isPublicPage = [
+    "/",
+    "/explore",
+    "/How-it-works",
+    "/help",
+  ].includes(pathname);
+
   return (
     <>
-    <ScrollToTop/>
-     <Toaster
+      <ScrollToTop />
+
+      <Toaster
         position="top-right"
         toastOptions={{
           duration: 3000,
@@ -46,7 +56,8 @@ const App = () => {
           },
         }}
       />
-      <Routes>
+
+       <Routes>
         {/* Public Pages Routes */}
         <Route element={<PublicLayout/>}>
           <Route path="/" element={<LandingPage/>}/>
@@ -86,9 +97,10 @@ const App = () => {
          <Route path="/owner/onboarding" element={<PropertyOwnerOnboarding/>}/>
         <Route path="/verify-email" element={<VerifyEmail/>}/>
       </Routes>
-      <BackToTop/>
+
+      {isPublicPage && <BackToTop />}
     </>
-  )
-}
+  );
+};
 
 export default App
