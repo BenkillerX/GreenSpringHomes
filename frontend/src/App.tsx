@@ -7,7 +7,7 @@ import HowItWorks from "./pages/public/HowItWorks"
 import Login from "./pages/auth/Login"
 import Register from "./pages/auth/Register"
 import Tenant from "./pages/auth/Tenant"
-import ServiceProvider from "./pages/auth/ServiceProvider"
+// import ServiceProvider from "./pages/auth/ServiceProvider"
 import PropertyOwner from "./pages/auth/PropertyOwner"
 import TenantLayout from "./layouts/TenantLayout"
 import TenantHome from "./pages/tenant/TenantHome"
@@ -32,6 +32,7 @@ import VerifyEmail from "./pages/auth/VerifyEmail"
 import PropertyDetails from "./pages/tenant/PropertyDetails"
 import { Toaster } from "react-hot-toast";
 import UpdateInfo from "./pages/landlord/UpdateInfo"
+import ComingSoon from "./components/common/ComingSoon";
 const App = () => {
   const { pathname } = useLocation();
 
@@ -90,7 +91,10 @@ const App = () => {
         <Route path="/login" element={<Login/>}/>
          <Route path="/register" element={<Register/>}/>
          <Route path="/register/tenant" element={<Tenant/>}/>
-         <Route path="/register/service-provider" element={<ServiceProvider/>}/>
+         <Route path="/register/service-provider" element={ <ComingSoon
+      title="Service Provider Registration"
+      description="We're preparing service provider registration on GreenSpringHomes. You'll soon be able to connect with property owners and tenants who need your services."
+    />}/>
          <Route path="/register/property-owner" element={<PropertyOwner/>}/>
          <Route path="/tenant/onboarding" element={<TenantOnboarding/>}/>
          <Route path="/provider/onboarding" element={<ServiceProviderOnboarding/>}/>

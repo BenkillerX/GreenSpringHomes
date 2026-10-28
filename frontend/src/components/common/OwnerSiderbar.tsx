@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 
-import { FiHome, FiBriefcase, FiMessageCircle, FiBell, FiSettings, FiLogOut, FiChevronLeft, FiChevronRight, } from "react-icons/fi";
+import { FiHome, FiBriefcase, FiSettings, FiLogOut, FiChevronLeft, FiChevronRight, } from "react-icons/fi";
 
 type SidebarLinkProps = {
   icon: React.ReactNode;
@@ -59,7 +59,7 @@ const OwnerSiderbar = () => {
   const { currentUser, logout } = useAuth();
 
 const handleLogout = async () => {
-  await logout();
+  logout();
   setShowLogoutModal(false);
   navigate("/login", { replace: true });
 };
@@ -77,12 +77,12 @@ const handleLogout = async () => {
         className={` h-20 flex items-center border-b border-gray-100 ${isCollapsed ? "justify-center" : "px-6"} `}
       >
         {!isCollapsed ? (
-          <h1 className="text-xl font-bold text-green-600">
-            QuickStay
+          <h1 className="text-xl font-bold ">
+            Green<span className="text-green-600">Spring</span>Homes
           </h1>
         ) : (
           <span className="text-xl font-bold text-green-600">
-            Q
+            G
           </span>
         )}
       </div>
@@ -139,21 +139,6 @@ const handleLogout = async () => {
           to="/owner/properties"
           collapsed={isCollapsed}
         />
-
-        <SidebarLink
-          icon={<FiMessageCircle />}
-          label="Messages"
-          to="/owner/messages"
-          collapsed={isCollapsed}
-        />
-
-        <SidebarLink
-          icon={<FiBell />}
-          label="Notifications"
-          to="/owner/notifications"
-          collapsed={isCollapsed}
-        />
-
         <SidebarLink
           icon={<FiSettings />}
           label="Settings"
