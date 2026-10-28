@@ -15,6 +15,7 @@ import { MdBed } from "react-icons/md";
 import { Link } from "react-router-dom";
 import api from "../../services/api";
 import type { Property } from "./OwnerHome";
+import toast from "react-hot-toast";
 
 const OwnerProperties = () => {
 
@@ -36,6 +37,29 @@ const OwnerProperties = () => {
   
     getUserProperties();
   }, []);
+  async function handleDelete(id: string) {
+  const toastId = toast.loading("Deleting property...");
+
+  try {
+    await api.delete(`/api/properties/${id}`);
+
+    setUserPorperties((prev) =>
+      prev.filter((property) => property._id !== id)
+    );
+
+    setPropertiesCount((prev) => prev - 1);
+
+    toast.success("Property deleted successfully!", {
+      id: toastId,
+    });
+  } catch (error) {
+    console.error(error);
+
+    toast.error("Failed to delete property", {
+      id: toastId,
+    });
+  }
+}
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -195,17 +219,7 @@ const OwnerProperties = () => {
     <div className="flex flex-col items-center justify-center px-6 py-20 text-center">
 
       <div
-        className="
-          flex
-          h-20
-          w-20
-          items-center
-          justify-center
-          rounded-3xl
-          bg-green-50
-          text-green-600
-          mb-6
-        "
+        className=" flex h-20 w-20 items-center justify-center rounded-3xl bg-green-50 text-green-600 mb-6 "
       >
         <FiHome size={34} />
       </div>
@@ -239,17 +253,7 @@ const OwnerProperties = () => {
 
         <div
           key={property._id}
-          className="
-            flex
-            flex-col
-            md:flex-row
-            overflow-hidden
-            rounded-2xl
-            border
-            border-gray-100
-            hover:shadow-sm
-            transition
-          "
+          className=" flex flex-col md:flex-row overflow-hidden rounded-2xl border border-gray-100 hover:shadow-sm transition "
         >
 
           {/* Image */}
@@ -292,19 +296,7 @@ const OwnerProperties = () => {
               </div>
 
               <span
-                className={`
-                  shrink-0
-                  rounded-full
-                  px-3
-                  py-1
-                  text-xs
-                  font-medium
-                  ${
-                    property.status === "active"
-                      ? "bg-green-50 text-green-700"
-                      : "bg-gray-100 text-gray-600"
-                  }
-                `}
+                className={` shrink-0 rounded-full px-3 py-1 text-xs font-medium ${ property.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-600" } `}
               >
                 {property.status}
               </span>
@@ -387,21 +379,32 @@ const OwnerProperties = () => {
 
 
               {/* Actions */}
-              <div className="flex items-center gap-2">
+             <div className="flex items-center gap-2">
+  {/* View Property */}
+ <Link
+  to={`/owner/properties/${property._id}`}
+  className="px-3 py-1.5 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50"
+>
+  View
+</Link>
 
-                <button className="px-3 py-1.5 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50">
-                  View
-                </button>
+  {/* Edit Property */}
+  <Link
+    to={`/owner/properties/edit/${property._id}`}
+    className="px-3 py-1.5 text-sm font-medium text-green-600 border border-green-200 rounded-lg hover:bg-green-50 transition"
+  >
+    Edit
+  </Link>
 
-                <button className="px-3 py-1.5 text-sm font-medium text-green-600 border border-green-200 rounded-lg hover:bg-green-50">
-                  Edit
-                </button>
-
-                <button className="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50">
-                  Delete
-                </button>
-
-              </div>
+  {/* Delete Property */}
+  <button
+    type="button"
+    onClick={() => handleDelete(property._id)}
+    className="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition"
+  >
+    Delete
+  </button>
+</div>
 
             </div>
 
