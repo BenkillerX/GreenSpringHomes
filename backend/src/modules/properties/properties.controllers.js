@@ -112,9 +112,6 @@ export async function getAllProperties(req, res) {
     });
   }
 }
-
-
-
 export const getPropertyById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -178,8 +175,6 @@ export const getPropertyById = async (req, res) => {
     });
   }
 };
-
-
 export async function deleteProperty(req, res) {
   try {
     const { id } = req.params;
@@ -253,8 +248,6 @@ export async function deleteProperty(req, res) {
     });
   }
 }
-
-
 export const searchProperties = async (req, res) => {
   try {
     const { location, propertyType, maxPrice } = req.query;
@@ -309,6 +302,110 @@ export const searchProperties = async (req, res) => {
 
     return res.status(500).json({
       message: "Unable to search properties",
+    });
+  }
+};
+
+export const updateProperty = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid property ID",
+      });
+    }
+
+    const property = await Property.findById(id);
+
+    if (!property) {
+      return res.status(404).json({
+        message: "Property not found",
+      });
+    }
+
+    // Verify ownership
+    if (property.owner.toString() !== userId.toString()) {
+      return res.status(403).json({
+        message: "You are not authorized to update this property",
+      });
+    }
+
+    const allowedFields = [
+      "title",
+      "description",
+      "propertyType",
+      "listingType",
+      "price",
+      "location",
+    ];
+
+    for (const field of allowedFields) {
+      if (req.body[field] === undefined) {
+        continue;
+      }
+
+      if (field === "location") {
+        try {
+          const location =
+            typeof req.body.location === "string"
+              ? JSON.parse(req.body.location)
+              : req.body.location;
+
+          if (
+            !location ||
+            typeof location !== "object" ||
+            Array.isArray(location)
+          ) {
+            return res.status(400).json({
+              message: "Location must be a valid object",
+            });
+          }
+
+          property.location = {
+            ...property.location.toObject(),
+            ...location,
+          };
+        } catch {
+          return res.status(400).json({
+            message: "Invalid location JSON",
+          });
+        }
+
+        continue;
+      }
+
+      property[field] = req.body[field];
+    }
+
+    // Upload new images to Cloudinary
+    if (req.files?.length) {
+      const uploadedImages = await Promise.all(
+        req.files.map(async (file) => {
+          const result = await uploadToCloudinary(file.path);
+
+          return {
+            url: result.secure_url,
+            publicId: result.public_id,
+          };
+        })
+      );
+
+      property.images.push(...uploadedImages);
+    }
+
+    await property.save();
+
+    return res.status(200).json({
+      message: "Property updated successfully",
+      property,
+    });
+  } catch (error) {
+    console.error("Update property error:", error);
+
+    return res.status(500).json({
+      message: "Failed to update property",
     });
   }
 };

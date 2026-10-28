@@ -1,12 +1,4 @@
-import {
-  FiEye,
-  FiMessageCircle,
-  FiPlus,
-  FiArrowRight,
-  FiCalendar,
-  FiClock,
-   FiHome, FiDroplet,
-} from "react-icons/fi";
+import { FiEye, FiPlus, FiArrowRight, FiHome, FiDroplet, } from "react-icons/fi";
 import { MdBed } from "react-icons/md";
 import { useAuth } from "../../context/useAuth";
 import { Link } from "react-router-dom";
@@ -14,6 +6,8 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import CompleteContactBanner from "./CompleteContactBanner";
+import RecentActivity from "./RecentActivity";
+import QuickActions from "./QuickActions";
 
 export interface Property {
   _id: string;
@@ -320,30 +314,33 @@ async function handleDelete(id: string) {
               </span>
 
             </div>
+          {/* Actions */}
+<div className="flex items-center gap-2">
+  {/* View Property */}
+ <Link
+  to={`/owner/properties/${property._id}`}
+  className="px-3 py-1.5 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50"
+>
+  View
+</Link>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2">
+  {/* Edit Property */}
+  <Link
+    to={`/owner/properties/edit/${property._id}`}
+    className="px-3 py-1.5 text-sm font-medium text-green-600 border border-green-200 rounded-lg hover:bg-green-50 transition"
+  >
+    Edit
+  </Link>
 
-              <button
-                className="px-3 py-1.5 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50"
-              >
-                View
-              </button>
-
-              <button
-                className="px-3 py-1.5 text-sm font-medium text-green-600 border border-green-200 rounded-lg hover:bg-green-50"
-              >
-                Edit
-              </button>
-
-              <button
-              onClick={()=>handleDelete(property._id)}
-                className="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50"
-              >
-                Delete
-              </button>
-
-            </div>
+  {/* Delete Property */}
+  <button
+    type="button"
+    onClick={() => handleDelete(property._id)}
+    className="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition"
+  >
+    Delete
+  </button>
+</div>
 
           </div>
 
@@ -357,159 +354,12 @@ async function handleDelete(id: string) {
 
 
         {/* Quick Actions */}
-        <div className="rounded-2xl bg-white border border-gray-100 shadow-sm">
-
-          <div className="p-5 border-b border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Quick Actions
-            </h2>
-
-            <p className="text-sm text-gray-500 mt-1">
-              Manage your QuickStay activity
-            </p>
-          </div>
-
-
-          <div className="p-4 space-y-2">
-
-            <Link to="/owner/properties/add" className="group flex w-full items-center gap-4 rounded-xl p-4 text-left transition hover:bg-gray-50">
-
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-green-600">
-                <FiPlus size={19} />
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-gray-800">
-                  Add Property
-                </p>
-
-                <p className="text-xs text-gray-500 mt-1">
-                  List a new property
-                </p>
-              </div>
-
-              <FiArrowRight
-                size={17}
-                className="text-gray-400 transition group-hover:translate-x-1"
-              />
-            </Link>
-
-
-            <Link to="/owner/properties" className="group flex w-full items-center gap-4 rounded-xl p-4 text-left transition hover:bg-gray-50">
-
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-green-600">
-                <FiHome size={19} />
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-gray-800">
-                  Manage Properties
-                </p>
-
-                <p className="text-xs text-gray-500 mt-1">
-                  View and edit your listings
-                </p>
-              </div>
-
-              <FiArrowRight
-                size={17}
-                className="text-gray-400 transition group-hover:translate-x-1"
-              />
-            </Link>
-
-
-            <Link to="/owner/notifications" className="group flex w-full items-center gap-4 rounded-xl p-4 text-left transition hover:bg-gray-50">
-
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-green-600">
-                <FiCalendar size={19} />
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-gray-800">
-                  Notifications
-                </p>
-
-                <p className="text-xs text-gray-500 mt-1">
-                  See tenant requests
-                </p>
-              </div>
-
-              <FiArrowRight
-                size={17}
-                className="text-gray-400 transition group-hover:translate-x-1"
-              />
-            </Link>
-
-
-            <Link to="/owner/messages" className="group flex w-full items-center gap-4 rounded-xl p-4 text-left transition hover:bg-gray-50">
-
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-green-600">
-                <FiMessageCircle size={19} />
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-gray-800">
-                  Messages
-                </p>
-
-                <p className="text-xs text-gray-500 mt-1">
-                  Chat with potential tenants
-                </p>
-              </div>
-
-              <FiArrowRight
-                size={17}
-                className="text-gray-400 transition group-hover:translate-x-1"
-              />
-            </Link>
-
-          </div>
-        </div>
-
+        <QuickActions/>
       </div>
 
 
       {/* Recent Activity */}
-      <div className="mt-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
-
-        <div className="flex items-center justify-between p-5 border-b border-gray-100">
-
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">
-              Recent Activity
-            </h2>
-
-            <p className="text-sm text-gray-500 mt-1">
-              Stay updated on your properties
-            </p>
-          </div>
-
-          <button className="flex items-center gap-1 text-sm font-medium text-green-600 hover:text-green-700">
-            View all
-            <FiArrowRight size={16} />
-          </button>
-
-        </div>
-
-
-        {/* Empty Activity */}
-        <div className="flex flex-col items-center justify-center py-14 px-6 text-center">
-
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-400 mb-4">
-            <FiClock size={23} />
-          </div>
-
-          <h3 className="text-sm font-semibold text-gray-800">
-            No recent activity
-          </h3>
-
-          <p className="text-sm text-gray-500 mt-1">
-            Your property activity will appear here.
-          </p>
-
-        </div>
-
-      </div>
+        <RecentActivity/>    
 
     </div>
   );

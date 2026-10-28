@@ -33,6 +33,9 @@ import PropertyDetails from "./pages/tenant/PropertyDetails"
 import { Toaster } from "react-hot-toast";
 import UpdateInfo from "./pages/landlord/UpdateInfo"
 import ComingSoon from "./components/common/ComingSoon";
+import EditProperty from "./pages/landlord/EditProperty ";
+import OwnerPropertyDetails from "./pages/landlord/OwnerPropertyDetails";
+import { Analytics } from "@vercel/analytics/react";
 const App = () => {
   const { pathname } = useLocation();
 
@@ -46,7 +49,7 @@ const App = () => {
   return (
     <>
       <ScrollToTop />
-
+      <Analytics/>
       <Toaster
         position="top-right"
         toastOptions={{
@@ -83,6 +86,15 @@ const App = () => {
             <Route path="/owner/notifications" element={<OwnerNotifications/>}/>
             <Route path="/owner/settings" element={<OwnerSettings/>}/>
             <Route path="/owner/update" element={<UpdateInfo/>}/>
+            <Route
+        path="/owner/properties/edit/:id"
+        element={<EditProperty />}
+      />
+      <Route
+      path="/owner/properties/:id"
+      element={<OwnerPropertyDetails />}
+    />
+
         </Route>
       <Route element={<ServiceProviderLayout/>}>
        <Route path="/service-provider/" element={<ServiceHome/>}/> 
