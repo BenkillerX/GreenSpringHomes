@@ -172,7 +172,28 @@ const verifyEmail = async (
     setCurrentUser(null);
     localStorage.removeItem("token");
   };
+  // Google Login
+const googleLogin = async (credential: string): Promise<User> => {
+  const response = await api.post("/api/auth/google", {
+    credential,
+  });
 
+  const token = response.data.token;
+
+  if (!token) {
+    throw new Error("Authentication token was not returned.");
+  }
+
+  localStorage.setItem("token", token);
+
+  const userResponse = await api.get("/api/auth/me");
+
+  const user: User = userResponse.data.user;
+
+  setCurrentUser(user);
+
+  return user;
+};
   return (
     <AuthContext.Provider
       value={{
@@ -185,6 +206,7 @@ const verifyEmail = async (
         registerServiceProvider,
         verifyEmail,
         logout,
+        googleLogin
       }}
     >
       {children}

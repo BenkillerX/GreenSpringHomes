@@ -13,6 +13,13 @@ import savedPropertiesRoutes from "./src/modules/savedProperties/savedPropertyRo
 
 const app = express()
 const PORT = process.env.PORT
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+console.log(
+  "Google OAuth configured:",
+  Boolean(googleClientId && googleClientSecret)
+);
+
 app.use(express.json())
 app.use(cors())
 app.use('/api/auth', authRoutes)

@@ -1,3 +1,4 @@
+
 import { createContext } from "react";
 
 export interface User {
@@ -29,33 +30,38 @@ export interface AuthContextType {
     password: string
   ) => Promise<User>;
 
-register: (
-  firstname: string,
-  lastname: string,
-  email: string,
-  password: string
-) => Promise<{ email: string }>;
+  googleLogin: (
+    credential: string
+  ) => Promise<User>;
 
-registerOwner: (
-  firstname: string,
-  lastname: string,
-  email: string,
-  password: string
-) => Promise<{ email: string }>;
+  register: (
+    firstname: string,
+    lastname: string,
+    email: string,
+    password: string
+  ) => Promise<{ email: string }>;
 
-registerServiceProvider: (
-  firstname: string,
-  lastname: string,
-  email: string,
-  password: string
-) => Promise<{ email: string }>
+  registerOwner: (
+    firstname: string,
+    lastname: string,
+    email: string,
+    password: string
+  ) => Promise<{ email: string }>;
 
-verifyEmail: (
-  email: string,
-  code: string
-) => Promise<VerifyEmailResponse>;
+  registerServiceProvider: (
+    firstname: string,
+    lastname: string,
+    email: string,
+    password: string
+  ) => Promise<{ email: string }>;
+
+  verifyEmail: (
+    email: string,
+    code: string
+  ) => Promise<VerifyEmailResponse>;
 
   logout: () => void;
+
   loading: boolean;
 }
 

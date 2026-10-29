@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/useAuth";
-import {
-  FiArrowLeft,
-} from "react-icons/fi";
+import { FiArrowLeft, } from "react-icons/fi";
 import LoginImageSide from "./LoginImageSide";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { GoogleLogin } from "@react-oauth/google";
+import type { CredentialResponse } from "@react-oauth/google";
 const Login = () => {
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState<string>("");
@@ -59,6 +59,59 @@ const Login = () => {
         error.response?.data?.message ||
           "Unable to log in. Please check your credentials."
       );
+    } else {
+      setError("Something went wrong. Please try again.");
+    }
+  } finally {
+    setLoading(false);
+  }
+}
+async function handleGoogleLogin(
+  credentialResponse: CredentialResponse
+) {
+  setError(null);
+
+  if (!credentialResponse.credential) {
+    setError("Google sign-in failed. Please try again.");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const user = await googleLogin(credentialResponse.credential);
+
+    if (user.role === "tenant") {
+      navigate(
+        user.onboardingCompleted
+          ? "/tenant/"
+          : "/tenant/onboarding"
+      );
+    } else if (user.role === "propertyOwner") {
+      navigate(
+        user.onboardingCompleted
+          ? "/owner/"
+          : "/owner/onboarding"
+      );
+    } else if (user.role === "serviceProvider") {
+      navigate(
+        user.onboardingCompleted
+          ? "/service-provider/"
+          : "/service-provider/onboarding"
+      );
+    } else if (user.role === "admin") {
+      navigate("/admin/");
+    } else {
+      setError("Your account role could not be identified.");
+    }
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      setError(
+        error.response?.data?.message ??
+          "Unable to sign in with Google. Please try again."
+      );
+    } else if (error instanceof Error) {
+      setError(error.message);
     } else {
       setError("Something went wrong. Please try again.");
     }
@@ -129,36 +182,17 @@ function toggleEye() {
           )}
 
           {/* Google */}
-          <button
-            type="button"
-            className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 px-4 py-3.5 font-medium text-gray-700 transition-colors hover:bg-gray-50"
-          >
-            {/* Your existing Google SVG */}
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill="#4285F4"
-                d="M21.35 12.27c0-.79-.07-1.54-.2-2.27H12v4.3h5.22a4.46 4.46 0 0 1-1.94 2.92v2.43h3.14c1.84-1.69 2.93-4.18 2.93-7.38Z"
-              />
-              <path
-                fill="#34A853"
-                d="M12 21.75c2.63 0 4.84-.87 6.45-2.35l-3.14-2.43c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.5A9.75 9.75 0 0 0 12 21.75Z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M6.54 13.86A5.86 5.86 0 0 1 6.23 12c0-.64.11-1.26.31-1.86v-2.5H3.3A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.05 1.05 4.36l3.24-2.5Z"
-              />
-              <path
-                fill="#EA4335"
-                d="M12 6.11c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.2 14.63 2.25 12 2.25A9.75 9.75 0 0 0 3.3 7.64l3.24 2.5C7.31 7.83 9.46 6.11 12 6.11Z"
-              />
-            </svg>
-
-            Continue with Google
-          </button>
+         <GoogleLogin
+        onSuccess={handleGoogleLogin}
+        onError={() => {
+          setError("Google sign-in was cancelled or failed. Please try again.");
+        }}
+        text="continue_with"
+        theme="outline"
+        size="large"
+        shape="rectangular"
+        width={320}
+      />
 
           {/* Divider */}
           <div className="my-6 flex items-center gap-4">

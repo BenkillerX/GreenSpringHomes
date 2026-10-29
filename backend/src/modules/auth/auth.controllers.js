@@ -4,9 +4,60 @@ import User from "../models/Users.js";
 import bcrypt from "bcrypt"
 import { sendVerificationEmail } from "../../services/emailService.js";
 import { generateVerificationCode, hashVerificationCode } from "../../utils/emailVerification.js";
+import { OAuth2Client } from "google-auth-library";
 
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID
+);
+export async function googleLogin(req, res) {
+  try {
+    const { credential } = req.body;
 
+    if (!credential) {
+      return res.status(400).json({
+        message: "Google credential is required",
+      });
+    }
 
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (!payload?.sub || !payload.email || !payload.email_verified) {
+      return res.status(401).json({
+        message: "Google account could not be verified",
+      });
+    }
+
+    const existingUser = await User.findOne({
+      email: payload.email.toLowerCase(),
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({
+        message: "No account found. Please sign up first.",
+        code: "ACCOUNT_NOT_FOUND",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Google login successful",
+      token: generateToken(existingUser),
+    });
+  } catch (error) {
+    console.error(
+      "Google login failed:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+
+    return res.status(401).json({
+      message: "Google authentication failed",
+    });
+  }
+}
 export async function registerTenant(req, res) {
     try {
         const {
