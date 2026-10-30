@@ -1,5 +1,4 @@
 import { generateToken } from "../../utils/generateToken.js";
-import Session from "../models/Session.js";
 import User from "../models/Users.js";
 import bcrypt from "bcrypt"
 import { sendVerificationEmail } from "../../services/emailService.js";
@@ -58,6 +57,101 @@ export async function googleLogin(req, res) {
     });
   }
 }
+
+export async function googleRegisterTenant(req, res) {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({
+        message: "Google credential is required.",
+      });
+    }
+
+    // 1. Verify Google's ID token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (
+      !payload?.sub ||
+      !payload.email ||
+      !payload.email_verified ||
+      !payload.given_name ||
+      !payload.family_name
+    ) {
+      return res.status(401).json({
+        message: "Google account could not be verified.",
+      });
+    }
+
+    const email = payload.email.toLowerCase();
+
+    // 2. Check whether the email already exists
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(409).json({
+        message: "An account with this email already exists. Please log in instead.",
+        code: "ACCOUNT_ALREADY_EXISTS",
+      });
+    }
+
+    // 3. Check whether this Google ID is already linked
+    const existingGoogleUser = await User.findOne({
+      googleId: payload.sub,
+    });
+
+    if (existingGoogleUser) {
+      return res.status(409).json({
+        message: "This Google account is already registered. Please log in.",
+        code: "GOOGLE_ACCOUNT_EXISTS",
+      });
+    }
+
+    // 4. Create the tenant account
+    const newTenant = new User({
+      firstname: payload.given_name,
+      lastname: payload.family_name,
+      email,
+      googleId: payload.sub,
+      role: "tenant",
+      isEmailVerified: true,
+      onboardingCompleted: false,
+    });
+
+    await newTenant.save();
+
+    // 5. Generate your application's JWT
+    const token = generateToken(newTenant);
+
+    return res.status(201).json({
+      message: "Tenant account created successfully.",
+      token,
+      user: {
+        firstname: newTenant.firstname,
+        lastname: newTenant.lastname,
+        email: newTenant.email,
+        role: newTenant.role,
+        onboardingCompleted: newTenant.onboardingCompleted,
+      },
+    });
+
+  } catch (error) {
+    console.error(
+      "Google tenant registration error:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+
+    return res.status(500).json({
+      message: "An error occurred while creating your account.",
+    });
+  }
+}
+
 export async function registerTenant(req, res) {
     try {
         const {
@@ -309,7 +403,11 @@ export async function Login(req, res) {
             message:"User not found. Create acccount first."
         })
     }
-
+    if (!existingUser.password && existingUser.googleId) {
+  return res.status(400).json({
+    message: "This account uses Google sign-in. Please continue with Google.",
+  });
+}
     const isMatch = await bcrypt.compare(password, existingUser.password)
 
     if (!isMatch) {
@@ -330,7 +428,105 @@ export async function Login(req, res) {
     }
 }
 
+export async function googleRegisterPropertyOwner(req, res) {
+  try {
+    const { credential } = req.body;
 
+    if (!credential) {
+      return res.status(400).json({
+        message: "Google credential is required.",
+      });
+    }
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (
+      !payload?.sub ||
+      !payload.email ||
+      !payload.email_verified
+    ) {
+      return res.status(401).json({
+        message: "Google account could not be verified.",
+      });
+    }
+
+    const email = payload.email.toLowerCase();
+
+    const fullName = payload.name?.trim().split(/\s+/) ?? [];
+
+    const firstname = payload.given_name || fullName[0];
+    const lastname =
+      payload.family_name || fullName.slice(1).join(" ") || "Owner";
+
+    if (!firstname) {
+      return res.status(400).json({
+        message: "Your Google profile does not contain a valid name.",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(409).json({
+        message:
+          "An account with this email already exists. Please log in instead.",
+        code: "ACCOUNT_ALREADY_EXISTS",
+      });
+    }
+
+    const existingGoogleUser = await User.findOne({
+      googleId: payload.sub,
+    });
+
+    if (existingGoogleUser) {
+      return res.status(409).json({
+        message:
+          "This Google account is already registered. Please log in.",
+        code: "GOOGLE_ACCOUNT_EXISTS",
+      });
+    }
+
+    const newPropertyOwner = new User({
+      firstname,
+      lastname,
+      email,
+      googleId: payload.sub,
+      role: "propertyOwner",
+      isEmailVerified: true,
+      onboardingCompleted: false,
+    });
+
+    await newPropertyOwner.save();
+
+    const token = generateToken(newPropertyOwner);
+
+    return res.status(201).json({
+      message: "Property owner account created successfully.",
+      token,
+      user: {
+        firstname: newPropertyOwner.firstname,
+        lastname: newPropertyOwner.lastname,
+        email: newPropertyOwner.email,
+        role: newPropertyOwner.role,
+        onboardingCompleted: newPropertyOwner.onboardingCompleted,
+      },
+    });
+  } catch (error) {
+    console.error(
+      "Google property owner registration error:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+
+    return res.status(500).json({
+      message: "An error occurred while creating your account.",
+    });
+  }
+}
 
 export async function getCurrentUser(req, res) {
   try {

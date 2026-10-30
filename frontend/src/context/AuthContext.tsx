@@ -61,7 +61,8 @@ export interface AuthContextType {
   ) => Promise<VerifyEmailResponse>;
 
   logout: () => void;
-
+  googleRegisterTenant: (credential: string) => Promise<User>;
+  googleRegisterPropertyOwner: (credential: string) => Promise<User>;
   loading: boolean;
 }
 
