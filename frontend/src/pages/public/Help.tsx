@@ -1,14 +1,4 @@
-import {
-  FiHelpCircle,
-  FiSearch,
-  FiBookOpen,
-  FiMessageCircle,
-  FiShield,
-  FiHome,
-  FiUser,
-  FiCreditCard,
-  FiChevronRight,
-} from "react-icons/fi";
+import { FiHelpCircle, FiSearch, FiMessageCircle, FiShield, FiHome, FiUser, FiCreditCard, FiChevronRight, FiArrowRight, } from "react-icons/fi";
 
 const Help = () => {
   const topics = [
@@ -34,60 +24,74 @@ const Help = () => {
     },
   ];
 
+  const faqs = [
+    "How do I find a property on GreenSpringHomes?",
+    "How can I list my property?",
+    "How do I contact a property owner?",
+    "How do I verify a property before making payment?",
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <section className="bg-green-600 px-5 py-14 text-white">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-white/10">
-            <FiHelpCircle size={30} />
+      <main className="mx-auto max-w-6xl px-5 py-10 sm:py-12">
+
+        {/* Page heading */}
+        <div className="border-b border-gray-200 pb-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-600">
+              <FiHelpCircle size={23} />
+            </div>
+
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Help Centre
+              </h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Find answers and get support with GreenSpringHomes.
+              </p>
+            </div>
           </div>
-
-          <h1 className="text-3xl font-bold sm:text-4xl">
-            How can we help?
-          </h1>
-
-          <p className="mx-auto mt-3 max-w-xl text-sm text-green-100 sm:text-base">
-            Find answers, learn how QuickStay works, or get in touch with our
-            support team.
-          </p>
 
           {/* Search */}
-          <div className="mx-auto mt-8 flex max-w-2xl items-center rounded-xl bg-white px-4 py-3 shadow-lg">
-            <FiSearch className="text-gray-400" size={20} />
+          <div className="mt-7 max-w-2xl">
+            <label className="mb-2 block text-sm font-medium text-gray-700">
+              How can we help you?
+            </label>
 
-            <input
-              type="text"
-              placeholder="Search for help..."
-              className="ml-3 w-full bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400"
-            />
+            <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3.5 shadow-sm transition focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
+              <FiSearch size={20} className="shrink-0 text-gray-400" />
+
+              <input
+                type="text"
+                placeholder="Search for answers, topics or questions..."
+                className="w-full bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400"
+              />
+            </div>
           </div>
         </div>
-      </section>
 
-      {/* Main */}
-      <main className="mx-auto max-w-6xl px-5 py-10">
-        {/* Topics */}
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900">
-            Browse help topics
-          </h2>
+        {/* Help topics */}
+        <section className="mt-9">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Browse help topics
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Explore guides and information about using our platform.
+            </p>
+          </div>
 
-          <p className="mt-1 text-sm text-gray-500">
-            Find useful information about using GreenSpringHomes.
-          </p>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {topics.map((topic) => {
               const Icon = topic.icon;
 
               return (
                 <button
                   key={topic.title}
-                  className="group rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  className="group rounded-xl border border-gray-200 bg-white p-5 text-left transition hover:border-green-200 hover:shadow-sm"
                 >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-600">
-                    <Icon size={21} />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-50 text-green-600">
+                    <Icon size={20} />
                   </div>
 
                   <h3 className="mt-4 font-semibold text-gray-900">
@@ -99,7 +103,7 @@ const Help = () => {
                   </p>
 
                   <div className="mt-4 flex items-center gap-1 text-sm font-medium text-green-600">
-                    Learn more
+                    Explore topic
                     <FiChevronRight
                       size={16}
                       className="transition group-hover:translate-x-1"
@@ -109,77 +113,68 @@ const Help = () => {
               );
             })}
           </div>
-        </div>
+        </section>
 
-        {/* Quick help */}
-        <div className="mt-12">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Quick help
-          </h2>
+        {/* Frequently asked questions */}
+        <section className="mt-12">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Frequently asked questions
+              </h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Quick answers to common questions.
+              </p>
+            </div>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <button className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:shadow-md">
-              <div className="flex items-center gap-4">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-600">
-                  <FiBookOpen size={21} />
-                </div>
-
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Getting started
-                  </h3>
-
-                  <p className="mt-1 text-sm text-gray-500">
-                    Learn the basics of using GreenSpringHomes.
-                  </p>
-                </div>
-              </div>
-
-              <FiChevronRight className="text-gray-400" />
-            </button>
-
-            <button className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:shadow-md">
-              <div className="flex items-center gap-4">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-600">
-                  <FiMessageCircle size={21} />
-                </div>
-
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Contact support
-                  </h3>
-
-                  <p className="mt-1 text-sm text-gray-500">
-                    Can't find what you're looking for?
-                  </p>
-                </div>
-              </div>
-
-              <FiChevronRight className="text-gray-400" />
+            <button className="hidden items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 sm:flex">
+              View all
+              <FiArrowRight size={16} />
             </button>
           </div>
-        </div>
 
-        {/* Contact Support */}
-        <section className="mt-12 rounded-2xl bg-white p-6 text-center shadow-sm sm:p-10">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-600">
-            <FiMessageCircle size={22} />
+          <div className="mt-5 divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
+            {faqs.map((faq) => (
+              <button
+                key={faq}
+                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-gray-50"
+              >
+                <span className="text-sm font-medium text-gray-700">
+                  {faq}
+                </span>
+                <FiChevronRight
+                  size={18}
+                  className="shrink-0 text-gray-400"
+                />
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Contact support */}
+        <section className="mt-12 flex flex-col gap-5 rounded-xl border border-gray-200 bg-white p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="flex items-start gap-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-50 text-green-600">
+              <FiMessageCircle size={21} />
+            </div>
+
+            <div>
+              <h2 className="font-semibold text-gray-900">
+                Still need help?
+              </h2>
+              <p className="mt-1 max-w-lg text-sm leading-6 text-gray-500">
+                Can't find the answer you're looking for? Get in touch
+                with our support team and we'll be happy to assist you.
+              </p>
+            </div>
           </div>
 
-          <h2 className="mt-4 text-xl font-semibold text-gray-900">
-            Still need help?
-          </h2>
-
-          <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-gray-500">
-            Our support team is here to help you with any questions or
-            problems you may have while using QuickStay.
-          </p>
-
-          <button className="mt-6 inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700">
-            <FiMessageCircle size={18} />
+          <button className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700">
+            <FiMessageCircle size={17} />
             Contact Support
           </button>
         </section>
+
       </main>
     </div>
   );

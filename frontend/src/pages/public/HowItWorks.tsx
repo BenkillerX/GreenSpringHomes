@@ -1,17 +1,6 @@
-import {
-  FiArrowRight,
-  FiCheckCircle,
-  FiHome,
-  FiSearch,
-  FiShield,
-  FiUserPlus,
-  FiTool,
-  FiShoppingBag,
-  FiGrid,
-  FiMessageCircle,
-  FiPlusCircle,
-} from "react-icons/fi";
+import { FiArrowRight, FiCheckCircle, FiHome, FiSearch, FiShield, FiUserPlus, FiTool, FiShoppingBag, FiGrid, FiMessageCircle, FiPlusCircle, } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import HowItWorksHero from "../../components/howitworks/HowItWorksHero";
 
 const HowItWorks = () => {
   const userTypes = [
@@ -88,58 +77,8 @@ const HowItWorks = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       {/* HERO */}
-      <section className="relative overflow-hidden bg-white">
-        <div className="absolute -left-32 -top-32 h-80 w-80 rounded-full bg-green-100 blur-3xl" />
-        <div className="absolute -bottom-40 -right-20 h-96 w-96 rounded-full bg-green-50 blur-3xl" />
-
-        <div className="relative mx-auto max-w-7xl px-5 py-20 sm:px-6 md:py-28 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-green-600">
-              <FiGrid size={27} />
-            </div>
-
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-2 text-sm font-medium text-green-700">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
-              Simple. Connected. Built for everyone.
-            </div>
-
-            <h1 className="mt-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-              Everything you need,
-              <span className="block text-green-600">
-                all in one place.
-              </span>
-            </h1>
-
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-gray-500 sm:text-lg">
-              GreenSpringHomes connects people looking for homes with
-              property owners, service providers and sellers — making it
-              easier to find, offer and discover what you need.
-            </p>
-
-            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link
-                to="/register"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700"
-              >
-                Get Started
-                <FiArrowRight size={17} />
-              </Link>
-
-              <Link
-                to="/explore"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3.5 text-sm font-semibold text-gray-700 transition hover:border-green-200 hover:bg-green-50 hover:text-green-700"
-              >
-                Explore Platform
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
+      <HowItWorksHero/>
       {/* HOW THE PLATFORM WORKS */}
       <section className="bg-gray-50 px-5 py-16 sm:px-6 md:py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">

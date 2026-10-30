@@ -33,7 +33,7 @@ const ListOnGreenSpringHomes = () => {
       </p>
 
       <Link
-        to=""
+        to="/register/property-owner"
         className="inline-flex rounded-md bg-green-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-green-700 sm:px-6 sm:py-3.5"
       >
         Become a Host

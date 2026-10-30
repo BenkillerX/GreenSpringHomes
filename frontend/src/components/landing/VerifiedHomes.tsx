@@ -85,7 +85,7 @@ const VerifiedHomes = () => {
         </div>
 
         <Link
-          to="/properties"
+          to="/explore"
           className="flex shrink-0 items-center gap-2 font-medium text-gray-900 hover:text-blue-600"
         >
           View All <FaArrowRight />
@@ -139,7 +139,7 @@ const VerifiedHomes = () => {
             return (
               <Link
                 key={home._id}
-                to={`/properties/${home._id}`}
+                to={`/login`}
                 className="group overflow-hidden rounded-2xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
                 <div className="relative overflow-hidden">
