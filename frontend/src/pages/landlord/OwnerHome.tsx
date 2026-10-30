@@ -61,10 +61,8 @@ const [userPorperties, setUserPorperties] = useState<Property[]>([]);
 const [propertiesCount, setPropertiesCount] = useState<number>(0);
 
 useEffect(() => {
-  console.log("OwnerHome mounted");
 
   const getUserProperties = async () => {
-    console.log("Fetching owner properties...");
 
     try {
       const response = await api.get("/api/properties/");
