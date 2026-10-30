@@ -62,11 +62,6 @@ const Navbar = () => {
 
   {/* Navigation */}
   <div className="flex h-[calc(100vh-81px)] flex-col px-5 py-6">
-
-    <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-      Navigation
-    </p>
-
     <ul className="space-y-1">
       {navLinks.map((link) => (
         <li key={link.name}>
@@ -90,10 +85,6 @@ const Navbar = () => {
     <div className="my-6 border-t border-gray-100" />
 
     {/* Account */}
-    <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-      Account
-    </p>
-
     <div className="space-y-3">
       <Link
         to="/login"
@@ -121,12 +112,12 @@ const Navbar = () => {
           </p>
 
           <p className="mt-1 text-xs leading-5 text-gray-500">
-            List your property on QuickStay and reach potential tenants.
+            List your property on Green<span className="text-green-500">Spring</span>Homes and reach potential tenants.
           </p>
         </div>
 
         <Link
-          to="/list-property"
+          to="/register/property-owner"
           onClick={closeMenu}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-green-700"
         >
