@@ -22,8 +22,11 @@ const WhyUs = () => {
         <h1 className='text-2xl font-bold mb-4'>Why Green<span className="text-green-500">Spring</span>Homes</h1>
         <div className='grid sm:grid-cols-2  md:grid-cols-4 gap-5'>
             {
-                reasons.map((reason)=>(
-                    <div className=' flex flex-col items-start justify-end rounded-2xl border border-gray-300 px-4 py-4'>
+               reasons.map((reason) => (
+                <div
+                    key={reason.title}
+                    className="flex flex-col items-start justify-end rounded-2xl border border-gray-300 px-4 py-4"
+                >
                         <h1 className='text-xl mb-2'>{reason.title}</h1>
                         <p className='text-sm'>{reason.des}</p>
                     </div>
