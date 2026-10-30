@@ -34,50 +34,25 @@ const SavedProperties = lazy(
   () => import("./pages/tenant/SavedProperties")
 );
 const Settings = lazy(() => import("./pages/tenant/Settings"));
-const PropertyDetails = lazy(
-  () => import("./pages/tenant/PropertyDetails")
-);
+const PropertyDetails = lazy( () => import("./pages/tenant/PropertyDetails") );
 
 // Property owner pages
 const OwnerHome = lazy(() => import("./pages/landlord/OwnerHome"));
-const OwnerProperties = lazy(
-  () => import("./pages/landlord/OwnerProperties")
-);
-const Addproperties = lazy(
-  () => import("./pages/landlord/Addproperties")
-);
-const OwnerMessages = lazy(
-  () => import("./pages/landlord/OwnerMessages")
-);
-const OwnerNotifications = lazy(
-  () => import("./pages/landlord/OwnerNotifications")
-);
-const OwnerSettings = lazy(
-  () => import("./pages/landlord/OwnerSettings")
-);
-const UpdateInfo = lazy(() => import("./pages/landlord/UpdateInfo"));
-const EditProperty = lazy(
-  () => import("./pages/landlord/EditProperty ")
-);
-const OwnerPropertyDetails = lazy(
-  () => import("./pages/landlord/OwnerPropertyDetails")
-);
+const OwnerProperties = lazy( () => import("./pages/landlord/OwnerProperties") );
+const Addproperties = lazy( () => import("./pages/landlord/Addproperties") );
+const OwnerMessages = lazy( () => import("./pages/landlord/OwnerMessages") );
+const OwnerNotifications = lazy( () => import("./pages/landlord/OwnerNotifications") ); 
+const OwnerSettings = lazy( () => import("./pages/landlord/OwnerSettings") ); 
+const UpdateInfo = lazy(() => import("./pages/landlord/UpdateInfo")); 
+const EditProperty = lazy( () => import("./pages/landlord/EditProperty ") ); 
+const OwnerPropertyDetails = lazy( () => import("./pages/landlord/OwnerPropertyDetails") );
 
 // Onboarding pages
-const TenantOnboarding = lazy(
-  () => import("./pages/onboarding/TenantOnboarding")
-);
-const ServiceProviderOnboarding = lazy(
-  () => import("./pages/onboarding/ServiceProviderOnboarding")
-);
-const PropertyOwnerOnboarding = lazy(
-  () => import("./pages/onboarding/PropertyOwnerOnboarding")
-);
-
+const TenantOnboarding = lazy( () => import("./pages/onboarding/TenantOnboarding") ); 
+const ServiceProviderOnboarding = lazy( () => import("./pages/onboarding/ServiceProviderOnboarding") ); 
+const PropertyOwnerOnboarding = lazy( () => import("./pages/onboarding/PropertyOwnerOnboarding") );
 // Common pages
-const ComingSoon = lazy(
-  () => import("./components/common/ComingSoon")
-);
+const ComingSoon = lazy( () => import("./components/common/ComingSoon") );
 
 const App = () => {
   const { pathname } = useLocation();
