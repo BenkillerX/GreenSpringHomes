@@ -101,10 +101,6 @@ const AdminSideBar: React.FC<AdminSideBarProps> = ({ onLogout }) => {
 
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto px-4 py-6">
-        <p className="mb-4 px-3 text-[10px] font-bold uppercase tracking-[1.5px] text-gray-400">
-          Main Menu
-        </p>
-
         <nav className="space-y-1">
           {navigation.map((item) => {
             const Icon = item.icon;
