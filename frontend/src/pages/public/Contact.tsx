@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Mail, Send, MessageCircle } from "lucide-react";
 import type { ChangeEvent, FormEvent } from "react";
+import toast from "react-hot-toast";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -28,6 +29,15 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
   );
 
   window.location.href = `mailto:greenspringhomeofficial@gmail.com?subject=${subject}&body=${body}`;
+
+  setFormData({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  toast.success("Your email application has been opened!");
 };
 
   return (
