@@ -155,10 +155,10 @@ const App = () => {
 
           {/* Email Verification */}
           <Route path="/verify-email" element={<VerifyEmail />} />
-        </Routes>
-        <Route element={<AdminLayout/>}>
+          <Route element={<AdminLayout/>}>
             <Route path="/admin" element={<Admin/>}/>
         </Route>
+        </Routes>
       </Suspense>
 
       {isPublicPage && <BackToTop />}
