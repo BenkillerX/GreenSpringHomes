@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Users, Building2, BadgeCheck, BriefcaseBusiness, Flag, Wallet, FileText, Bell, ChartNoAxesCombined, ShieldCheck, ClipboardList, Settings, LogOut, House, } from "lucide-react";
 
 interface AdminSideBarProps {
@@ -76,6 +76,11 @@ const navigation = [
 ];
 
 const AdminSideBar: React.FC<AdminSideBarProps> = ({ onLogout }) => {
+  const navigate = useNavigate()
+  function handleLogout() {
+  onLogout()
+    navigate('/login')
+}
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-67.5 flex-col border-r border-gray-200 bg-white">
       {/* Brand */}
@@ -146,7 +151,7 @@ const AdminSideBar: React.FC<AdminSideBarProps> = ({ onLogout }) => {
       <div className="shrink-0 border-t border-gray-100 p-4">
         <button
           type="button"
-          onClick={onLogout}
+          onClick={handleLogout}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
         >
           <LogOut size={19} />
