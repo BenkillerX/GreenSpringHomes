@@ -60,9 +60,9 @@ const Footer = () => {
             Help Center
           </p>
 
-          <p className="cursor-pointer hover:text-green-500">
+          <Link to="/contact" className="cursor-pointer hover:text-green-500">
             Contact
-          </p>
+          </Link>
 
           <p className="cursor-pointer hover:text-green-500">
             Cancellation Policy

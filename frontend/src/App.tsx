@@ -8,6 +8,7 @@ import { Analytics } from "@vercel/analytics/react";
 import ServiceHome from "./pages/serviceProvider/ServiceHome";
 import AdminLayout from "./layouts/AdminLayout";
 import Admin from "./pages/admin/Admin";
+import Contact from "./pages/public/Contact";
 
 // Layouts
 const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
@@ -101,6 +102,7 @@ const App = () => {
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/How-it-works" element={<HowItWorks />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/contact" element={<Contact/>}/>
           </Route>
 
           {/* Tenant Pages */}
