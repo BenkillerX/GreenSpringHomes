@@ -3,7 +3,7 @@ import { FiShield,FiUsers,} from "react-icons/fi";
 import { Link } from "react-router-dom";
 const HeroSection = () => {
   return (
-   <section className="relative flex min-h-screen w-full items-center overflow-hidden bg-[url('/images/QuickStay1.jpg')] bg-cover bg-center">
+   <section className="relative flex min-h-screen w-full items-center overflow-hidden bg-[url('/images/GreenSpringHomes1.jpg')] bg-cover bg-center">
   {/* Overlay */}
   <div className="absolute inset-0 bg-black/55" />
 

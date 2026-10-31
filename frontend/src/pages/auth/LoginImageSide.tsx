@@ -9,7 +9,7 @@ const LoginImageSide = () => {
 
       {/* Background Image */}
       <img
-        src="/images/QuickStay1.jpg"
+        src="/images/GreenSpringHomes1.jpg"
         alt="Modern QuickStay property"
         className="absolute inset-0 h-full w-full object-cover"
       />

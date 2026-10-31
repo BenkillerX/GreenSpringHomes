@@ -61,7 +61,7 @@ const ExploreHero = () => {
                 <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-green-200/60 blur-3xl" />
     
                 <img
-                  src="/images/QuickStay1.jpg"
+                  src="/images/GreenSpringHomes1.jpg"
                   alt="Beautiful modern residential property"
                   className="relative h-87.5 w-full rounded-3xl object-cover shadow-2xl sm:h-112.5"
                 />

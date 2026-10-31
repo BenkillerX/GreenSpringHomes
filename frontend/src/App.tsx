@@ -6,6 +6,8 @@ import BackToTop from "./components/common/BackToTop";
 import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
 import ServiceHome from "./pages/serviceProvider/ServiceHome";
+import AdminLayout from "./layouts/AdminLayout";
+import Admin from "./pages/admin/Admin";
 
 // Layouts
 const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
@@ -30,9 +32,7 @@ const VerifyEmail = lazy(() => import("./pages/auth/VerifyEmail"));
 
 // Tenant pages
 const TenantHome = lazy(() => import("./pages/tenant/TenantHome"));
-const SavedProperties = lazy(
-  () => import("./pages/tenant/SavedProperties")
-);
+const SavedProperties = lazy( () => import("./pages/tenant/SavedProperties") );
 const Settings = lazy(() => import("./pages/tenant/Settings"));
 const PropertyDetails = lazy( () => import("./pages/tenant/PropertyDetails") );
 
@@ -106,68 +106,27 @@ const App = () => {
           {/* Tenant Pages */}
           <Route element={<TenantLayout />}>
             <Route path="/tenant/" element={<TenantHome />} />
-            <Route
-              path="/tenant/saved-properties"
-              element={<SavedProperties />}
-            />
-            <Route path="/tenant/settings" element={<Settings />} />
-            <Route
-              path="/tenant/details/:id"
-              element={<PropertyDetails />}
-            />
+            <Route path="/tenant/saved-properties" element={<SavedProperties />} /> 
+            <Route path="/tenant/settings" element={<Settings />} /> 
+            <Route path="/tenant/details/:id" element={<PropertyDetails />} />
           </Route>
 
           {/* Property Owner Pages */}
           <Route element={<OwnerLayout />}>
             <Route path="/owner/" element={<OwnerHome />} />
-
-            <Route
-              path="/owner/properties"
-              element={<OwnerProperties />}
-            />
-
-            <Route
-              path="/owner/properties/add"
-              element={<Addproperties />}
-            />
-
-            <Route
-              path="/owner/messages"
-              element={<OwnerMessages />}
-            />
-
-            <Route
-              path="/owner/notifications"
-              element={<OwnerNotifications />}
-            />
-
-            <Route
-              path="/owner/settings"
-              element={<OwnerSettings />}
-            />
-
-            <Route
-              path="/owner/update"
-              element={<UpdateInfo />}
-            />
-
-            <Route
-              path="/owner/properties/edit/:id"
-              element={<EditProperty />}
-            />
-
-            <Route
-              path="/owner/properties/:id"
-              element={<OwnerPropertyDetails />}
-            />
+            <Route path="/owner/properties" element={<OwnerProperties />} /> 
+            <Route path="/owner/properties/add" element={<Addproperties />} /> 
+            <Route path="/owner/messages" element={<OwnerMessages />} /> 
+            <Route path="/owner/notifications" element={<OwnerNotifications />} />
+            <Route path="/owner/settings" element={<OwnerSettings />} />
+            <Route path="/owner/update" element={<UpdateInfo />} />
+            <Route path="/owner/properties/edit/:id" element={<EditProperty />} />
+            <Route path="/owner/properties/:id" element={<OwnerPropertyDetails />} />
           </Route>
 
           {/* Service Provider Pages */}
           <Route element={<ServiceProviderLayout />}>
-            <Route
-              path="/service-provider/"
-              element={<ServiceHome />}
-            />
+            <Route path="/service-provider/" element={<ServiceHome />} />
           </Route>
 
           {/* Authentication */}
@@ -185,30 +144,21 @@ const App = () => {
             }
           />
 
-          <Route
-            path="/register/property-owner"
-            element={<PropertyOwner />}
-          />
+          <Route path="/register/property-owner" element={<PropertyOwner />} />
 
           {/* Onboarding */}
-          <Route
-            path="/tenant/onboarding"
-            element={<TenantOnboarding />}
-          />
+          <Route path="/tenant/onboarding" element={<TenantOnboarding />} />
 
-          <Route
-            path="/provider/onboarding"
-            element={<ServiceProviderOnboarding />}
-          />
+          <Route path="/provider/onboarding" element={<ServiceProviderOnboarding />} />
 
-          <Route
-            path="/owner/onboarding"
-            element={<PropertyOwnerOnboarding />}
-          />
+          <Route path="/owner/onboarding" element={<PropertyOwnerOnboarding />} />
 
           {/* Email Verification */}
           <Route path="/verify-email" element={<VerifyEmail />} />
         </Routes>
+        <Route element={<AdminLayout/>}>
+            <Route path="/admin" element={<Admin/>}/>
+        </Route>
       </Suspense>
 
       {isPublicPage && <BackToTop />}
