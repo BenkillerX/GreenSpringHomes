@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Building2, BadgeCheck, BriefcaseBusiness, Flag, Wallet, FileText, Bell, ChartNoAxesCombined, ShieldCheck, ClipboardList, Settings, LogOut, House, } from "lucide-react";
+import { LayoutDashboard, Users, Building2, BadgeCheck, BriefcaseBusiness, Flag, Wallet, FileText, Bell, ChartNoAxesCombined, ShieldCheck, ClipboardList, Settings, LogOut, } from "lucide-react";
 
 interface AdminSideBarProps {
   onLogout: () => void;
@@ -85,8 +85,8 @@ const AdminSideBar: React.FC<AdminSideBarProps> = ({ onLogout }) => {
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-67.5 flex-col border-r border-gray-200 bg-white">
       {/* Brand */}
       <div className="flex h-19 shrink-0 items-center gap-3 border-b border-gray-100 px-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-700 text-white">
-          <House size={22} />
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl text-white">
+          <img src="/GreenSpringLogo.jpeg" alt="Logo" className="w-full"/>
         </div>
 
         <div>

@@ -6,8 +6,13 @@ import SearchProperties from "./SearchProperties";
 import SavePropertyButton from "./SavePropertyButton";
 
 const TenantHome = () => {
-   const [userPorperties, setUserPorperties] = useState<Property[]>([]);
-    const [activeCategory, setActiveCategory] = useState<string>("");
+  const [userPorperties, setUserPorperties] = useState<Property[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string>("");
+  const filteredProperties = userPorperties.filter((property) => {
+  if (!activeCategory) return true;
+
+  return property.propertyType === activeCategory;
+});
   useEffect(()=>{
      const getUserProperties = async () => {
     try {
@@ -51,17 +56,18 @@ const TenantHome = () => {
       { label: "Others", value: "other" },
     ].map((category) => (
       <button
-        key={category.value}
-        type="button"
-        onClick={() => setActiveCategory(category.value)}
-        className={`shrink-0 rounded-full border px-5 py-2.5 text-sm font-medium transition ${
-          activeCategory === category.value
-            ? "border-emerald-600 bg-emerald-600 text-white"
-            : "border-slate-200 bg-white text-slate-600 hover:border-emerald-500 hover:text-emerald-700"
-        }`}
-      >
-        {category.label}
-      </button>
+      key={category.value}
+      type="button"
+      aria-pressed={activeCategory === category.value}
+      onClick={() => setActiveCategory(category.value)}
+      className={`shrink-0 rounded-full border px-5 py-2.5 text-sm font-medium transition ${
+        activeCategory === category.value
+          ? "border-emerald-600 bg-emerald-600 text-white"
+          : "border-slate-200 bg-white text-slate-600 hover:border-emerald-500 hover:text-emerald-700"
+      }`}
+    >
+      {category.label}
+    </button>
     ))}
   </div>
 </section>
@@ -79,19 +85,23 @@ const TenantHome = () => {
     </div>
   </div>
 
-  {userPorperties.length === 0 ? (
+  {filteredProperties.length === 0 ? (
     <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center">
       <h3 className="text-lg font-semibold text-slate-900">
-        No properties available
-      </h3>
+      {activeCategory
+        ? `No ${activeCategory} properties available`
+        : "No properties available"}
+    </h3>
 
-      <p className="mt-2 text-sm text-slate-500">
-        Check back later to discover available apartments.
-      </p>
+    <p className="mt-2 text-sm text-slate-500">
+      {activeCategory
+        ? "Try selecting another category to discover available properties."
+        : "Check back later to discover available properties."}
+    </p>
     </div>
   ) : (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-  {userPorperties.map((property) => (
+  {filteredProperties.map((property) => (
     <article
       key={property._id}
       className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
