@@ -43,7 +43,7 @@ const TenantSidebar = ({
     setIsLoggingOut(true);
 
     try {
-      await logout();
+      logout();
       setShowLogoutModal(false);
       navigate("/login", { replace: true });
     } catch (error: unknown) {
@@ -69,7 +69,7 @@ const TenantSidebar = ({
             }`}
           >
             <img
-              src="/images/Quick4.jpg"
+              src="/GreenSpringLogo.jpeg"
               alt="GreenSpringHomes"
               className="h-10 w-10 shrink-0 rounded-lg object-cover"
             />

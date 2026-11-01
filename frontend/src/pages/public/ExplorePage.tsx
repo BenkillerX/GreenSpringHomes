@@ -231,6 +231,7 @@ useEffect(() => {
   <div className="mt-8 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
 
     {filteredProperties.map((property) => (
+      <Link to="/register/tenant"> 
       <div
         key={property._id}
         className="group overflow-hidden rounded-2xl border border-gray-100 bg-white transition hover:-translate-y-1 hover:shadow-xl"
@@ -288,6 +289,7 @@ useEffect(() => {
           </Link>
         </div>
       </div>
+      </Link>
     ))}
 
   </div>
