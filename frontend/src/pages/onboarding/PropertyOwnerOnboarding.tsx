@@ -103,16 +103,7 @@ const PropertyOwnerOnboarding = () => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="e.g. 08012345678"
-              className="
-                w-full
-                rounded-xl
-                border border-gray-200
-                px-4 py-3
-                outline-none
-                focus:border-green-500
-                focus:ring-2
-                focus:ring-green-100
-              "
+              className=" w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 "
             />
           </div>
 
@@ -131,17 +122,7 @@ const PropertyOwnerOnboarding = () => {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="e.g. Ikeja, Lagos"
-              className="
-                w-full
-                rounded-xl
-                border border-gray-200
-                px-4 py-3
-                outline-none
-                focus:border-green-500
-                focus:ring-2
-                focus:ring-green-100
-              "
-            />
+              className=" w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 " />
           </div>
 
           {/* Bio */}
@@ -159,17 +140,7 @@ const PropertyOwnerOnboarding = () => {
               onChange={(e) => setBio(e.target.value)}
               placeholder="Tell potential tenants a little about yourself..."
               rows={5}
-              className="
-                w-full
-                rounded-xl
-                border border-gray-200
-                px-4 py-3
-                outline-none
-                resize-none
-                focus:border-green-500
-                focus:ring-2
-                focus:ring-green-100
-              "
+              className=" w-full rounded-xl border border-gray-200 px-4 py-3 outline-none resize-none focus:border-green-500 focus:ring-2 focus:ring-green-100 "
             />
           </div>
 
@@ -177,19 +148,7 @@ const PropertyOwnerOnboarding = () => {
           <button
             type="submit"
             disabled={loading}
-            className="
-              w-full
-              rounded-xl
-              bg-green-600
-              px-4 py-3
-              text-sm
-              font-semibold
-              text-white
-              transition
-              hover:bg-green-700
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
+            className=" w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60 "
           >
             {loading
               ? "Completing profile..."
