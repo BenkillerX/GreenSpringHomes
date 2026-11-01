@@ -1,19 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { isAxiosError } from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  FiArrowLeft,
-  FiEdit2,
-  FiTrash2,
-  FiMapPin,
-  FiEye,
-  FiCalendar,
-  FiHome,
-  FiCheckCircle,
-  FiClock,
-  FiImage,
-} from "react-icons/fi";
+import { FiArrowLeft, FiEdit2, FiTrash2, FiMapPin, FiEye, FiCalendar, FiHome, FiCheckCircle, FiClock, FiImage, } from "react-icons/fi";
 import { MdBed } from "react-icons/md";
 import { FiDroplet } from "react-icons/fi";
 import toast from "react-hot-toast";
@@ -48,7 +36,6 @@ interface Property {
 const OwnerPropertyDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);

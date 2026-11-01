@@ -18,15 +18,10 @@ const [activeImage, setActiveImage] = useState(0);
 
 useEffect(() => {
   if (!id) return;
-
   let cancelled = false;
-
   const checkSavedStatus = async () => {
     try {
-      const response = await api.get(
-        `/api/saved-properties/${id}/status`
-      );
-
+      const response = await api.get( `/api/saved-properties/${id}/status` );
       if (!cancelled) {
         setIsSaved(response.data.isSaved);
       }
@@ -40,7 +35,6 @@ useEffect(() => {
   };
 
   checkSavedStatus();
-
   return () => {
     cancelled = true;
   };
@@ -51,11 +45,8 @@ const handleSaveProperty = async () => {
 
   try {
     setSaving(true);
-
     if (isSaved) {
-      // Remove from saved properties
       await api.delete(`/api/saved-properties/${id}`);
-
       setIsSaved(false);
       toast.success("Property removed from favourites");
     } else {
@@ -90,8 +81,6 @@ useEffect(() => {
       const response = await api.get(`/api/properties/${id}`);
 
       setProperty(response.data.property);
-      console.log(response.data.property);
-      
       setActiveImage(0);
     } catch (error) {
       console.error("Failed to fetch property:", error);

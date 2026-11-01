@@ -2,24 +2,11 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  FiArrowLeft,
-  FiHome,
-  FiMapPin,
-  FiImage,
-  FiInfo,
-  FiPlus,
-  FiX,
-} from "react-icons/fi";
+import { FiArrowLeft, FiHome, FiMapPin, FiImage, FiInfo, FiPlus, FiX, } from "react-icons/fi";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 const Addproperties = () => {
   const navigate = useNavigate();
-
-  // ==============================
-  // FORM STATES
-  // ==============================
-
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [propertyType, setPropertyType] = useState<string>("");
@@ -27,25 +14,14 @@ const Addproperties = () => {
   const [price, setPrice] = useState<string>("");
   const [bedrooms, setBedrooms] = useState<string>("");
   const [bathrooms, setBathrooms] = useState<string>("");
-
   const [state, setState] = useState<string>("");
   const [city, setCity] = useState<string>("");
   const [area, setArea] = useState<string>("");
   const [address, setAddress] = useState<string>("");
-
   const [images, setImages] = useState<File[]>([]);
-
-  // ==============================
-  // UI STATES
-  // ==============================
-
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-
-  // ==============================
-  // IMAGE HANDLER
-  // ==============================
-
+  
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
@@ -59,19 +35,9 @@ const Addproperties = () => {
     setImages((prev) => [...prev, ...selectedFiles]);
     setError("");
   };
-
-  // ==============================
-  // REMOVE IMAGE
-  // ==============================
-
   const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
-
-  // ==============================
-  // SUBMIT FORM
-  // ==============================
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
