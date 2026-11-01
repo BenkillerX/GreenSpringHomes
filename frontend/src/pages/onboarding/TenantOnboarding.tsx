@@ -106,38 +106,6 @@ const TenantOnboarding = () => {
             onSubmit={handleSubmit}
             className="space-y-8"
           >
-            {/* Profile Image */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">
-                Profile photo
-              </h2>
-
-              <p className="mt-1 text-sm text-gray-500">
-                Add a profile photo so property owners can recognize you.
-              </p>
-
-              <div className="mt-5 flex flex-col items-center">
-                {/* Temporary placeholder */}
-                <div className="w-28 h-28 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
-                  <span className="text-4xl text-gray-400">
-                    👤
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  disabled
-                  className="mt-4 px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-400 cursor-not-allowed"
-                >
-                  Add profile photo
-                </button>
-
-                <p className="mt-2 text-xs text-gray-400">
-                  Photo upload will be available soon
-                </p>
-              </div>
-            </div>
-
             {/* Phone */}
             <div className="border-t border-gray-100 pt-8">
               <h2 className="text-lg font-semibold text-gray-900">

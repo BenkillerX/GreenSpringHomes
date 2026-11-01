@@ -11,9 +11,7 @@ const Contact = () => {
     message: "",
   });
 
- const handleChange = (
-  e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-) => {
+ const handleChange = ( e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> ) => {
   setFormData({
     ...formData,
     [e.target.name]: e.target.value,
