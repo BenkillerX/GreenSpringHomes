@@ -1,11 +1,21 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Users, MoreHorizontal, ChevronLeft, ChevronRight,  Mail, Eye,  CheckCircle2, Download, UserPlus, } from "lucide-react";
 import UserStats from "./UserStats";
 import UserTableHeader from "./UserTableHeader";
+import { toast } from "react-hot-toast/headless";
+import axios from "axios";
+import api from "../../services/api";
 
 type UserRole = "Tenant" | "Property Owner" | "Service Provider" | "Admin";
 type UserStatus = "Active" | "Suspended";
+type RoleFilter =
+  | "all"
+  | "tenant"
+  | "propertyOwner"
+  | "serviceProvider"
+  | "admin";
 
+type StatusFilter = "all" | "active" | "suspended";
 interface User {
   id: string;
   firstname: string;
@@ -17,119 +27,102 @@ interface User {
   joinedAt: string;
 }
 
-const mockUsers: User[] = [
-  {
-    id: "GS001",
-    firstname: "David",
-    lastname: "Johnson",
-    email: "david@gmail.com",
-    role: "Property Owner",
-    status: "Active",
-    verified: true,
-    joinedAt: "Nov 03, 2026",
-  },
-  {
-    id: "GS002",
-    firstname: "Sarah",
-    lastname: "Williams",
-    email: "sarah@gmail.com",
-    role: "Tenant",
-    status: "Active",
-    verified: true,
-    joinedAt: "Nov 02, 2026",
-  },
-  {
-    id: "GS003",
-    firstname: "Michael",
-    lastname: "Brown",
-    email: "michael@gmail.com",
-    role: "Property Owner",
-    status: "Suspended",
-    verified: false,
-    joinedAt: "Oct 29, 2026",
-  },
-  {
-    id: "GS004",
-    firstname: "Grace",
-    lastname: "Okafor",
-    email: "grace@gmail.com",
-    role: "Tenant",
-    status: "Active",
-    verified: true,
-    joinedAt: "Oct 27, 2026",
-  },
-  {
-    id: "GS005",
-    firstname: "Daniel",
-    lastname: "Adeyemi",
-    email: "daniel@gmail.com",
-    role: "Service Provider",
-    status: "Active",
-    verified: false,
-    joinedAt: "Oct 25, 2026",
-  },
-  {
-    id: "GS006",
-    firstname: "Esther",
-    lastname: "James",
-    email: "esther@gmail.com",
-    role: "Tenant",
-    status: "Active",
-    verified: true,
-    joinedAt: "Oct 22, 2026",
-  },
-  {
-    id: "GS007",
-    firstname: "Samuel",
-    lastname: "Peter",
-    email: "samuel@gmail.com",
-    role: "Property Owner",
-    status: "Active",
-    verified: true,
-    joinedAt: "Oct 20, 2026",
-  },
-  {
-    id: "GS008",
-    firstname: "Jennifer",
-    lastname: "Cole",
-    email: "jennifer@gmail.com",
-    role: "Tenant",
-    status: "Suspended",
-    verified: false,
-    joinedAt: "Oct 18, 2026",
-  },
-];
+type BackendUser = {
+  _id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  role: "tenant" | "propertyOwner" | "serviceProvider" | "admin";
+  isActive: boolean;
+  isEmailVerified: boolean;
+  createdAt: string;
+};
 
+ const roleLabels: Record<BackendUser["role"], UserRole> = {
+  tenant: "Tenant",
+  propertyOwner: "Property Owner",
+  serviceProvider: "Service Provider",
+  admin: "Admin",
+};
 const UserManagement = () => {
-  const [users] = useState<User[]>(mockUsers);
+  const [users, setUsers] = useState<User[]>([]);
+const [loading, setLoading] = useState(true);
+
+ 
+useEffect(() => {
+  const fetchUsers = async () => {
+    try {
+      const response = await api.get<{ users: BackendUser[] }>(
+        "/api/admin/users"
+      );
+
+      const formattedUsers: User[] = response.data.users.map((user) => ({
+        id: user._id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        role: roleLabels[user.role],
+        status: user.isActive ? "Active" : "Suspended",
+        verified: user.isEmailVerified,
+        joinedAt: new Date(user.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        }),
+      }));
+
+      setUsers(formattedUsers);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "Failed to fetch users"
+        );
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchUsers();
+}, []);
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState("All roles");
-  const [statusFilter, setStatusFilter] = useState("All statuses");
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
+const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [currentPage, setCurrentPage] = useState(1);
 
   const usersPerPage = 6;
 
   const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
-      const searchTerm = search.toLowerCase();
+  return users.filter((user) => {
+    const searchTerm = search.trim().toLowerCase();
 
-      const matchesSearch =
-        `${user.firstname} ${user.lastname}`
-          .toLowerCase()
-          .includes(searchTerm) ||
-        user.email.toLowerCase().includes(searchTerm) ||
-        user.id.toLowerCase().includes(searchTerm);
+    const matchesSearch =
+      `${user.firstname} ${user.lastname}`
+        .toLowerCase()
+        .includes(searchTerm) ||
+      user.email.toLowerCase().includes(searchTerm) ||
+      user.id.toLowerCase().includes(searchTerm);
 
-      const matchesRole =
-        roleFilter === "All roles" || user.role === roleFilter;
+    const matchesRole =
+      roleFilter === "all" ||
+      (roleFilter === "tenant" && user.role === "Tenant") ||
+      (roleFilter === "propertyOwner" &&
+        user.role === "Property Owner") ||
+      (roleFilter === "serviceProvider" &&
+        user.role === "Service Provider") ||
+      (roleFilter === "admin" && user.role === "Admin");
 
-      const matchesStatus =
-        statusFilter === "All statuses" ||
-        user.status === statusFilter;
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "active" && user.status === "Active") ||
+      (statusFilter === "suspended" &&
+        user.status === "Suspended");
 
-      return matchesSearch && matchesRole && matchesStatus;
-    });
-  }, [users, search, roleFilter, statusFilter]);
+    return matchesSearch && matchesRole && matchesStatus;
+  });
+}, [users, search, roleFilter, statusFilter]);
 
   const totalPages = Math.max(
     1,
@@ -141,9 +134,6 @@ const UserManagement = () => {
     currentPage * usersPerPage
   );
 
-
-  
-
   const getInitials = (firstname: string, lastname: string) =>
     `${firstname[0]}${lastname[0]}`.toUpperCase();
 
@@ -154,12 +144,13 @@ const UserManagement = () => {
     Admin: "bg-amber-50 text-amber-700",
   };
 
-  const resetFilters = () => {
-    setSearch("");
-    setRoleFilter("All roles");
-    setStatusFilter("All statuses");
-    setCurrentPage(1);
-  };
+ const resetFilters = () => {
+  setSearch("");
+  setRoleFilter("all");
+  setStatusFilter("all");
+  setCurrentPage(1);
+};
+
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] px-4 py-6 sm:px-6 lg:px-8">
@@ -196,162 +187,170 @@ const UserManagement = () => {
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
 
           {/* Table Header */}
-         <UserTableHeader
-            search={search}
-            setSearch={setSearch}
-            roleFilter={roleFilter}
-            setRoleFilter={setRoleFilter}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-            setCurrentPage={setCurrentPage}
-          />
+        <UserTableHeader
+      search={search}
+      setSearch={setSearch}
+      roleFilter={roleFilter}
+      setRoleFilter={setRoleFilter}
+      statusFilter={statusFilter}
+      setStatusFilter={setStatusFilter}
+      setCurrentPage={setCurrentPage}
+    />
 
           {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-212.5 text-left">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    User
-                  </th>
-                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    Role
-                  </th>
-                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    Verification
-                  </th>
-                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    Status
-                  </th>
-                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    Joined
-                  </th>
-                  <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-slate-100">
-                {paginatedUsers.map((user, index) => (
-                  <tr
-                    key={user.id}
-                    className="transition hover:bg-slate-50/70"
-                  >
-                    {/* User */}
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-                          ["bg-emerald-100 text-emerald-700", "bg-blue-100 text-blue-700", "bg-purple-100 text-purple-700"][index % 3]
-                        }`}>
-                          {getInitials(user.firstname, user.lastname)}
-                        </div>
-
-                        <div>
-                          <p className="text-sm font-semibold text-slate-800">
-                            {user.firstname} {user.lastname}
-                          </p>
-                          <p className="mt-0.5 text-xs text-slate-500">
-                            {user.email}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Role */}
-                    <td className="px-5 py-4">
-                      <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${roleStyles[user.role]}`}>
-                        {user.role}
-                      </span>
-                    </td>
-
-                    {/* Verification */}
-                    <td className="px-5 py-4">
-                      {user.verified ? (
-                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600">
-                          <CheckCircle2 size={15} />
-                          Verified
-                        </span>
-                      ) : (
-                        <span className="text-xs font-medium text-amber-600">
-                          Unverified
-                        </span>
-                      )}
-                    </td>
-
-                    {/* Status */}
-                    <td className="px-5 py-4">
-                      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-                        user.status === "Active"
-                          ? "bg-emerald-50 text-emerald-700"
-                          : "bg-red-50 text-red-600"
-                      }`}>
-                        <span className={`h-1.5 w-1.5 rounded-full ${
-                          user.status === "Active"
-                            ? "bg-emerald-500"
-                            : "bg-red-500"
-                        }`} />
-                        {user.status}
-                      </span>
-                    </td>
-
-                    {/* Joined */}
-                    <td className="px-5 py-4 text-sm text-slate-500">
-                      {user.joinedAt}
-                    </td>
-
-                    {/* Actions */}
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-2">
-                        <button
-                          title="View user"
-                          className="rounded-lg p-2 text-slate-500 transition hover:bg-emerald-50 hover:text-emerald-600"
-                        >
-                          <Eye size={17} />
-                        </button>
-
-                        <button
-                          title="Email user"
-                          className="rounded-lg p-2 text-slate-500 transition hover:bg-blue-50 hover:text-blue-600"
-                        >
-                          <Mail size={17} />
-                        </button>
-
-                        <button
-                          title="More actions"
-                          className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
-                        >
-                          <MoreHorizontal size={19} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-
-                {paginatedUsers.length === 0 && (
-                  <tr>
-                    <td colSpan={6} className="px-5 py-16 text-center">
-                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-                        <Users size={23} />
-                      </div>
-                      <p className="mt-3 font-semibold text-slate-800">
-                        No users found
-                      </p>
-                      <p className="mt-1 text-sm text-slate-500">
-                        Try adjusting your search or filters.
-                      </p>
-                      <button
-                        onClick={resetFilters}
-                        className="mt-4 text-sm font-semibold text-emerald-600 hover:text-emerald-700"
+        {loading ? (
+  <div className="flex justify-center py-12">
+    <p className="text-sm text-gray-500">Loading users...</p>
+  </div>
+) : (
+  <div>
+    <div className="overflow-x-auto">
+                <table className="w-full min-w-212.5 text-left">
+                  <thead className="bg-slate-50">
+                    <tr>
+                      <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        User
+                      </th>
+                      <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        Role
+                      </th>
+                      <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        Verification
+                      </th>
+                      <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        Status
+                      </th>
+                      <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        Joined
+                      </th>
+                      <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+    
+                  <tbody className="divide-y divide-slate-100">
+                    {paginatedUsers.map((user, index) => (
+                      <tr
+                        key={user.id}
+                        className="transition hover:bg-slate-50/70"
                       >
-                        Clear filters
-                      </button>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                        {/* User */}
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+                              ["bg-emerald-100 text-emerald-700", "bg-blue-100 text-blue-700", "bg-purple-100 text-purple-700"][index % 3]
+                            }`}>
+                              {getInitials(user.firstname, user.lastname)}
+                            </div>
+    
+                            <div>
+                              <p className="text-sm font-semibold text-slate-800">
+                                {user.firstname} {user.lastname}
+                              </p>
+                              <p className="mt-0.5 text-xs text-slate-500">
+                                {user.email}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+    
+                        {/* Role */}
+                        <td className="px-5 py-4">
+                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${roleStyles[user.role]}`}>
+                            {user.role}
+                          </span>
+                        </td>
+    
+                        {/* Verification */}
+                        <td className="px-5 py-4">
+                          {user.verified ? (
+                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600">
+                              <CheckCircle2 size={15} />
+                              Verified
+                            </span>
+                          ) : (
+                            <span className="text-xs font-medium text-amber-600">
+                              Unverified
+                            </span>
+                          )}
+                        </td>
+    
+                        {/* Status */}
+                        <td className="px-5 py-4">
+                          <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+                            user.status === "Active"
+                              ? "bg-emerald-50 text-emerald-700"
+                              : "bg-red-50 text-red-600"
+                          }`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${
+                              user.status === "Active"
+                                ? "bg-emerald-500"
+                                : "bg-red-500"
+                            }`} />
+                            {user.status}
+                          </span>
+                        </td>
+    
+                        {/* Joined */}
+                        <td className="px-5 py-4 text-sm text-slate-500">
+                          {user.joinedAt}
+                        </td>
+    
+                        {/* Actions */}
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-2">
+                            <button
+                              title="View user"
+                              className="rounded-lg p-2 text-slate-500 transition hover:bg-emerald-50 hover:text-emerald-600"
+                            >
+                              <Eye size={17} />
+                            </button>
+    
+                            <button
+                              title="Email user"
+                              className="rounded-lg p-2 text-slate-500 transition hover:bg-blue-50 hover:text-blue-600"
+                            >
+                              <Mail size={17} />
+                            </button>
+    
+                            <button
+                              title="More actions"
+                              className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+                            >
+                              <MoreHorizontal size={19} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+    
+                    {paginatedUsers.length === 0 && (
+                      <tr>
+                        <td colSpan={6} className="px-5 py-16 text-center">
+                          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                            <Users size={23} />
+                          </div>
+                          <p className="mt-3 font-semibold text-slate-800">
+                            No users found
+                          </p>
+                          <p className="mt-1 text-sm text-slate-500">
+                            Try adjusting your search or filters.
+                          </p>
+                          <button
+                            onClick={resetFilters}
+                            className="mt-4 text-sm font-semibold text-emerald-600 hover:text-emerald-700"
+                          >
+                            Clear filters
+                          </button>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+  </div>
+)}
 
           {/* Pagination */}
           <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-100 px-5 py-4 sm:flex-row">

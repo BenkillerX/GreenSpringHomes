@@ -6,18 +6,13 @@ import BackToTop from "./components/common/BackToTop";
 import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
 import ServiceHome from "./pages/serviceProvider/ServiceHome";
-import AdminLayout from "./layouts/AdminLayout";
-import Admin from "./pages/admin/Admin";
 import Contact from "./pages/public/Contact";
-import UserManagement from "./pages/admin/UserManagement";
 
 // Layouts
 const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
 const TenantLayout = lazy(() => import("./layouts/TenantLayout"));
 const OwnerLayout = lazy(() => import("./layouts/OwnerLayout"));
-const ServiceProviderLayout = lazy(
-  () => import("./layouts/ServiceProviderLayout")
-);
+const ServiceProviderLayout = lazy( () => import("./layouts/ServiceProviderLayout") );
 
 // Public pages
 const LandingPage = lazy(() => import("./pages/public/LandingPage"));
@@ -48,7 +43,22 @@ const OwnerSettings = lazy( () => import("./pages/landlord/OwnerSettings") );
 const UpdateInfo = lazy(() => import("./pages/landlord/UpdateInfo")); 
 const EditProperty = lazy( () => import("./pages/landlord/EditProperty ") ); 
 const OwnerPropertyDetails = lazy( () => import("./pages/landlord/OwnerPropertyDetails") );
+// Admin Layout
+const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
 
+// Admin Pages
+const Admin = lazy(() => import("./pages/admin/Admin"));
+const UserManagement = lazy(() => import("./pages/admin/UserManagement"));
+const PropertyManagement = lazy(() => import("./pages/admin/PropertyManagement"));
+const PropertyVerification = lazy(() => import("./pages/admin/PropertyVerification"));
+const ServiceProviders = lazy(() => import("./pages/admin/ServiceProviders"));
+const Reports = lazy(() => import("./pages/admin/Reports"));
+const Payments = lazy(() => import("./pages/admin/Payments"));
+const ContentManagement = lazy(() => import("./pages/admin/ContentManagement"));
+const Notifications = lazy(() => import("./pages/admin/Notifications"));
+const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
+const AuditLogs = lazy(() => import("./pages/admin/AuditLogs"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 // Onboarding pages
 const TenantOnboarding = lazy( () => import("./pages/onboarding/TenantOnboarding") ); 
 const ServiceProviderOnboarding = lazy( () => import("./pages/onboarding/ServiceProviderOnboarding") ); 
@@ -160,6 +170,17 @@ const App = () => {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route element={<AdminLayout/>}>
             <Route path="/admin/" element={<Admin/>}/>
+            <Route path="/admin/properties" element={<PropertyManagement/>}/>
+            <Route path="/admin/property-verification" element={<PropertyVerification/>}/>
+            <Route path="/admin/service-providers" element={<ServiceProviders/>}/>
+            <Route path="/admin/reports" element={<Reports/>}/>
+            <Route path="/admin/payments" element={<Payments/>}/>
+            <Route path="/admin/content" element={<ContentManagement/>}/>
+            <Route path="/admin/notifications" element={<Notifications/>}/>
+            <Route path="/admin/analytics" element={<AdminAnalytics/>}/>
+            <Route path="/admin/roles" element={<UserManagement/>}/>
+            <Route path="/admin/audit-logs" element={<AuditLogs/>}/>
+            <Route path="/admin/settings" element={<AdminSettings/>}/>
             <Route path="/admin/users" element={<UserManagement/>}/>
         </Route>
         </Routes>
