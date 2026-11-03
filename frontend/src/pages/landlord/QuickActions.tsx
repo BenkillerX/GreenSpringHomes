@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { FiMessageCircle, FiPlus, FiArrowRight, FiCalendar, FiHome, } from "react-icons/fi";
+import { FiPlus, FiArrowRight, FiHome, } from "react-icons/fi";
 
 const QuickActions = () => {
   return (
@@ -54,52 +54,6 @@ const QuickActions = () => {
 
                 <p className="text-xs text-gray-500 mt-1">
                   View and edit your listings
-                </p>
-              </div>
-
-              <FiArrowRight
-                size={17}
-                className="text-gray-400 transition group-hover:translate-x-1"
-              />
-            </Link>
-
-
-            <Link to="/owner/notifications" className="group flex w-full items-center gap-4 rounded-xl p-4 text-left transition hover:bg-gray-50">
-
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-green-600">
-                <FiCalendar size={19} />
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-gray-800">
-                  Notifications
-                </p>
-
-                <p className="text-xs text-gray-500 mt-1">
-                  See tenant requests
-                </p>
-              </div>
-
-              <FiArrowRight
-                size={17}
-                className="text-gray-400 transition group-hover:translate-x-1"
-              />
-            </Link>
-
-
-            <Link to="/owner/messages" className="group flex w-full items-center gap-4 rounded-xl p-4 text-left transition hover:bg-gray-50">
-
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-green-600">
-                <FiMessageCircle size={19} />
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-gray-800">
-                  Messages
-                </p>
-
-                <p className="text-xs text-gray-500 mt-1">
-                  Chat with potential tenants
                 </p>
               </div>
 

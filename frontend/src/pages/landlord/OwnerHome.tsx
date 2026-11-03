@@ -103,7 +103,7 @@ async function handleDelete(id: string) {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-<CompleteContactBanner/>
+    <CompleteContactBanner/>
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
@@ -354,7 +354,6 @@ async function handleDelete(id: string) {
         {/* Quick Actions */}
         <QuickActions/>
       </div>
-
 
       {/* Recent Activity */}
         <RecentActivity/>    

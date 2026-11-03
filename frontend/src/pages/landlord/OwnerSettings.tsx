@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UserRound, ShieldCheck, Bell, Settings2, Save, LockKeyhole, Mail, Phone, Eye, EyeOff, ChevronRight, Trash2, LoaderCircle, MessageCircle, CheckCircle2, } from "lucide-react";
+import { UserRound, ShieldCheck, Settings2, Save, LockKeyhole, Mail, Phone, Eye, EyeOff, ChevronRight, Trash2, LoaderCircle, MessageCircle, CheckCircle2, } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
 import api from "../../services/api";
 import toast from "react-hot-toast";
@@ -36,27 +36,12 @@ const OwnerSettings = () => {
 
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-
-  const [notifications, setNotifications] = useState({
-    newEnquiries: true,
-    listingUpdates: true,
-    accountUpdates: true,
-    promotionalEmails: false,
-  });
-
   const navigation = [
     {
       id: "profile" as const,
       label: "Personal information",
       description: "Your personal and contact details",
       icon: UserRound,
-    },
-    
-    {
-      id: "notifications" as const,
-      label: "Notifications",
-      description: "Manage your alerts and updates",
-      icon: Bell,
     },
     {
       id: "security" as const,
@@ -150,13 +135,6 @@ const OwnerSettings = () => {
 
       toast.error("An unexpected error occurred.");
     }
-  };
-
-  const toggleNotification = (key: keyof typeof notifications) => {
-    setNotifications((current) => ({
-      ...current,
-      [key]: !current[key],
-    }));
   };
 
   return (
@@ -340,73 +318,6 @@ const OwnerSettings = () => {
                     </button>
                   </div>
                 </form>
-              </section>
-            )}
-
-            {/* Notifications */}
-            {activeTab === "notifications" && (
-              <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <div className="border-b border-slate-100 p-5 sm:p-7">
-                  <h2 className="text-lg font-bold text-slate-900">Notification preferences</h2>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Choose the updates you want to receive.
-                  </p>
-                </div>
-
-                <div className="divide-y divide-slate-100 px-5 sm:px-7">
-                  {[
-                    {
-                      key: "newEnquiries" as const,
-                      title: "New property enquiries",
-                      description: "Get notified when prospective tenants contact you.",
-                    },
-                    {
-                      key: "listingUpdates" as const,
-                      title: "Listing updates",
-                      description: "Receive updates about your property listings.",
-                    },
-                    {
-                      key: "accountUpdates" as const,
-                      title: "Account updates",
-                      description: "Important information about your account.",
-                    },
-                    {
-                      key: "promotionalEmails" as const,
-                      title: "News and promotions",
-                      description: "Platform announcements, news and offers.",
-                    },
-                  ].map((item) => (
-                    <div key={item.key} className="flex items-center justify-between gap-4 py-5">
-                      <div>
-                        <p className="text-sm font-semibold text-slate-800">{item.title}</p>
-                        <p className="mt-1 text-sm text-slate-500">{item.description}</p>
-                      </div>
-
-                      <button
-                        type="button"
-                        role="switch"
-                        aria-checked={notifications[item.key]}
-                        aria-label={item.title}
-                        onClick={() => toggleNotification(item.key)}
-                        className={`relative h-6 w-11 shrink-0 rounded-full transition ${
-                          notifications[item.key] ? "bg-emerald-700" : "bg-slate-300"
-                        }`}
-                      >
-                        <span
-                          className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-all ${
-                            notifications[item.key] ? "left-5" : "left-0.5"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="border-t border-slate-100 bg-slate-50/70 px-5 py-4 sm:px-7">
-                  <p className="text-xs text-slate-500">
-                    Notification preferences are currently stored locally in this page only.
-                  </p>
-                </div>
               </section>
             )}
 
