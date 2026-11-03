@@ -9,6 +9,7 @@ import ServiceHome from "./pages/serviceProvider/ServiceHome";
 import AdminLayout from "./layouts/AdminLayout";
 import Admin from "./pages/admin/Admin";
 import Contact from "./pages/public/Contact";
+import UserManagement from "./pages/admin/UserManagement";
 
 // Layouts
 const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
@@ -159,6 +160,7 @@ const App = () => {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route element={<AdminLayout/>}>
             <Route path="/admin/" element={<Admin/>}/>
+            <Route path="/admin/users" element={<UserManagement/>}/>
         </Route>
         </Routes>
       </Suspense>
