@@ -180,3 +180,59 @@ export const getAllUsers = async (req, res) => {
     });
   }
 };
+
+
+export const getPropertyStats = async (req, res) => {
+  try {
+    const [
+      totalProperties,
+      verifiedProperties,
+      pendingProperties,
+      rejectedProperties,
+    ] = await Promise.all([
+      Property.countDocuments(),
+      Property.countDocuments({ verificationStatus: "verified" }),
+      Property.countDocuments({ verificationStatus: "pending" }),
+      Property.countDocuments({ verificationStatus: "rejected" }),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      stats: {
+        totalProperties,
+        verifiedProperties,
+        pendingProperties,
+        rejectedProperties,
+      },
+    });
+  } catch (error) {
+    console.error("Get property stats error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to retrieve property statistics",
+    });
+  }
+};
+
+
+export async function getAllProperties(req, res) {
+  try {
+    const properties = await Property.find()
+      .populate("owner", "firstname lastname email")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: properties.length,
+      properties,
+    });
+  } catch (error) {
+    console.error("Get all properties error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get all properties",
+    });
+  }
+}

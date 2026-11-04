@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllUsers, getRecentProperties, getRecentUsers, getUserStats, getUserStatsMain, getVerificationSummary } from "./admin.controller.js";
+import { getAllProperties, getAllUsers, getPropertyStats, getRecentProperties, getRecentUsers, getUserStats, getUserStatsMain, getVerificationSummary } from "./admin.controller.js";
 
 const adminRoutes = express.Router();
 
@@ -9,6 +9,8 @@ adminRoutes.get("/properties/recent", getRecentProperties);
 adminRoutes.get("/users/recent", getRecentUsers);
 adminRoutes.get("/verification/summary", getVerificationSummary);
 adminRoutes.get("/users/stats/main", getUserStatsMain);
+adminRoutes.get("/properties/stats", getPropertyStats);
+adminRoutes.get("/properties/all", getAllProperties);
 export default adminRoutes;
 
   
