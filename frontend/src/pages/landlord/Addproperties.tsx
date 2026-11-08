@@ -212,7 +212,7 @@ const handlePropertyTypeChange = (value: string) => {
               </h3>
 
               <p className="mt-1 text-xs leading-5 text-green-700">
-                Once published, your property will become visible to people browsing properties on QuickStay.
+                Once published, your property will become visible to people browsing properties on GreenSpringHomes.
               </p>
             </div>
 
