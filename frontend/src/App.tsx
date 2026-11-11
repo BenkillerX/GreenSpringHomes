@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
 import ServiceHome from "./pages/serviceProvider/ServiceHome";
 import Contact from "./pages/public/Contact";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 // Layouts
 const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
@@ -84,13 +85,7 @@ const App = () => {
 
       <Toaster
         position="top-right"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            background: "#fff",
-            color: "#333",
-          },
-        }}
+        toastOptions={{ duration: 3000, style: { background: "#fff", color: "#333", }, }}
       />
 
       <Suspense
@@ -106,84 +101,94 @@ const App = () => {
           </div>
         }
       >
-        <Routes>
-          {/* Public Pages */}
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/explore" element={<ExplorePage />} />
-            <Route path="/How-it-works" element={<HowItWorks />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="/contact" element={<Contact/>}/>
-          </Route>
+        
+<Routes>
+  {/* Public Pages */}
+  <Route element={<PublicLayout />}>
+    <Route path="/" element={<LandingPage />} />
+    <Route path="/explore" element={<ExplorePage />} />
+    <Route path="/How-it-works" element={<HowItWorks />} />
+    <Route path="/help" element={<Help />} />
+    <Route path="/contact" element={<Contact />} />
+  </Route>
 
-          {/* Tenant Pages */}
-          <Route element={<TenantLayout />}>
-            <Route path="/tenant/" element={<TenantHome />} />
-            <Route path="/tenant/saved-properties" element={<SavedProperties />} /> 
-            <Route path="/tenant/settings" element={<Settings />} /> 
-            <Route path="/tenant/details/:id" element={<PropertyDetails />} />
-          </Route>
+  {/* Authentication */}
+  <Route path="/login" element={<Login />} />
+  <Route path="/register" element={<Register />} />
+  <Route path="/register/tenant" element={<Tenant />} />
 
-          {/* Property Owner Pages */}
-          <Route element={<OwnerLayout />}>
-            <Route path="/owner/" element={<OwnerHome />} />
-            <Route path="/owner/properties" element={<OwnerProperties />} /> 
-            <Route path="/owner/properties/add" element={<Addproperties />} /> 
-            <Route path="/owner/messages" element={<OwnerMessages />} /> 
-            <Route path="/owner/notifications" element={<OwnerNotifications />} />
-            <Route path="/owner/settings" element={<OwnerSettings />} />
-            <Route path="/owner/update" element={<UpdateInfo />} />
-            <Route path="/owner/properties/edit/:id" element={<EditProperty />} />
-            <Route path="/owner/properties/:id" element={<OwnerPropertyDetails />} />
-          </Route>
+  <Route
+    path="/register/service-provider"
+    element={
+      <ComingSoon
+        title="Service Provider Registration"
+        description="We're preparing service provider registration on GreenSpringHomes. You'll soon be able to connect with property owners and tenants who need your services."
+      />
+    }
+  />
 
-          {/* Service Provider Pages */}
-          <Route element={<ServiceProviderLayout />}>
-            <Route path="/service-provider/" element={<ServiceHome />} />
-          </Route>
+  <Route
+    path="/register/property-owner"
+    element={<PropertyOwner />}
+  />
 
-          {/* Authentication */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/register/tenant" element={<Tenant />} />
+  {/* Email Verification */}
+  <Route path="/verify-email" element={<VerifyEmail />} />
 
-          <Route
-            path="/register/service-provider"
-            element={
-              <ComingSoon
-                title="Service Provider Registration"
-                description="We're preparing service provider registration on GreenSpringHomes. You'll soon be able to connect with property owners and tenants who need your services."
-              />
-            }
-          />
+  {/* Protected Routes */}
+  <Route element={<ProtectedRoute />}>
 
-          <Route path="/register/property-owner" element={<PropertyOwner />} />
+    {/* Tenant Pages */}
+    <Route element={<TenantLayout />}>
+      <Route path="/tenant/" element={<TenantHome />} />
+      <Route path="/tenant/saved-properties" element={<SavedProperties />} />
+      <Route path="/tenant/settings" element={<Settings />} />
+      <Route path="/tenant/details/:id" element={<PropertyDetails />} />
+    </Route>
 
-          {/* Onboarding */}
-          <Route path="/tenant/onboarding" element={<TenantOnboarding />} />
+    {/* Property Owner Pages */}
+    <Route element={<OwnerLayout />}>
+      <Route path="/owner/" element={<OwnerHome />} />
+      <Route path="/owner/properties" element={<OwnerProperties />} />
+      <Route path="/owner/properties/add" element={<Addproperties />} />
+      <Route path="/owner/messages" element={<OwnerMessages />} />
+      <Route path="/owner/notifications" element={<OwnerNotifications />} />
+      <Route path="/owner/settings" element={<OwnerSettings />} />
+      <Route path="/owner/update" element={<UpdateInfo />} />
+      <Route path="/owner/properties/edit/:id" element={<EditProperty />} />
+      <Route path="/owner/properties/:id" element={<OwnerPropertyDetails />} />
+    </Route>
 
-          <Route path="/provider/onboarding" element={<ServiceProviderOnboarding />} />
+    {/* Service Provider Pages */}
+    <Route element={<ServiceProviderLayout />}>
+      <Route path="/service-provider/" element={<ServiceHome />} />
+    </Route>
 
-          <Route path="/owner/onboarding" element={<PropertyOwnerOnboarding />} />
+    {/* Onboarding */}
+    <Route path="/tenant/onboarding" element={<TenantOnboarding />} />
+    <Route path="/provider/onboarding" element={<ServiceProviderOnboarding />} />
+    <Route path="/owner/onboarding" element={<PropertyOwnerOnboarding />} />
 
-          {/* Email Verification */}
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route element={<AdminLayout/>}>
-            <Route path="/admin/" element={<Admin/>}/>
-            <Route path="/admin/properties" element={<PropertyManagement/>}/>
-            <Route path="/admin/property-verification" element={<PropertyVerification/>}/>
-            <Route path="/admin/service-providers" element={<ServiceProviders/>}/>
-            <Route path="/admin/reports" element={<Reports/>}/>
-            <Route path="/admin/payments" element={<Payments/>}/>
-            <Route path="/admin/content" element={<ContentManagement/>}/>
-            <Route path="/admin/notifications" element={<Notifications/>}/>
-            <Route path="/admin/analytics" element={<AdminAnalytics/>}/>
-            <Route path="/admin/roles" element={<UserManagement/>}/>
-            <Route path="/admin/audit-logs" element={<AuditLogs/>}/>
-            <Route path="/admin/settings" element={<AdminSettings/>}/>
-            <Route path="/admin/users" element={<UserManagement/>}/>
-        </Route>
-        </Routes>
+    {/* Admin Pages */}
+    <Route element={<AdminLayout />}>
+      <Route path="/admin/" element={<Admin />} />
+      <Route path="/admin/properties" element={<PropertyManagement />} />
+      <Route path="/admin/property-verification" element={<PropertyVerification />} />
+      <Route path="/admin/service-providers" element={<ServiceProviders />} />
+      <Route path="/admin/reports" element={<Reports />} />
+      <Route path="/admin/payments" element={<Payments />} />
+      <Route path="/admin/content" element={<ContentManagement />} />
+      <Route path="/admin/notifications" element={<Notifications />} />
+      <Route path="/admin/analytics" element={<AdminAnalytics />} />
+      <Route path="/admin/roles" element={<UserManagement />} />
+      <Route path="/admin/audit-logs" element={<AuditLogs />} />
+      <Route path="/admin/settings" element={<AdminSettings />} />
+      <Route path="/admin/users" element={<UserManagement />} />
+    </Route>
+
+  </Route>
+</Routes>
+
       </Suspense>
 
       {isPublicPage && <BackToTop />}
