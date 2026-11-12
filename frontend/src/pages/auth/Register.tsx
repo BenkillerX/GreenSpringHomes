@@ -1,21 +1,22 @@
+
 import { Link } from "react-router-dom";
-import {
-  FiArrowLeft,
-} from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
+import { House, Building2, Wrench } from "lucide-react";
 
 const Register = () => {
   return (
     <section className="min-h-screen w-full flex items-center justify-center px-4 py-10 bg-gray-50">
       {/* Back to Home */}
-        <div className="absolute left-5 top-5 z-20 sm:left-8 sm:top-7">
-          <Link
-            to="/"
-            className="flex items-center text-sm font-medium text-gray-600 transition hover:text-green-600"
-          >
-            <FiArrowLeft size={18} />
-           Back to Green<span className="text-green-500">Spring</span>Homes
-          </Link>
-        </div>
+      <div className="absolute left-5 top-5 z-20 sm:left-8 sm:top-7">
+        <Link
+          to="/"
+          className="flex items-center text-sm font-medium text-gray-600 transition hover:text-green-600"
+        >
+          <FiArrowLeft size={18} />
+          Back to Green<span className="text-green-500">Spring</span>Homes
+        </Link>
+      </div>
+
       <div className="w-full max-w-4xl">
         {/* Heading */}
         <div className="text-center mb-10">
@@ -24,20 +25,21 @@ const Register = () => {
           </h1>
 
           <p className="mt-3 text-gray-500 text-base sm:text-lg">
-            What would you like to use Green<span className="text-green-500">Spring</span>Home for?
+            What would you like to use Green
+            <span className="text-green-500">Spring</span>Home for?
           </p>
         </div>
 
         {/* Role Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          
+
           {/* Tenant */}
           <Link
             to="/register/tenant"
             className="group bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 hover:border-green-500 hover:shadow-md transition-all"
           >
-            <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-green-50 text-green-500 mb-6 text-2xl">
-              🏠
+            <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-green-50 text-green-500 mb-6">
+              <House size={28} strokeWidth={1.8} />
             </div>
 
             <h2 className="text-xl font-semibold text-gray-900">
@@ -58,8 +60,8 @@ const Register = () => {
             to="/register/property-owner"
             className="group bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 hover:border-green-500 hover:shadow-md transition-all"
           >
-            <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-green-50 text-green-500 mb-6 text-2xl">
-              🏢
+            <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-green-50 text-green-500 mb-6">
+              <Building2 size={28} strokeWidth={1.8} />
             </div>
 
             <h2 className="text-xl font-semibold text-gray-900">
@@ -80,8 +82,8 @@ const Register = () => {
             to="/register/service-provider"
             className="group bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 hover:border-green-500 hover:shadow-md transition-all"
           >
-            <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-green-50 text-green-500 mb-6 text-2xl">
-              🛠️
+            <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-green-50 text-green-500 mb-6">
+              <Wrench size={28} strokeWidth={1.8} />
             </div>
 
             <h2 className="text-xl font-semibold text-gray-900">

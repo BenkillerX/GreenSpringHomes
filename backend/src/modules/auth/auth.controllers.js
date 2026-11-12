@@ -5,9 +5,7 @@ import { sendVerificationEmail } from "../../services/emailService.js";
 import { generateVerificationCode, hashVerificationCode } from "../../utils/emailVerification.js";
 import { OAuth2Client } from "google-auth-library";
 
-const googleClient = new OAuth2Client(
-  process.env.GOOGLE_CLIENT_ID
-);
+const googleClient = new OAuth2Client( process.env.GOOGLE_CLIENT_ID );
 export async function googleLogin(req, res) {
   try {
     const { credential } = req.body;
