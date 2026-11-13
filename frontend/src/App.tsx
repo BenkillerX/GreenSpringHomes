@@ -1,6 +1,5 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-
 import ScrollToTop from "./components/common/ScrollToTop";
 import BackToTop from "./components/common/BackToTop";
 import { Toaster } from "react-hot-toast";
@@ -8,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 import ServiceHome from "./pages/serviceProvider/ServiceHome";
 import Contact from "./pages/public/Contact";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import ServiceProvider from "./pages/auth/ServiceProvider";
 
 // Layouts
 const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
@@ -65,8 +65,10 @@ const TenantOnboarding = lazy( () => import("./pages/onboarding/TenantOnboarding
 const ServiceProviderOnboarding = lazy( () => import("./pages/onboarding/ServiceProviderOnboarding") ); 
 const PropertyOwnerOnboarding = lazy( () => import("./pages/onboarding/PropertyOwnerOnboarding") );
 // Common pages
-const ComingSoon = lazy( () => import("./components/common/ComingSoon") );
-
+//Service Provider pages
+const MyServices = lazy(() => import("./pages/serviceProvider/MyServices"));
+const ServiceSettings = lazy(() => import("./pages/serviceProvider/ServiceSettings"));
+const SeerviceNotification = lazy(() => import("./pages/serviceProvider/SeerviceNotification"));
 const App = () => {
   const { pathname } = useLocation();
 
@@ -119,18 +121,10 @@ const App = () => {
 
   <Route
     path="/register/service-provider"
-    element={
-      <ComingSoon
-        title="Service Provider Registration"
-        description="We're preparing service provider registration on GreenSpringHomes. You'll soon be able to connect with property owners and tenants who need your services."
-      />
-    }
+    element={<ServiceProvider />}
   />
 
-  <Route
-    path="/register/property-owner"
-    element={<PropertyOwner />}
-  />
+  <Route path="/register/property-owner" element={<PropertyOwner />} />
 
   {/* Email Verification */}
   <Route path="/verify-email" element={<VerifyEmail />} />
@@ -162,11 +156,14 @@ const App = () => {
     {/* Service Provider Pages */}
     <Route element={<ServiceProviderLayout />}>
       <Route path="/service-provider/" element={<ServiceHome />} />
+      <Route path="/service-provider/services" element={<MyServices />} />
+      <Route path="/service-provider/settings" element={<ServiceSettings />} />
+      <Route path="/service-provider/notifications" element={<SeerviceNotification />} />
     </Route>
 
     {/* Onboarding */}
     <Route path="/tenant/onboarding" element={<TenantOnboarding />} />
-    <Route path="/provider/onboarding" element={<ServiceProviderOnboarding />} />
+    <Route path="/service-provider/onboarding" element={<ServiceProviderOnboarding />} />
     <Route path="/owner/onboarding" element={<PropertyOwnerOnboarding />} />
 
     {/* Admin Pages */}

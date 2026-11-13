@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getCurrentUser, Login, registerPropertyOwner, registerServiceProvider, registerTenant, updateCurrentUser, emailValidation, deleteCurrentUser, googleLogin, googleRegisterTenant, googleRegisterPropertyOwner, } from "./auth.controllers.js";
+import { getCurrentUser, Login, registerPropertyOwner, registerServiceProvider, registerTenant, updateCurrentUser, emailValidation, deleteCurrentUser, googleLogin, googleRegisterTenant, googleRegisterPropertyOwner, googleRegisterServiceProvider} from "./auth.controllers.js";
 import { loginValidator, propertyOwnerValidator, serviceProviderValidator, tenantValidator } from "../../validators/auth.validator.js";
 import { validateRequest } from "../../middleware/validator.middleware.js";
 import { authenticateToken } from "../../middleware/auth.middleware.js";
@@ -13,6 +13,7 @@ authRoutes.post( "/google/register/property-owner", googleRegisterPropertyOwner 
 authRoutes.post( "/register/tenant", tenantValidator, validateRequest, registerTenant );
 authRoutes.post( "/register/property-owner", propertyOwnerValidator, validateRequest, registerPropertyOwner );
 authRoutes.post( "/register/service-provider", serviceProviderValidator, validateRequest, registerServiceProvider );
+authRoutes.post( "/google/register/service-provider", googleRegisterServiceProvider );
 authRoutes.post("/verify-email", emailValidation)
 authRoutes.get('/me', authenticateToken, getCurrentUser)
 authRoutes.patch('/me',authenticateToken, updateCurrentUser)

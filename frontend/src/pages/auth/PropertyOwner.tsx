@@ -36,12 +36,7 @@ const PropertyOwner = () => {
   try {
     setLoading(true);
 
-    const result = await registerOwner(
-      firstname,
-      lastname,
-      email,
-      password
-    );
+    const result = await registerOwner( firstname, lastname, email, password );
 
     navigate("/verify-email", {
       state: {

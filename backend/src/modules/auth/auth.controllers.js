@@ -389,7 +389,117 @@ export async function registerServiceProvider(req, res) {
         });
     }
 }
+export async function googleRegisterServiceProvider(req, res) {
+    try {
+        const { credential } = req.body;
 
+        if (!credential) {
+            return res.status(400).json({
+                message: "Google credential is required.",
+            });
+        }
+
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+
+        if (
+            !payload?.sub ||
+            !payload.email ||
+            !payload.email_verified
+        ) {
+            return res.status(401).json({
+                message: "Google account could not be verified.",
+            });
+        }
+
+        const email = payload.email.toLowerCase();
+
+        const fullName = payload.name?.trim().split(/\s+/) ?? [];
+
+        const firstname = payload.given_name || fullName[0];
+
+        const lastname =
+            payload.family_name ||
+            fullName.slice(1).join(" ") ||
+            "Provider";
+
+        if (!firstname) {
+            return res.status(400).json({
+                message:
+                    "Your Google profile does not contain a valid name.",
+            });
+        }
+
+        // Check whether email already exists
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(409).json({
+                message:
+                    "An account with this email already exists. Please log in instead.",
+                code: "ACCOUNT_ALREADY_EXISTS",
+            });
+        }
+
+        // Check whether Google account already exists
+        const existingGoogleUser = await User.findOne({
+            googleId: payload.sub,
+        });
+
+        if (existingGoogleUser) {
+            return res.status(409).json({
+                message:
+                    "This Google account is already registered. Please log in.",
+                code: "GOOGLE_ACCOUNT_EXISTS",
+            });
+        }
+
+        // Create service provider account
+        const newServiceProvider = new User({
+            firstname,
+            lastname,
+            email,
+            googleId: payload.sub,
+            role: "serviceProvider",
+            isEmailVerified: true,
+            onboardingCompleted: false,
+        });
+
+        await newServiceProvider.save();
+
+        // Generate authentication token
+        const token = generateToken(newServiceProvider);
+
+        return res.status(201).json({
+            message:
+                "Service provider account created successfully.",
+            token,
+            user: {
+                firstname: newServiceProvider.firstname,
+                lastname: newServiceProvider.lastname,
+                email: newServiceProvider.email,
+                role: newServiceProvider.role,
+                onboardingCompleted:
+                    newServiceProvider.onboardingCompleted,
+            },
+        });
+
+    } catch (error) {
+        console.error(
+            "Google service provider registration error:",
+            error instanceof Error ? error.message : "Unknown error"
+        );
+
+        return res.status(500).json({
+            message:
+                "An error occurred while creating your account.",
+        });
+    }
+}
 export async function Login(req, res) {
     try {
         

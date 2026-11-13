@@ -1,7 +1,9 @@
+import ComingSoon from "../../components/common/ComingSoon"
+
 const ServiceHome = () => {
   return (
     <div>
-        Coming Very soon
+       <ComingSoon title="Service Home" />
     </div>
   )
 }

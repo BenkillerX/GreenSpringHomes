@@ -63,6 +63,7 @@ export interface AuthContextType {
   logout: () => void;
   googleRegisterTenant: (credential: string) => Promise<User>;
   googleRegisterPropertyOwner: (credential: string) => Promise<User>;
+  googleRegisterServiceProvider: ( credential: string ) => Promise<User>;
   loading: boolean;
 }
 

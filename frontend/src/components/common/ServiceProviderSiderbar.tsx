@@ -1,19 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
-
-import {
-  FiHome,
-  FiBriefcase,
-  FiClipboard,
-  FiMessageCircle,
-  FiDollarSign,
-  FiBell,
-  FiSettings,
-  FiLogOut,
-  FiChevronLeft,
-  FiChevronRight,
-} from "react-icons/fi";
+import { FiHome, FiBriefcase, FiBell, FiSettings, FiLogOut, FiChevronLeft, FiChevronRight, } from "react-icons/fi";
 
 type SidebarLinkProps = {
   icon: React.ReactNode;
@@ -86,11 +74,11 @@ const ServiceProviderSiderbar = () => {
       >
         {!isCollapsed ? (
           <h1 className="text-xl font-bold text-green-600">
-            QuickStay
+            Green<span className="text-green-500">SpringHomes</span>
           </h1>
         ) : (
           <span className="text-xl font-bold text-green-600">
-            Q
+            GSH
           </span>
         )}
       </div>
@@ -156,28 +144,6 @@ const ServiceProviderSiderbar = () => {
           to="/service-provider/services"
           collapsed={isCollapsed}
         />
-
-        <SidebarLink
-          icon={<FiClipboard />}
-          label="Requests"
-          to="/service-provider/requests"
-          collapsed={isCollapsed}
-        />
-
-        <SidebarLink
-          icon={<FiMessageCircle />}
-          label="Messages"
-          to="/service-provider/messages"
-          collapsed={isCollapsed}
-        />
-
-        <SidebarLink
-          icon={<FiDollarSign />}
-          label="Earnings"
-          to="/service-provider/earnings"
-          collapsed={isCollapsed}
-        />
-
         <SidebarLink
           icon={<FiBell />}
           label="Notifications"

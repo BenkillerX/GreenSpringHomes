@@ -233,6 +233,27 @@ const googleRegisterPropertyOwner = async (
 
   return user;
 };
+const googleRegisterServiceProvider = async (
+  credential: string
+): Promise<User> => {
+  const response = await api.post(
+    "/api/auth/google/register/service-provider",
+    {
+      credential,
+    }
+  );
+
+  const { token, user } = response.data;
+
+  if (!token || !user) {
+    throw new Error("Invalid registration response from server.");
+  }
+
+  localStorage.setItem("token", token);
+  setCurrentUser(user);
+
+  return user;
+};
   return (
     <AuthContext.Provider
       value={{
@@ -248,6 +269,7 @@ const googleRegisterPropertyOwner = async (
         googleLogin,
         googleRegisterTenant,
         googleRegisterPropertyOwner,
+        googleRegisterServiceProvider
       }}
     >
       {children}
