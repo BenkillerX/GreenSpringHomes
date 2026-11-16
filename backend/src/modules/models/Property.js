@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const propertySchema = new mongoose.Schema(
@@ -95,17 +96,17 @@ const propertySchema = new mongoose.Schema(
 
     // Property images
     images: [
-  {
-    url: {
-      type: String,
-      required: true,
-    },
-    publicId: {
-      type: String,
-      required: true,
-    },
-  },
-],
+      {
+        url: {
+          type: String,
+          required: true,
+        },
+        publicId: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
 
     // Listing status
     status: {
@@ -119,6 +120,18 @@ const propertySchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "verified", "rejected"],
       default: "pending",
+    },
+
+    // Property prioritization
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+
+    priority: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
 
     // Number of times people have viewed the property

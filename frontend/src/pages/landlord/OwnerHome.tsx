@@ -50,6 +50,8 @@ export interface Property {
 
   createdAt: string;
   updatedAt: string;
+  isFeatured: boolean;
+  priority: number;
 }
 
 const OwnerHome = () => {
