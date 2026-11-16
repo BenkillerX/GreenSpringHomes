@@ -27,51 +27,63 @@ interface Property {
   images: PropertyImage[];
   status: string;
   verificationStatus: string;
+  isFeatured: boolean;
+  priority: number;
 }
 
 const VerifiedHomes = () => {
-  const [verifiedHomes, setVerifiedHomes] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
-  useEffect(() => {
-    let isMounted = true;
+const [verifiedHomes, setVerifiedHomes] = useState<Property[]>([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState("");
 
-    const getVerifiedHomes = async () => {
-      try {
-        setLoading(true);
-        setError("");
+useEffect(() => {
+  let isMounted = true;
 
-        const response = await api.get("/api/properties/all");
+  const getVerifiedHomes = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-        const properties: Property[] = response.data.properties ?? [];
+      const response = await api.get("/api/properties/all");
 
-        const activeProperties = properties.filter(
-        (property) => property.status === "active"
-        );
+      const properties: Property[] = response.data.properties ?? [];
 
-        if (isMounted) {
-        setVerifiedHomes(activeProperties.slice(0, 5));
-        }
-      } catch (error: unknown) {
-        console.error("Failed to fetch verified homes:", error);
+      const prioritizedProperties = properties
+        .filter((property) => property.status === "active")
+        .sort((a, b) => {
+          // Featured properties come first
+          if (a.isFeatured !== b.isFeatured) {
+            return Number(b.isFeatured) - Number(a.isFeatured);
+          }
 
-        if (isMounted) {
-          setError("Unable to load verified homes. Please try again later.");
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+          // Higher priority comes first
+          return (b.priority ?? 0) - (a.priority ?? 0);
+        });
+
+      if (isMounted) {
+        setVerifiedHomes(prioritizedProperties.slice(0, 5));
       }
-    };
+    } catch (error: unknown) {
+      console.error("Failed to fetch verified homes:", error);
 
-    void getVerifiedHomes();
+      if (isMounted) {
+        setError("Unable to load verified homes. Please try again later.");
+      }
+    } finally {
+      if (isMounted) {
+        setLoading(false);
+      }
+    }
+  };
 
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  void getVerifiedHomes();
+
+  return () => {
+    isMounted = false;
+  };
+}, []);
+
 
   return (
     <section className="mx-auto mb-30 min-h-60 w-[85%]">
