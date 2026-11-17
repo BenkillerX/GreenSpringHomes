@@ -17,7 +17,16 @@ export type VerifyEmailResponse = {
   token: string;
   user: User;
 };
-
+export interface ServiceProviderProfile {
+  _id: string;
+  user: string;
+  service: string;
+  description: string;
+  experience: number;
+  location: string;
+  createdAt: string;
+  updatedAt: string;
+}
 export interface AuthContextType {
   currentUser: User | null;
 
@@ -55,11 +64,10 @@ export interface AuthContextType {
     password: string
   ) => Promise<{ email: string }>;
 
-  verifyEmail: (
-    email: string,
-    code: string
-  ) => Promise<VerifyEmailResponse>;
+  verifyEmail: ( email: string, code: string ) => Promise<VerifyEmailResponse>;
+  serviceProviderProfile: ServiceProviderProfile | null;
 
+  getServiceProviderProfile: () => Promise<void>;
   logout: () => void;
   googleRegisterTenant: (credential: string) => Promise<User>;
   googleRegisterPropertyOwner: (credential: string) => Promise<User>;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import { AuthContext, type User, type VerifyEmailResponse } from "./AuthContext";
+import { AuthContext, type ServiceProviderProfile, type User, type VerifyEmailResponse } from "./AuthContext";
 import axios from "axios";
 
 export const AuthProvider = ({
@@ -10,7 +10,8 @@ export const AuthProvider = ({
 }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [serviceProviderProfile, setServiceProviderProfile] =
+  useState<ServiceProviderProfile | null>(null);
   // Restore logged-in user when the app is refreshed
 useEffect(() => {
   let cancelled = false;
@@ -168,10 +169,11 @@ const verifyEmail = async (
 };
 
 
-  const logout = (): void => {
-    setCurrentUser(null);
-    localStorage.removeItem("token");
-  };
+ const logout = (): void => {
+  setCurrentUser(null);
+  setServiceProviderProfile(null);
+  localStorage.removeItem("token");
+};
   // Google Login
 const googleLogin = async (credential: string): Promise<User> => {
   const response = await api.post("/api/auth/google", {
@@ -254,24 +256,34 @@ const googleRegisterServiceProvider = async (
 
   return user;
 };
+const getServiceProviderProfile = async (): Promise<void> => {
+  const response = await api.get(
+    "/api/service-providers/profile"
+  );
+
+  setServiceProviderProfile(response.data.profile);
+};
   return (
     <AuthContext.Provider
-      value={{
-        currentUser,
-        setCurrentUser,
-        loading,
-        login,
-        register,
-        registerOwner,
-        registerServiceProvider,
-        verifyEmail,
-        logout,
-        googleLogin,
-        googleRegisterTenant,
-        googleRegisterPropertyOwner,
-        googleRegisterServiceProvider
-      }}
-    >
+  value={{
+    currentUser,
+    setCurrentUser,
+    loading,
+    login,
+    register,
+    registerOwner,
+    registerServiceProvider,
+    verifyEmail,
+    logout,
+    googleLogin,
+    googleRegisterTenant,
+    googleRegisterPropertyOwner,
+    googleRegisterServiceProvider,
+
+    serviceProviderProfile,
+    getServiceProviderProfile,
+  }}
+>
       {children}
     </AuthContext.Provider>
   );

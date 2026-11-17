@@ -188,10 +188,10 @@ const Navbar = () => {
             </Link>
 
             <Link
-              to="/register/property-owner"
+              to="/register"
               className="bg-green-500 px-4 py-1.5 rounded-xl text-white hover:bg-green-600 transition"
             >
-              List Property
+              Create Account
             </Link>
           </div>
         </div>
