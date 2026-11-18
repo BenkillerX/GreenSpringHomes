@@ -87,7 +87,7 @@ const ListingDetails = ({ listingType, setListingType, price, setPrice, bedrooms
                 </div>
     
             {/* BEDROOMS */}
-{propertyType !== "land" && (
+{!["land", "car", "other"].includes(propertyType) && (
   <div>
     <label
       htmlFor="bedrooms"
@@ -109,7 +109,7 @@ const ListingDetails = ({ listingType, setListingType, price, setPrice, bedrooms
 )}
 
 {/* BATHROOMS */}
-{propertyType !== "land" && (
+{!["land", "car", "other"].includes(propertyType) && (
   <div>
     <label
       htmlFor="bathrooms"

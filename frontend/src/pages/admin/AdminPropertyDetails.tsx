@@ -323,7 +323,7 @@ const AdminPropertyDetails = () => {
               <img
                 src={property.images[selectedImage]?.url}
                 alt={property.title}
-                className="h-80 w-full object-cover sm:h-[450px]"
+                className="h-80 w-full object-cover sm:h-112.5"
               />
             </div>
 

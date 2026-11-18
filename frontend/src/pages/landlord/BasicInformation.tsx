@@ -107,6 +107,7 @@ const BasicInformation = ({ title, setTitle, description, setDescription, proper
                     <option value="office">Office</option>
                     <option value="shop">Shop</option>
                     <option value="other">Other</option>
+                    <option value="car">Cars</option>
                   </select>
                 </div>
     

@@ -62,7 +62,7 @@ console.log("Number of images:", images.length);
       formData.append("propertyType", propertyType);
       formData.append("listingType", listingType);
       formData.append("price", price);
-    if (propertyType !== "land") {
+if (!["land", "car", "other"].includes(propertyType)) {
   formData.append("bedrooms", bedrooms);
   formData.append("bathrooms", bathrooms);
 }
@@ -114,7 +114,7 @@ catch (error) {
 const handlePropertyTypeChange = (value: string) => {
   setPropertyType(value);
 
-  if (value === "land") {
+  if (["land", "car", "other"].includes(value)) {
     setBedrooms("");
     setBathrooms("");
   }

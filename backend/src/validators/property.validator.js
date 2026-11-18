@@ -20,16 +20,17 @@ export const propertyValidator = [
     .notEmpty()
     .withMessage("Property type is required.")
     .isIn([
-      "apartment",
-      "house",
-      "duplex",
-      "bungalow",
-      "self-contained",
-      "land",
-      "office",
-      "shop",
-      "other",
-    ])
+    "apartment",
+    "house",
+    "duplex",
+    "bungalow",
+    "self-contained",
+    "land",
+    "office",
+    "shop",
+    "car",
+    "other",
+  ])
     .withMessage("Invalid property type."),
 
   // Listing details

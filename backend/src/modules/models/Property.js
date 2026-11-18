@@ -37,6 +37,7 @@ const propertySchema = new mongoose.Schema(
         "land",
         "office",
         "shop",
+        "car",
         "other",
       ],
     },
