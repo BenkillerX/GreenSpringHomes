@@ -26,9 +26,9 @@ interface Property {
   };
   images: PropertyImage[];
   status: string;
-  verificationStatus: string;
   isFeatured: boolean;
   priority: number;
+  verificationStatus: "pending" | "verified" | "rejected";
 }
 
 const VerifiedHomes = () => {
@@ -50,17 +50,20 @@ useEffect(() => {
       const properties: Property[] = response.data.properties ?? [];
 
       const prioritizedProperties = properties
-        .filter((property) => property.status === "active")
-        .sort((a, b) => {
-          // Featured properties come first
-          if (a.isFeatured !== b.isFeatured) {
-            return Number(b.isFeatured) - Number(a.isFeatured);
-          }
+  .filter(
+    (property) =>
+      property.status === "active" &&
+      property.verificationStatus === "verified"
+  )
+  .sort((a, b) => {
+    // Featured properties come first
+    if (a.isFeatured !== b.isFeatured) {
+      return Number(b.isFeatured) - Number(a.isFeatured);
+    }
 
-          // Higher priority comes first
-          return (b.priority ?? 0) - (a.priority ?? 0);
-        });
-
+    // Higher priority comes first
+    return (b.priority ?? 0) - (a.priority ?? 0);
+  });
       if (isMounted) {
         setVerifiedHomes(prioritizedProperties.slice(0, 5));
       }
@@ -166,8 +169,8 @@ useEffect(() => {
                     }}
                   />
 
-                  <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 shadow-sm">
-                Available
+                 <span className="absolute left-3 top-3 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 shadow-sm">
+                  Verified
                 </span>
 
                   <span className="absolute bottom-3 right-3 rounded-md bg-black/70 px-3 py-1 text-xs font-medium capitalize text-white">

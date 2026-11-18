@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, MapPin, BedDouble, Bath, Eye, CalendarDays, User, Mail, Phone, Building2, CheckCircle, XCircle, RefreshCw, Star, AlertCircle, } from "lucide-react";
 import toast from "react-hot-toast";
@@ -57,36 +57,61 @@ const AdminPropertyDetails = () => {
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [loadedPropertyId, setLoadedPropertyId] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [updating, setUpdating] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
 
   const [selectedImage, setSelectedImage] = useState(0);
 
-  const fetchProperty = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await api.get<PropertyResponse>(
-        `/api/admin/properties/${propertyId}`
-      );
-
-      if (!response.data.success) {
-        throw new Error("Failed to retrieve property");
-      }
-
-      setProperty(response.data.property);
-      setRejectionReason(response.data.property.rejectionReason ?? "");
-    } catch (error: unknown) {
-      console.error("Fetch property error:", error);
-
-      setError("Unable to retrieve property details. Please try again.");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (!propertyId) {
+      return;
     }
+
+    let cancelled = false;
+
+    const loadProperty = async () => {
+      try {
+        const response = await api.get<PropertyResponse>(
+          `/api/admin/properties/${propertyId}`
+        );
+
+        if (!response.data.success) {
+          throw new Error("Failed to retrieve property");
+        }
+
+        if (cancelled) return;
+
+        setProperty(response.data.property);
+        setRejectionReason(response.data.property.rejectionReason ?? "");
+        setError(null);
+      } catch (error: unknown) {
+        if (cancelled) return;
+
+        console.error("Fetch property error:", error);
+        setError("Unable to retrieve property details. Please try again.");
+      } finally {
+        if (!cancelled) {
+          setLoadedPropertyId(propertyId);
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadProperty();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [propertyId, retryCount]);
+
+  const reloadProperty = () => {
+    setLoading(true);
+    setError(null);
+    setRetryCount((count) => count + 1);
   };
 
- 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-NG", {
       style: "currency",
@@ -184,19 +209,8 @@ const AdminPropertyDetails = () => {
       setUpdating(false);
     }
   };
-if (!propertyId) {
-  return (
-    <div className="p-6">
-      <h2 className="text-xl font-semibold text-red-600">
-        Invalid Property ID
-      </h2>
-      <p className="text-gray-500 mt-2">
-        The property ID provided in the URL is invalid.
-      </p>
-    </div>
-  );
-}
-  if (loading) {
+
+  if ((loading || loadedPropertyId !== propertyId) && propertyId) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center">
         <RefreshCw size={30} className="animate-spin text-green-700" />
@@ -207,7 +221,7 @@ if (!propertyId) {
     );
   }
 
-  if (error || !property) {
+  if (!propertyId || error || !property) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
         <AlertCircle size={35} className="text-red-500" />
@@ -217,15 +231,17 @@ if (!propertyId) {
         </h2>
 
         <p className="mt-2 text-sm text-gray-500">
-          {error ?? "Property not found."}
+          {!propertyId ? "Invalid property ID" : error ?? "Property not found."}
         </p>
 
-        <button
-          onClick={() => void fetchProperty()}
-          className="mt-5 rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800"
-        >
-          Try again
-        </button>
+        {propertyId && (
+          <button
+            onClick={reloadProperty}
+            className="mt-5 rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800"
+          >
+            Try again
+          </button>
+        )}
       </div>
     );
   }
@@ -256,7 +272,7 @@ if (!propertyId) {
         </div>
 
         <button
-          onClick={() => void fetchProperty()}
+          onClick={reloadProperty}
           disabled={updating}
           className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50"
         >
@@ -307,7 +323,7 @@ if (!propertyId) {
               <img
                 src={property.images[selectedImage]?.url}
                 alt={property.title}
-                className="h-80 w-full object-cover sm:h-112.5"
+                className="h-80 w-full object-cover sm:h-[450px]"
               />
             </div>
 

@@ -138,10 +138,12 @@ const TenantHome = () => {
                       }}
                     />
 
-                    {/* Availability Badge */}
-                    <span className="absolute left-2 top-2 rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-emerald-700 shadow-sm sm:text-xs">
-                      Available
-                    </span>
+                    {/* Verification Badge */}
+                    {property.verificationStatus === "verified" && (
+                      <span className="absolute left-2 top-2 rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-semibold text-emerald-700 shadow-sm sm:text-xs">
+                        Verified
+                      </span>
+                    )}
 
                     {/* Save Property Heart Button */}
                     <div className="absolute right-2 top-2 z-10 origin-top-right scale-90 sm:scale-100">
