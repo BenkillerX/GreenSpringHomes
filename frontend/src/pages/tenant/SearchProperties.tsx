@@ -95,6 +95,7 @@ const SearchProperties = ({ onSearchResults }: SearchPropertiesProps) => {
             <option value="land">Land</option>
             <option value="office">Office</option>
             <option value="shop">Shop</option>
+            <option value="car">Cars</option>
             <option value="other">Other</option>
           </select>
           <ChevronDown
