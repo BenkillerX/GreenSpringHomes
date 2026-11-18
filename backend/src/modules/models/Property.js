@@ -121,6 +121,29 @@ const propertySchema = new mongoose.Schema(
       enum: ["pending", "verified", "rejected"],
       default: "pending",
     },
+    // Trust / verification
+verificationStatus: {
+  type: String,
+  enum: ["pending", "verified", "rejected"],
+  default: "pending",
+},
+
+verificationReviewedBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  default: null,
+},
+
+verificationReviewedAt: {
+  type: Date,
+  default: null,
+},
+
+rejectionReason: {
+  type: String,
+  trim: true,
+  default: null,
+},
 
     // Property prioritization
     isFeatured: {

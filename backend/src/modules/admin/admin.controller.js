@@ -1,6 +1,6 @@
 import Property from "../models/Property.js";
 import User from "../models/Users.js";
-
+import mongoose from "mongoose";
 export const getUserStats = async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
@@ -233,6 +233,154 @@ export async function getAllProperties(req, res) {
     return res.status(500).json({
       success: false,
       message: "Failed to get all properties",
+    });
+  }
+}
+
+export async function getPropertyById(req, res) {
+  try {
+    const { propertyId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(propertyId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid property ID",
+      });
+    }
+
+    const property = await Property.findById(propertyId)
+      .populate("owner", "firstname lastname email phoneNumber");
+
+    if (!property) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Property fetched successfully",
+      property,
+    });
+  } catch (error) {
+    console.error("Get property by ID error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch property",
+    });
+  }
+}
+export async function updatePropertyVerification(req, res) {
+  try {
+    const { propertyId } = req.params;
+    const { verificationStatus, rejectionReason } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(propertyId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid property ID",
+      });
+    }
+
+    const allowedStatuses = ["verified", "rejected"];
+
+    if (!allowedStatuses.includes(verificationStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: "Verification status must be verified or rejected",
+      });
+    }
+
+    if (
+      verificationStatus === "rejected" &&
+      (!rejectionReason || !rejectionReason.trim())
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "A rejection reason is required",
+      });
+    }
+
+    const property = await Property.findById(propertyId);
+
+    if (!property) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found",
+      });
+    }
+
+    property.verificationStatus = verificationStatus;
+
+    if (verificationStatus === "rejected") {
+      property.rejectionReason = rejectionReason.trim();
+    } else {
+      property.rejectionReason = undefined;
+    }
+
+    await property.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `Property ${verificationStatus} successfully`,
+      property,
+    });
+  } catch (error) {
+    console.error("Update property verification error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update property verification",
+    });
+  }
+}
+export async function updatePropertyStatus(req, res) {
+  try {
+    const { propertyId } = req.params;
+    const { status } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(propertyId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid property ID",
+      });
+    }
+
+    const allowedStatuses = ["active", "inactive"];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Status must be active or inactive",
+      });
+    }
+
+    const property = await Property.findById(propertyId);
+
+    if (!property) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found",
+      });
+    }
+
+    property.status = status;
+
+    await property.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `Property listing ${status} successfully`,
+      property,
+    });
+  } catch (error) {
+    console.error("Update property status error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update property status",
     });
   }
 }

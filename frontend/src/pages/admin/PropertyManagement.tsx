@@ -1,13 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  Building2,
-  Search,
-  SlidersHorizontal,
-  ChevronLeft,
-  ChevronRight,
-  ArrowUpDown,
-  RefreshCw,
-} from "lucide-react";
+import { Link } from "react-router-dom";
+import { Building2, Search, SlidersHorizontal, ChevronLeft, ChevronRight, ArrowUpDown, RefreshCw, Eye } from "lucide-react";
 import PropertyStats from "./PropertyStats";
 import api from "../../services/api";
 
@@ -568,9 +561,13 @@ useEffect(() => {
 
                       {/* Actions */}
                       <td className="px-5 py-4 text-right">
-                        <span className="text-xs text-gray-400">
-                          —
-                        </span>
+                        <Link
+                          to={`/admin/properties/${property._id}`}
+                          className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 transition hover:border-green-200 hover:bg-green-50 hover:text-green-700"
+                        >
+                          <Eye size={15} />
+                          View Details
+                        </Link>
                       </td>
                     </tr>
                   );

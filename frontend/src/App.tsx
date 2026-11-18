@@ -9,6 +9,7 @@ import Contact from "./pages/public/Contact";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import ServiceProvider from "./pages/auth/ServiceProvider";
 import TenantServiceProviderDetails from "./pages/tenant/TenantServiceProviderDetails";
+import AdminPropertyDetails from "./pages/admin/AdminPropertyDetails";
 
 // Layouts
 const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
@@ -188,6 +189,10 @@ const App = () => {
       <Route path="/admin/audit-logs" element={<AuditLogs />} />
       <Route path="/admin/settings" element={<AdminSettings />} />
       <Route path="/admin/users" element={<UserManagement />} />
+      <Route
+      path="/admin/properties/:propertyId"
+      element={<AdminPropertyDetails />}
+    />
     </Route>
 
   </Route>
