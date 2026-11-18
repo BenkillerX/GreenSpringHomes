@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
-import { FiLogOut, FiChevronLeft, FiChevronRight, FiHome, FiHeart, FiSettings, } from "react-icons/fi";
+import { FiLogOut, FiChevronLeft, FiChevronRight, FiHome, FiHeart, FiSettings, FiTool, } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth";
 
@@ -137,17 +137,22 @@ const TenantSidebar = ({
         >
           <SidebarLink
             icon={<FiHome />}
-            label="Home"
+            label="Homes"
             to="/tenant/"
             collapsed={isCollapsed}
           />
-
           <SidebarLink
             icon={<FiHeart />}
             label="Saved"
             to="/tenant/saved-properties"
             collapsed={isCollapsed}
           />
+         <SidebarLink
+          icon={<FiTool />}
+          label="Service Providers"
+          to="/tenant/service-providers"
+          collapsed={isCollapsed}
+        />
 
           <SidebarLink
             icon={<FiSettings />}

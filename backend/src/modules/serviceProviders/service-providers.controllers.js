@@ -1,6 +1,7 @@
 import cloudinary from "../../config/cloudinary.js";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary.js";
 import ServiceProviderProfile from "../models/ServiceProviderProfile.js";
+import mongoose from "mongoose";
 
 export async function getServiceProviderProfile(req, res) {
   try {
@@ -141,6 +142,105 @@ export async function updateServiceProviderProfile(req, res) {
 
     return res.status(500).json({
       message: "Unable to update service provider profile."
+    });
+  }
+}
+
+export async function getAllServiceProviders(req, res) {
+  try {
+    const profiles = await ServiceProviderProfile.find()
+      .populate({
+        path: "user",
+        select: "firstname lastname phoneNumber whatsappNumber contactVisibility",
+      })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const serviceProviders = profiles.map((profile) => {
+      const { user, ...profileData } = profile;
+
+      const canContact = Boolean(user?.contactVisibility);
+
+      return {
+        ...profileData,
+        provider: {
+          firstname: user?.firstname,
+          lastname: user?.lastname,
+          phoneNumber: canContact ? user?.phoneNumber : null,
+          whatsappNumber: canContact ? user?.whatsappNumber : null,
+        },
+        contactVisible: canContact,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: serviceProviders.length,
+      serviceProviders,
+    });
+  } catch (error) {
+    console.error("Get all service providers error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch service providers",
+    });
+  }
+}
+
+export async function getServiceProviderById(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid service provider ID.",
+      });
+    }
+
+    const serviceProvider = await ServiceProviderProfile.findById(id)
+      .populate({
+        path: "user",
+        select:
+          "firstname lastname email phoneNumber whatsappNumber contactVisibility isEmailVerified createdAt",
+      })
+      .lean();
+
+    if (!serviceProvider || !serviceProvider.user) {
+      return res.status(404).json({
+        success: false,
+        message: "Service provider not found.",
+      });
+    }
+
+    const { user, ...profile } = serviceProvider;
+
+    const canContact = user.contactVisibility;
+
+    return res.status(200).json({
+      success: true,
+      serviceProvider: {
+        ...profile,
+
+        provider: {
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          phoneNumber: canContact ? user.phoneNumber : null,
+          whatsappNumber: canContact ? user.whatsappNumber : null,
+          contactVisibility: canContact,
+          isEmailVerified: user.isEmailVerified,
+          joinedAt: user.createdAt,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Get service provider error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to retrieve service provider information.",
     });
   }
 }

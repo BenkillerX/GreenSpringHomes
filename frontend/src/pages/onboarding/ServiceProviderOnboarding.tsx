@@ -19,6 +19,9 @@ const ServiceProviderOnboarding = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [contactVisibility, setContactVisibility] = useState(true);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -46,51 +49,75 @@ const ServiceProviderOnboarding = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    if (!service.trim() || !description.trim() || !experience || !location.trim() || !image) {
-      setError("Please fill in all fields and upload an image.");
-      return;
+  if (
+    !service.trim() ||
+    !description.trim() ||
+    experience === "" ||
+    !location.trim() ||
+    !phoneNumber.trim() ||
+    !whatsappNumber.trim() ||
+    !image
+  ) {
+    setError("Please fill in all fields and upload an image.");
+    return;
+  }
+
+  const normalizedPhone = phoneNumber.replace(/[\s-]/g, "");
+  const normalizedWhatsApp = whatsappNumber.replace(/[\s-]/g, "");
+
+  if (!/^\+?[0-9]{10,15}$/.test(normalizedPhone)) {
+    setError("Please enter a valid phone number.");
+    return;
+  }
+
+  if (!/^\+?[0-9]{10,15}$/.test(normalizedWhatsApp)) {
+    setError("Please enter a valid WhatsApp number.");
+    return;
+  }
+
+  if (!Number.isFinite(Number(experience)) || Number(experience) < 0) {
+    setError("Please enter a valid experience value.");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const formData = new FormData();
+
+    formData.append("image", image);
+    formData.append("service", service.trim());
+    formData.append("description", description.trim());
+    formData.append("experience", experience);
+    formData.append("location", location.trim());
+    formData.append("phoneNumber", normalizedPhone);
+    formData.append("whatsappNumber", normalizedWhatsApp);
+    formData.append("contactVisibility", String(contactVisibility));
+
+    await api.post("/api/onboarding/service-provider", formData);
+
+    const response = await api.get("/api/auth/me");
+    setCurrentUser(response.data.user);
+
+    navigate("/service-provider/");
+  } catch (error: unknown) {
+    console.error("Service provider onboarding error:", error);
+
+    if (axios.isAxiosError(error)) {
+      setError(
+        error.response?.data?.message ||
+          "Something went wrong while completing onboarding."
+      );
+    } else {
+      setError("Something went wrong while completing onboarding.");
     }
-
-    if (Number(experience) < 0) {
-      setError("Experience cannot be negative.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const formData = new FormData();
-
-      formData.append("image", image);
-      formData.append("service", service.trim());
-      formData.append("description", description.trim());
-      formData.append("experience", experience);
-      formData.append("location", location.trim());
-
-      await api.post("/api/onboarding/service-provider", formData);
-
-      const response = await api.get("/api/auth/me");
-      setCurrentUser(response.data.user);
-
-      navigate("/service-provider/");
-    } catch (error: unknown) {
-      console.error("Service provider onboarding error:", error);
-
-      if (axios.isAxiosError(error)) {
-        setError(
-          error.response?.data?.message ||
-            "Something went wrong while completing onboarding."
-        );
-      } else {
-        setError("Something went wrong while completing onboarding.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-10">
@@ -244,6 +271,66 @@ const ServiceProviderOnboarding = () => {
               className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
             />
           </div>
+          {/* Phone Number */}
+<div>
+  <label
+    htmlFor="phoneNumber"
+    className="block text-sm font-medium text-gray-700 mb-2"
+  >
+    Phone Number
+  </label>
+
+  <input
+    id="phoneNumber"
+    type="tel"
+    value={phoneNumber}
+    onChange={(e) => setPhoneNumber(e.target.value)}
+    placeholder="e.g. 08012345678"
+    className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
+  />
+</div>
+
+{/* WhatsApp Number */}
+<div>
+  <label
+    htmlFor="whatsappNumber"
+    className="block text-sm font-medium text-gray-700 mb-2"
+  >
+    WhatsApp Number
+  </label>
+
+  <input
+    id="whatsappNumber"
+    type="tel"
+    value={whatsappNumber}
+    onChange={(e) => setWhatsappNumber(e.target.value)}
+    placeholder="e.g. 08012345678"
+    className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
+  />
+</div>
+
+{/* Contact Visibility */}
+<div className="rounded-xl border border-gray-200 p-4">
+  <label className="flex items-start gap-3 cursor-pointer">
+    <input
+      type="checkbox"
+      checked={contactVisibility}
+      onChange={(e) => setContactVisibility(e.target.checked)}
+      className="mt-1 h-4 w-4 accent-green-600"
+    />
+
+    <span>
+      <span className="block text-sm font-medium text-gray-700">
+        Allow customers to contact me
+      </span>
+
+      <span className="mt-1 block text-xs text-gray-500">
+        When enabled, tenants can see your phone number and WhatsApp number
+        on your service provider profile.
+      </span>
+    </span>
+  </label>
+</div>
 
           {/* Submit */}
           <button

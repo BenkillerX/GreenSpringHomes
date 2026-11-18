@@ -49,7 +49,7 @@ const ServiceProviderSidebar = ({
   return (
     <>
       <aside
-  className={`relative flex h-screen shrink-0 flex-col overflow-hidden border-r border-gray-200 bg-white transition-all duration-300 ${
+  className={`relative hidden h-screen shrink-0 flex-col overflow-hidden border-r border-gray-200 bg-white transition-all duration-300 md:flex ${
     isCollapsed ? "w-20" : "w-65"
   }`}
 >

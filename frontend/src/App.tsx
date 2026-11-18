@@ -8,6 +8,7 @@ import ServiceHome from "./pages/serviceProvider/ServiceHome";
 import Contact from "./pages/public/Contact";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import ServiceProvider from "./pages/auth/ServiceProvider";
+import TenantServiceProviderDetails from "./pages/tenant/TenantServiceProviderDetails";
 
 // Layouts
 const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
@@ -33,6 +34,7 @@ const TenantHome = lazy(() => import("./pages/tenant/TenantHome"));
 const SavedProperties = lazy( () => import("./pages/tenant/SavedProperties") );
 const Settings = lazy(() => import("./pages/tenant/Settings"));
 const PropertyDetails = lazy( () => import("./pages/tenant/PropertyDetails") );
+const TenantServiceProviders = lazy( () => import("./pages/tenant/TenantServiceProviders") );
 
 // Property owner pages
 const OwnerHome = lazy(() => import("./pages/landlord/OwnerHome"));
@@ -138,6 +140,11 @@ const App = () => {
       <Route path="/tenant/saved-properties" element={<SavedProperties />} />
       <Route path="/tenant/settings" element={<Settings />} />
       <Route path="/tenant/details/:id" element={<PropertyDetails />} />
+      <Route path="/tenant/service-providers" element={<TenantServiceProviders />} />
+      <Route
+        path="/tenant/service-providers/:id"
+        element={<TenantServiceProviderDetails />}
+      />
     </Route>
 
     {/* Property Owner Pages */}

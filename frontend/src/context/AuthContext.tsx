@@ -30,6 +30,7 @@ export interface ServiceProviderProfile {
   url: string;
   publicId: string;
 };
+whatsappNumber?: string | null;
 }
 export interface AuthContextType {
   currentUser: User | null;

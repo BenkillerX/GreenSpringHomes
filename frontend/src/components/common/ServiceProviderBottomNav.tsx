@@ -1,11 +1,5 @@
 import { NavLink } from "react-router-dom";
-import {
-  FiHome,
-  FiBriefcase,
-  FiClipboard,
-  FiMessageCircle,
-  FiSettings,
-} from "react-icons/fi";
+import { FiHome, FiBriefcase, FiBell, FiSettings, } from "react-icons/fi";
 
 const ServiceProviderBottomNav = () => {
   return (
@@ -41,7 +35,7 @@ const ServiceProviderBottomNav = () => {
       </NavLink>
 
       <NavLink
-        to="/service-provider/requests"
+        to="/service-provider/notifications"
         className={({ isActive }) =>
           `flex flex-col items-center gap-1 px-3 py-2 text-xs transition ${
             isActive
@@ -50,22 +44,8 @@ const ServiceProviderBottomNav = () => {
           }`
         }
       >
-        <FiClipboard className="text-xl" />
-        <span>Requests</span>
-      </NavLink>
-
-      <NavLink
-        to="/service-provider/messages"
-        className={({ isActive }) =>
-          `flex flex-col items-center gap-1 px-3 py-2 text-xs transition ${
-            isActive
-              ? "text-green-600"
-              : "text-gray-500"
-          }`
-        }
-      >
-        <FiMessageCircle className="text-xl" />
-        <span>Messages</span>
+        <FiBell className="text-xl" />
+        <span>Notifications</span>
       </NavLink>
 
       <NavLink

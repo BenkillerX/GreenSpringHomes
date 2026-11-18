@@ -116,70 +116,127 @@ export async function completePropertyOwnerOnboarding(req, res) {
 }
 
 export async function completeServiceProviderOnboarding(req, res) {
+  let uploadedImage;
+
   try {
     const userId = req.user.id;
-    const { service, description, experience, location } = req.body;
+
+    const {
+      service,
+      description,
+      experience,
+      location,
+      phoneNumber,
+      whatsappNumber,
+      contactVisibility,
+    } = req.body;
+
+    // Validate required fields
+    if (
+      !service?.trim() ||
+      !description?.trim() ||
+      experience === undefined ||
+      !location?.trim() ||
+      !phoneNumber?.trim() ||
+      !whatsappNumber?.trim()
+    ) {
+      return res.status(400).json({
+        message: "Please provide all required onboarding information.",
+      });
+    }
+
+    if (
+      !/^\+?[0-9]{10,15}$/.test(phoneNumber.replace(/\s/g, "")) ||
+      !/^\+?[0-9]{10,15}$/.test(whatsappNumber.replace(/\s/g, ""))
+    ) {
+      return res.status(400).json({
+        message: "Please provide valid phone and WhatsApp numbers.",
+      });
+    }
+
+    const parsedExperience = Number(experience);
+
+    if (!Number.isFinite(parsedExperience) || parsedExperience < 0) {
+      return res.status(400).json({
+        message: "Please provide a valid years of experience value.",
+      });
+    }
+
     if (!req.file) {
       return res.status(400).json({
-        message: "Please upload a service provider image."
+        message: "Please upload a service provider image.",
+      });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found.",
+      });
+    }
+
+    if (user.role !== "serviceProvider") {
+      return res.status(403).json({
+        message: "Only service providers can complete this onboarding.",
+      });
+    }
+
+    if (user.onboardingCompleted) {
+      return res.status(400).json({
+        message: "Onboarding has already been completed.",
       });
     }
 
     // Upload image to Cloudinary
-    const uploadedImage = await uploadToCloudinary(
+    uploadedImage = await uploadToCloudinary(
       req.file.buffer,
       "greenspringhomes/service-providers"
     );
 
     const image = {
       url: uploadedImage.secure_url,
-      publicId: uploadedImage.public_id
+      publicId: uploadedImage.public_id,
     };
 
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found."
-      });
-    }
-
-    if (user.role !== "serviceProvider") {
-      return res.status(403).json({
-        message: "Only service providers can complete this onboarding."
-      });
-    }
-
-    if (user.onboardingCompleted) {
-      return res.status(400).json({
-        message: "Onboarding has already been completed."
-      });
-    }
-
+    // Create service provider profile
     const serviceProviderProfile = new ServiceProviderProfile({
       user: userId,
       image,
-      service,
-      description,
-      experience,
-      location
+      service: service.trim(),
+      description: description.trim(),
+      experience: parsedExperience,
+      location: location.trim(),
     });
 
     await serviceProviderProfile.save();
 
+    // Update user's contact information and onboarding status
+    user.phoneNumber = phoneNumber.trim();
+    user.whatsappNumber = whatsappNumber.trim();
+    user.contactVisibility = contactVisibility === "true";
     user.onboardingCompleted = true;
+
     await user.save();
 
     return res.status(200).json({
       message: "Service provider onboarding completed successfully.",
-      onboardingCompleted: true
+      onboardingCompleted: true,
     });
-
   } catch (error) {
     console.error("Service provider onboarding error:", error);
 
+    // Remove uploaded image if onboarding fails after upload
+    if (uploadedImage?.public_id) {
+      try {
+        await cloudinary.uploader.destroy(uploadedImage.public_id);
+      } catch (cleanupError) {
+        console.error("Cloudinary cleanup error:", cleanupError);
+      }
+    }
+
     return res.status(500).json({
-      message: "An error occurred while completing onboarding."
+      message: "An error occurred while completing onboarding.",
     });
   }
 }
