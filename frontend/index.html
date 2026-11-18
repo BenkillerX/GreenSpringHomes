@@ -1,78 +1,103 @@
-
 <!doctype html>
-<html lang="en">
+<html lang="en-NG">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary SEO -->
-    <title>GreenSpringHomes | Find Houses, Apartments & Properties in Nigeria</title>
+    <title>GreenSpringHomes | Find Homes, List Properties & Hire Pros in Nigeria</title>
 
     <meta
       name="description"
-      content="Discover houses, apartments, land and commercial properties for rent or sale across Nigeria with GreenSpringHomes. Find a property that feels like home."
+      content="Rent verified houses and apartments, list your property to reach genuine tenants, or hire trusted carpenters, plumbers and electricians across Nigeria."
     />
 
-    <meta name="robots" content="index, follow" />
-
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="author" content="GreenSpringHomes" />
-
     <meta name="theme-color" content="#16a34a" />
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://greenspringhome.com/" />
-   <link rel="icon" href="/GreenSpringLogo.jpeg" type="image/jpeg" />
+    <link rel="icon" href="/GreenSpringLogo.jpeg" type="image/jpeg" />
+
     <!-- Open Graph / Facebook / WhatsApp -->
     <meta property="og:type" content="website" />
-
     <meta property="og:site_name" content="GreenSpringHomes" />
-
+    <meta property="og:locale" content="en_NG" />
+    <meta property="og:url" content="https://greenspringhome.com/" />
     <meta
       property="og:title"
-      content="GreenSpringHomes | Find Your Next Home in Nigeria"
+      content="GreenSpringHomes | Find Homes, List Properties & Hire Pros in Nigeria"
     />
-
     <meta
       property="og:description"
-      content="Explore houses, apartments, land and commercial properties for rent or sale across Nigeria."
+      content="Tenants find verified homes, property owners reach genuine tenants, and skilled professionals like carpenters and plumbers get hired. All in one place."
     />
-
-    <meta property="og:url" content="https://greenspringhome.com/" />
+    <meta
+      property="og:image"
+      content="https://greenspringhome.com/GreenSpringLogo.jpeg"
+    />
+    <meta property="og:image:alt" content="GreenSpringHomes logo" />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
-
     <meta
       name="twitter:title"
-      content="GreenSpringHomes | Find Your Next Home in Nigeria"
+      content="GreenSpringHomes | Find Homes, List Properties & Hire Pros in Nigeria"
     />
-
     <meta
       name="twitter:description"
-      content="Discover properties for rent and sale across Nigeria."
+      content="Find verified homes, list your property, or hire trusted service providers across Nigeria."
     />
     <meta
-  property="og:image"
-  content="https://greenspringhome.com/GreenSpringLogo.jpeg"
-/>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "GreenSpringHomes",
-  "url": "https://greenspringhome.com/",
-  "logo": {
-    "@type": "ImageObject",
-    "url": "https://greenspringhome.com/GreenSpringLogo.jpeg"
-  },
-  "description": "GreenSpringHomes is a Nigerian property marketplace helping people discover houses, apartments, land and commercial properties for rent and sale."
-}
-</script>
+      name="twitter:image"
+      content="https://greenspringhome.com/GreenSpringLogo.jpeg"
+    />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://greenspringhome.com/#organization",
+            "name": "GreenSpringHomes",
+            "url": "https://greenspringhome.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://greenspringhome.com/GreenSpringLogo.jpeg"
+            },
+            "areaServed": {
+              "@type": "Country",
+              "name": "Nigeria"
+            },
+            "description": "GreenSpringHomes is a Nigerian property platform where tenants find verified homes, property owners list properties and reach genuine tenants, and service providers such as carpenters, plumbers and electricians get hired."
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://greenspringhome.com/#website",
+            "url": "https://greenspringhome.com/",
+            "name": "GreenSpringHomes",
+            "inLanguage": "en-NG",
+            "publisher": {
+              "@id": "https://greenspringhome.com/#organization"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
 
   <body>
     <div id="root"></div>
+
+    <noscript>
+      GreenSpringHomes is a Nigerian property platform. Find verified houses and
+      apartments for rent, list your property to reach genuine tenants, or hire
+      trusted service providers such as carpenters, plumbers and electricians.
+      Please enable JavaScript to use the site.
+    </noscript>
 
     <script type="module" src="/src/main.tsx"></script>
   </body>
