@@ -1,4 +1,3 @@
-
 import { useLocation } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
 import { useAuth } from "../../context/useAuth";
@@ -7,7 +6,7 @@ const TenantHeader = () => {
   const { currentUser } = useAuth();
   const { pathname } = useLocation();
 
-  const pageInfo: Record<string, { title: string;}> = {
+  const pageInfo: Record<string, { title: string }> = {
     "/tenant/": {
       title: "",
     },
@@ -31,18 +30,26 @@ const TenantHeader = () => {
   return (
     <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur-md">
       <div className="flex min-h-20 items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <div className="min-w-0">
-          <p className="mb-1 text-xs font-medium ">
-            Green<span className="text-green-600"> Spring</span>Homes
-          </p>
+        <div className="flex min-w-0 items-center gap-3">
+          {/* Logo: mobile only */}
+          <img
+            src="/GreenSpringLogo.jpeg"
+            alt="GreenSpringHomes"
+            className="h-10 w-10 shrink-0 rounded-lg object-cover md:hidden"
+          />
 
-          <h1 className="truncate text-lg font-bold text-gray-900 sm:text-xl">
-            {currentPage.title}
-          </h1>
+          <div className="min-w-0">
+            <p className="mb-1 text-xs font-medium">
+              Green<span className="text-green-600">Spring</span>Homes
+            </p>
+
+            <h1 className="truncate text-lg font-bold text-gray-900 sm:text-xl">
+              {currentPage.title}
+            </h1>
+          </div>
         </div>
 
         <div className="flex shrink-0 items-center gap-3">
-
           <div className="flex items-center gap-3 border-l border-gray-200 pl-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-sm font-bold text-green-700">
               {initials}

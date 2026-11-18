@@ -50,43 +50,41 @@ const TenantSidebar = ({
     <>
       <aside className="relative flex h-screen w-full shrink-0 flex-col overflow-hidden border-r border-gray-200 bg-white transition-all duration-300">
         {/* Header */}
+      <div
+        className={`flex shrink-0 items-center border-b border-gray-100 p-4 ${
+          isCollapsed
+            ? "flex-col justify-center gap-2 py-3"
+            : "min-h-20 justify-between"
+        }`}
+      >
         <div
-          className={`relative flex min-h-20 shrink-0 items-center border-b border-gray-100 p-4 ${
-            isCollapsed ? "justify-center" : "justify-between"
+          className={`flex min-w-0 items-center ${
+            isCollapsed ? "justify-center" : "gap-2"
           }`}
         >
-          <div
-            className={`flex min-w-0 items-center ${
-              isCollapsed ? "justify-center" : "gap-2"
-            }`}
-          >
-            <img
-              src="/GreenSpringLogo.jpeg"
-              alt="GreenSpringHomes"
-              className="h-10 w-10 shrink-0 rounded-lg object-cover"
-            />
+          <img
+            src="/GreenSpringLogo.jpeg"
+            alt="GreenSpringHomes"
+            className="h-10 w-10 shrink-0 rounded-lg object-cover"
+          />
 
-            {!isCollapsed && (
-              <h1 className="whitespace-nowrap font-semibold text-gray-800">
-                Green<span className="text-green-500">Spring</span>Home
-              </h1>
-            )}
-          </div>
-
-          <button
-            type="button"
-            onClick={onToggle}
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-800 ${
-              isCollapsed ? "absolute right-1 top-5" : ""
-            }`}
-            aria-label={
-              isCollapsed ? "Expand sidebar" : "Collapse sidebar"
-            }
-            aria-expanded={!isCollapsed}
-          >
-            {isCollapsed ? <FiChevronRight /> : <FiChevronLeft />}
-          </button>
+          {!isCollapsed && (
+            <h1 className="whitespace-nowrap font-semibold text-gray-800">
+              Green<span className="text-green-500">Spring</span>Home
+            </h1>
+          )}
         </div>
+
+        <button
+          type="button"
+          onClick={onToggle}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-800"
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!isCollapsed}
+        >
+          {isCollapsed ? <FiChevronRight /> : <FiChevronLeft />}
+        </button>
+      </div>
 
         {/* Profile */}
         <div

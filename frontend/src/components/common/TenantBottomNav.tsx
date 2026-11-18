@@ -1,6 +1,6 @@
 
 import { NavLink } from "react-router-dom";
-import { FiHome, FiHeart, FiUser, } from "react-icons/fi";
+import { FiHome, FiHeart, FiUser, FiTool} from "react-icons/fi";
 
 const navItems = [
   {
@@ -13,6 +13,12 @@ const navItems = [
     label: "Saved",
     to: "/tenant/saved-properties",
     icon: FiHeart,
+    end: false,
+  },
+  {
+    label: "Service Providers",
+    to: "/tenant/service-providers",
+    icon: FiTool,
     end: false,
   },
   {

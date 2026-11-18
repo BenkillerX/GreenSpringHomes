@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import type { Property } from "../landlord/OwnerHome";
@@ -41,7 +40,7 @@ const TenantHome = () => {
   }, []);
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-10">
+    <main className="min-h-screen bg-slate-50 px-3 py-6 sm:px-6 lg:px-10">
       <div className="mx-auto max-w-7xl space-y-8">
 
         {/* Search Section */}
@@ -87,7 +86,7 @@ const TenantHome = () => {
 
         {/* Available Properties */}
         <section>
-          <div className="mb-5 flex items-end justify-between gap-4">
+          <div className="mb-4 flex items-end justify-between gap-4">
             <div>
               <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">
                 Available Apartments
@@ -110,14 +109,14 @@ const TenantHome = () => {
               </p>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
               {filteredProperties.map((property) => (
                 <article
                   key={property._id}
-                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+                  className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
                 >
                   {/* Property Image */}
-                  <div className="relative h-52 overflow-hidden bg-slate-100">
+                  <div className="relative aspect-4/3 overflow-hidden bg-slate-100">
                     <img
                       src={
                         property.images?.[0]?.url ||
@@ -140,24 +139,24 @@ const TenantHome = () => {
                     />
 
                     {/* Availability Badge */}
-                    <span className="absolute left-4 top-4 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 shadow-sm">
+                    <span className="absolute left-2 top-2 rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-emerald-700 shadow-sm sm:text-xs">
                       Available
                     </span>
 
                     {/* Save Property Heart Button */}
-                    <div className="absolute right-4 top-4 z-10">
+                    <div className="absolute right-2 top-2 z-10 origin-top-right scale-90 sm:scale-100">
                       <SavePropertyButton propertyId={property._id} />
                     </div>
                   </div>
 
                   {/* Property Details */}
-                  <div className="space-y-4 p-5">
+                  <div className="flex flex-1 flex-col gap-2 p-3">
                     <div>
-                      <h3 className="line-clamp-1 text-lg font-bold text-slate-900">
+                      <h3 className="line-clamp-1 text-sm font-semibold text-slate-900 sm:text-base">
                         {property.title}
                       </h3>
 
-                      <p className="mt-2 text-sm text-slate-500">
+                      <p className="mt-0.5 line-clamp-1 text-xs text-slate-500">
                         {[
                           property.location?.area,
                           property.location?.city,
@@ -168,20 +167,20 @@ const TenantHome = () => {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-slate-100 pt-4">
-                      <div>
-                        <p className="text-xl font-bold text-emerald-700">
+                    <div className="mt-auto space-y-2 border-t border-slate-100 pt-2">
+                      <div className="flex items-baseline gap-1">
+                        <p className="text-base font-bold text-emerald-700 sm:text-lg">
                           ₦{property.price.toLocaleString()}
                         </p>
 
-                        <p className="mt-1 text-xs text-slate-500">
-                          Per year
+                        <p className="text-[11px] text-slate-500">
+                          / year
                         </p>
                       </div>
 
                       <Link
                         to={`/tenant/details/${property._id}`}
-                        className="rounded-lg border border-emerald-600 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
+                        className="block w-full rounded-lg border border-emerald-600 py-1.5 text-center text-xs font-semibold text-emerald-700 transition hover:bg-emerald-50 sm:text-sm"
                       >
                         View details
                       </Link>
