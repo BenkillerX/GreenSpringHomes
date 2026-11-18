@@ -27,7 +27,16 @@
                 required: true,
                 min: 0
             },
-
+            image: {
+            url: {
+                type: String,
+                required: true
+            },
+            publicId: {
+                type: String,
+                required: true
+            }
+            },
             location: {
                 type: String,
                 required: true,

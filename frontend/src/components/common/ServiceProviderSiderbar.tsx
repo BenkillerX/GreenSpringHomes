@@ -10,14 +10,10 @@ type SidebarLinkProps = {
   collapsed: boolean;
 };
 
-const SidebarLink = ({
-  icon,
-  label,
-  to,
-  collapsed,
-}: SidebarLinkProps) => (
+const SidebarLink = ({ icon, label, to, collapsed, }: SidebarLinkProps) => (
   <NavLink
     to={to}
+    end={to === "/service-provider/"}
     className={({ isActive }) => `
       w-full flex items-center rounded-xl transition
       ${collapsed ? "justify-center p-3" : "gap-3 px-4 py-3"}
@@ -51,17 +47,7 @@ const ServiceProviderSiderbar = () => {
 
   return (
     <aside
-      className={`
-        hidden md:flex
-        h-screen
-        flex-col
-        bg-white
-        border-r border-gray-200
-        transition-all duration-300
-        shrink-0
-        sticky top-0
-        ${isCollapsed ? "w-20" : "w-65"}
-      `}
+      className={` hidden md:flex h-screen flex-col bg-white border-r border-gray-200 transition-all duration-300 shrink-0 sticky top-0 ${isCollapsed ? "w-20" : "w-65"} `}
     >
       {/* Logo */}
       <div
@@ -99,17 +85,7 @@ const ServiceProviderSiderbar = () => {
         >
           {/* User Initial */}
           <div
-            className="
-              w-11 h-11
-              rounded-full
-              bg-green-100
-              text-green-600
-              flex items-center
-              justify-center
-              font-semibold
-              text-lg
-              shrink-0
-            "
+            className=" w-11 h-11 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-semibold text-lg shrink-0 "
           >
             {userInitial}
           </div>
@@ -140,7 +116,7 @@ const ServiceProviderSiderbar = () => {
 
         <SidebarLink
           icon={<FiBriefcase />}
-          label="My Services"
+          label="My Service"
           to="/service-provider/services"
           collapsed={isCollapsed}
         />
@@ -163,16 +139,7 @@ const ServiceProviderSiderbar = () => {
       <div className="p-4 border-t border-gray-100">
         <button
           onClick={logout}
-          className={`
-            w-full
-            flex items-center
-            rounded-xl
-            text-gray-600
-            hover:bg-red-50
-            hover:text-red-500
-            transition
-            ${isCollapsed ? "justify-center p-3" : "gap-3 px-4 py-3"}
-          `}
+          className={` w-full flex items-center rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-500 transition ${isCollapsed ? "justify-center p-3" : "gap-3 px-4 py-3"} `}
         >
           <FiLogOut className="text-lg shrink-0" />
 
@@ -187,20 +154,7 @@ const ServiceProviderSiderbar = () => {
       {/* Collapse Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="
-          absolute
-          top-24
-          -right-3
-          w-7 h-7
-          rounded-full
-          bg-white
-          border border-gray-200
-          shadow-sm
-          flex items-center justify-center
-          text-gray-500
-          hover:text-green-600
-          transition
-        "
+        className=" absolute top-24 -right-3 w-7 h-7 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-green-600 transition "
       >
         {isCollapsed ? (
           <FiChevronRight />

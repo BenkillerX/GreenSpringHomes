@@ -4,16 +4,7 @@ import mongoose from "mongoose";
 import { deleteFromCloudinary } from "../../utils/deleteFromCloudinary.js";
 export async function addProperty(req, res) {
   try {
-    const {
-      title,
-      description,
-      propertyType,
-      listingType,
-      price,
-      bedrooms,
-      bathrooms,
-      location,
-    } = req.body;
+    const { title, description, propertyType, listingType, price, bedrooms, bathrooms, location, } = req.body;
 
     // Make sure at least one image was uploaded
     if (!req.files || req.files.length === 0) {

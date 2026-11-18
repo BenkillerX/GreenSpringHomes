@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getCurrentUser, Login, registerPropertyOwner, registerServiceProvider, registerTenant, updateCurrentUser, emailValidation, deleteCurrentUser, googleLogin, googleRegisterTenant, googleRegisterPropertyOwner, googleRegisterServiceProvider} from "./auth.controllers.js";
+import { getCurrentUser, Login, registerPropertyOwner, registerServiceProvider, registerTenant, updateCurrentUser, emailValidation, deleteCurrentUser, googleLogin, googleRegisterTenant, googleRegisterPropertyOwner, googleRegisterServiceProvider, changePassword} from "./auth.controllers.js";
 import { loginValidator, propertyOwnerValidator, serviceProviderValidator, tenantValidator } from "../../validators/auth.validator.js";
 import { validateRequest } from "../../middleware/validator.middleware.js";
 import { authenticateToken } from "../../middleware/auth.middleware.js";
@@ -18,4 +18,5 @@ authRoutes.post("/verify-email", emailValidation)
 authRoutes.get('/me', authenticateToken, getCurrentUser)
 authRoutes.patch('/me',authenticateToken, updateCurrentUser)
 authRoutes.delete("/me", authenticateToken, deleteCurrentUser);
+authRoutes.patch("/change-password", authenticateToken, changePassword);
 export default authRoutes;

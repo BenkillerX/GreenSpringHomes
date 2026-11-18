@@ -1,12 +1,9 @@
-import { FiBriefcase, FiMapPin, FiClock, FiCalendar, FiArrowRight, FiUser, } from "react-icons/fi";
+import { FiBriefcase, FiMapPin, FiClock, FiCalendar, FiArrowRight, } from "react-icons/fi";
 import { useAuth } from "../../context/useAuth";
 import { useEffect } from "react";
 
-
-
 const ServiceHome = () => {
 const { currentUser, serviceProviderProfile, getServiceProviderProfile, loading } = useAuth();
-
   const userInitial = currentUser?.firstname || "Provider";
 
   useEffect(() => {
@@ -101,20 +98,26 @@ const { currentUser, serviceProviderProfile, getServiceProviderProfile, loading 
         {/* Service Provider Profile */}
         <div className="rounded-2xl border border-gray-100 bg-white shadow-sm xl:col-span-2">
 
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-100 p-5">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">
-                My Service Profile
-              </h2>
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-gray-100 p-5">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">
+              My Service Profile
+            </h2>
 
-              <p className="mt-1 text-sm text-gray-500">
-                Your professional information
-              </p>
-            </div>
-
-            <FiUser size={20} className="text-green-600" />
+            <p className="mt-1 text-sm text-gray-500">
+              Your professional information
+            </p>
           </div>
+
+          {serviceProviderProfile?.image?.url && (
+            <img
+              src={serviceProviderProfile.image.url}
+              alt="Service provider"
+              className="h-14 w-14 rounded-xl object-cover border border-gray-100"
+            />
+          )}
+        </div>
 
           <div className="space-y-5 p-5">
 

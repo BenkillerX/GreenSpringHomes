@@ -26,6 +26,10 @@ export interface ServiceProviderProfile {
   location: string;
   createdAt: string;
   updatedAt: string;
+  image: {
+  url: string;
+  publicId: string;
+};
 }
 export interface AuthContextType {
   currentUser: User | null;

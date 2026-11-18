@@ -1,5 +1,7 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiCamera, FiX } from "react-icons/fi";
 import api from "../../services/api";
 import { useAuth } from "../../context/useAuth";
 import axios from "axios";
@@ -12,49 +14,80 @@ const ServiceProviderOnboarding = () => {
   const [description, setDescription] = useState("");
   const [experience, setExperience] = useState("");
   const [location, setLocation] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please select a valid image.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image size must not exceed 5MB.");
+      return;
+    }
 
     setError("");
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
 
-    if (!service || !description || !experience || !location) {
-      setError("Please fill in all fields.");
+  const removeImage = () => {
+    setImage(null);
+    setImagePreview("");
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+
+    if (!service.trim() || !description.trim() || !experience || !location.trim() || !image) {
+      setError("Please fill in all fields and upload an image.");
+      return;
+    }
+
+    if (Number(experience) < 0) {
+      setError("Experience cannot be negative.");
       return;
     }
 
     try {
       setLoading(true);
 
-      await api.post("/api/onboarding/service-provider", {
-        service,
-        description,
-        experience,
-        location,
-      });
+      const formData = new FormData();
 
-      // Refresh the logged-in user's data
-      // so onboardingCompleted becomes true
+      formData.append("image", image);
+      formData.append("service", service.trim());
+      formData.append("description", description.trim());
+      formData.append("experience", experience);
+      formData.append("location", location.trim());
+
+      await api.post("/api/onboarding/service-provider", formData);
+
       const response = await api.get("/api/auth/me");
-
       setCurrentUser(response.data.user);
 
       navigate("/service-provider/");
     } catch (error: unknown) {
-  console.error("Service provider onboarding error:", error);
+      console.error("Service provider onboarding error:", error);
 
-  if (axios.isAxiosError(error)) {
-    setError(
-      error.response?.data?.message ||
-        "Something went wrong while completing onboarding."
-    );
-  } else {
-    setError("Something went wrong while completing onboarding.");
-  }
-} finally {
+      if (axios.isAxiosError(error)) {
+        setError(
+          error.response?.data?.message ||
+            "Something went wrong while completing onboarding."
+        );
+      } else {
+        setError("Something went wrong while completing onboarding.");
+      }
+    } finally {
       setLoading(false);
     }
   };
@@ -63,7 +96,6 @@ const ServiceProviderOnboarding = () => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
 
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-800">
             Complete your profile
@@ -75,7 +107,6 @@ const ServiceProviderOnboarding = () => {
           </p>
         </div>
 
-        {/* Error */}
         {error && (
           <div className="mb-6 rounded-lg bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600">
             {error}
@@ -83,6 +114,59 @@ const ServiceProviderOnboarding = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
+
+          {/* Profile Image */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Profile / Business Image
+            </label>
+
+            <div className="flex items-center gap-5">
+              <div className="relative w-28 h-28 rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center overflow-hidden">
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Service provider preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <FiCamera className="text-gray-400" size={28} />
+                )}
+
+                {imagePreview && (
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute top-1 right-1 bg-white text-red-500 rounded-full p-1 shadow"
+                    aria-label="Remove image"
+                  >
+                    <FiX size={16} />
+                  </button>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="image"
+                  className="inline-block cursor-pointer rounded-lg bg-green-50 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-100"
+                >
+                  {image ? "Change image" : "Upload image"}
+                </label>
+
+                <input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+
+                <p className="mt-2 text-xs text-gray-500">
+                  JPG, PNG or WebP. Maximum size: 5MB.
+                </p>
+              </div>
+            </div>
+          </div>
 
           {/* Service */}
           <div>
@@ -165,20 +249,7 @@ const ServiceProviderOnboarding = () => {
           <button
             type="submit"
             disabled={loading}
-            className="
-              w-full
-              rounded-xl
-              bg-green-600
-              px-4
-              py-3
-              text-sm
-              font-semibold
-              text-white
-              transition
-              hover:bg-green-700
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
+            className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? "Completing profile..." : "Complete Profile"}
           </button>
