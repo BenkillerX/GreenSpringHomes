@@ -6,19 +6,26 @@ import ServiceProviderBottomNav from "../components/common/ServiceProviderBottom
 const ServiceProviderLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const handleToggle = () => {
-    setIsCollapsed((prev) => !prev);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="flex min-h-screen">
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 hidden md:block transition-all duration-300 ${
+          isCollapsed ? "w-20" : "w-64"
+        }`}
+      >
         <ServiceProviderSiderbar
           isCollapsed={isCollapsed}
-          onToggle={handleToggle}
+          onToggle={() => setIsCollapsed((previous) => !previous)}
         />
+      </aside>
 
-        <main className="min-w-0 flex-1 pb-16 md:pb-0">
+      <div
+        className={`min-h-screen min-w-0 transition-all duration-300 ${
+          isCollapsed ? "md:ml-20" : "md:ml-64"
+        }`}
+      >
+
+        <main className="min-w-0 pb-20 md:pb-0">
           <Outlet />
         </main>
       </div>

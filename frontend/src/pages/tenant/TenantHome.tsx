@@ -54,7 +54,7 @@ const TenantHome = () => {
             </h2>
           </div>
 
-          <div className="flex gap-3 overflow-x-auto pb-2">
+         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none [&::-webkit-scrollbar]:hidden">
             {[
               { label: "All Properties", value: "" },
               { label: "Apartments", value: "apartment" },
@@ -65,6 +65,7 @@ const TenantHome = () => {
               { label: "Land", value: "land" },
               { label: "Offices", value: "office" },
               { label: "Shops", value: "shop" },
+              { label: "Cars", value: "car" },
               { label: "Others", value: "other" },
             ].map((category) => (
               <button

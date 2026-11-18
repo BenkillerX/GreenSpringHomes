@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import {
-  FiArrowLeft,
-  FiMapPin,
-  FiClock,
-  FiPhone,
-  FiMessageCircle,
-} from "react-icons/fi";
+import { FiArrowLeft, FiMapPin, FiClock, FiPhone, FiMessageCircle, } from "react-icons/fi";
 import toast from "react-hot-toast";
 import api from "../../services/api";
 

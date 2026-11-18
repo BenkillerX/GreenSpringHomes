@@ -10,6 +10,8 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 import ServiceProvider from "./pages/auth/ServiceProvider";
 import TenantServiceProviderDetails from "./pages/tenant/TenantServiceProviderDetails";
 import AdminPropertyDetails from "./pages/admin/AdminPropertyDetails";
+import LandlordServiceProviders from "./pages/landlord/LandlordServiceProviders";
+import LandlordServiceProvidersDetails from "./pages/landlord/LandlordServiceProvidersDetails";
 
 // Layouts
 const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
@@ -159,6 +161,8 @@ const App = () => {
       <Route path="/owner/update" element={<UpdateInfo />} />
       <Route path="/owner/properties/edit/:id" element={<EditProperty />} />
       <Route path="/owner/properties/:id" element={<OwnerPropertyDetails />} />
+      <Route path="/owner/service-providers" element={<LandlordServiceProviders />} />
+      <Route path="/owner/service-providers/:id" element={<LandlordServiceProvidersDetails />} />
     </Route>
 
     {/* Service Provider Pages */}
