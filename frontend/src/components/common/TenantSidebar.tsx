@@ -1,14 +1,6 @@
-
 import { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
-import {
-  FiLogOut,
-  FiChevronLeft,
-  FiChevronRight,
-  FiHome,
-  FiHeart,
-  FiSettings,
-} from "react-icons/fi";
+import { FiLogOut, FiChevronLeft, FiChevronRight, FiHome, FiHeart, FiSettings, } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth";
 
