@@ -1,4 +1,5 @@
 import Property from "../models/Property.js";
+import ServiceProviderProfile from "../models/ServiceProviderProfile.js";
 import User from "../models/Users.js";
 import mongoose from "mongoose";
 export const getUserStats = async (req, res) => {
@@ -381,6 +382,94 @@ export async function updatePropertyStatus(req, res) {
     return res.status(500).json({
       success: false,
       message: "Failed to update property status",
+    });
+  }
+}
+
+export async function givePromotion(req, res) {
+  try {
+    const { propertyId } = req.params;
+    const { isFeatured, priority } = req.body;
+
+    // Validate property ID
+    if (!mongoose.Types.ObjectId.isValid(propertyId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid property ID.",
+      });
+    }
+
+    // Validate featured status
+    if (typeof isFeatured !== "boolean") {
+      return res.status(400).json({
+        success: false,
+        message: "isFeatured must be a boolean.",
+      });
+    }
+
+    // Validate priority
+    if (!Number.isInteger(priority) || priority < 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Priority must be a non-negative whole number.",
+      });
+    }
+
+    const property = await Property.findByIdAndUpdate(
+      propertyId,
+      {
+        $set: {
+          isFeatured,
+          priority,
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!property) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Property promotion updated successfully.",
+      property,
+    });
+  } catch (error) {
+    console.error("Give promotion error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update property promotion.",
+    });
+  }
+}
+
+export async function getAllServiceProviders(req, res) {
+  try {
+    const serviceProviders = await ServiceProviderProfile.find()
+      .populate(
+        "user",
+        "firstname lastname email phoneNumber whatsappNumber isActive isEmailVerified createdAt"
+      )
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      serviceProviders,
+    });
+  } catch (error) {
+    console.error("Get all service providers error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch service providers.",
     });
   }
 }

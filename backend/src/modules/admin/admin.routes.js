@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllProperties, getAllUsers, getPropertyStats, getRecentProperties, getRecentUsers, getUserStats, getUserStatsMain, getVerificationSummary, getPropertyById, updatePropertyVerification, updatePropertyStatus, } from "./admin.controller.js";
+import { getAllProperties, getAllUsers, getPropertyStats, getRecentProperties, getRecentUsers, getUserStats, getUserStatsMain, getVerificationSummary, getPropertyById, updatePropertyVerification, updatePropertyStatus, givePromotion, getAllServiceProviders, } from "./admin.controller.js";
 
 const adminRoutes = express.Router();
 
@@ -17,5 +17,6 @@ adminRoutes.patch( "/properties/:propertyId/verification", updatePropertyVerific
 
 adminRoutes.patch( "/properties/:propertyId/status", updatePropertyStatus );
 adminRoutes.get("/verification/summary", getVerificationSummary);
-
+adminRoutes.patch("/properties/:propertyId/promotion", givePromotion);
+adminRoutes.get("/service-providers", getAllServiceProviders);
 export default adminRoutes;

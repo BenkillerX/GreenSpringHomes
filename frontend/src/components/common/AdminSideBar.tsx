@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Building2, BadgeCheck, BriefcaseBusiness, Flag, Wallet, FileText, Bell, ChartNoAxesCombined, ShieldCheck, ClipboardList, Settings, LogOut, } from "lucide-react";
+import { LayoutDashboard, Users, Building2, BriefcaseBusiness, Flag, Wallet, FileText, Bell, ChartNoAxesCombined, ShieldCheck, ClipboardList, Settings, LogOut, } from "lucide-react";
 
 interface AdminSideBarProps {
   onLogout: () => void;
@@ -22,11 +22,6 @@ const navigation = [
     title: "Property Management",
     path: "/admin/properties",
     icon: Building2,
-  },
-  {
-    title: "Property Verification",
-    path: "/admin/property-verification",
-    icon: BadgeCheck,
   },
   {
     title: "Service Providers",

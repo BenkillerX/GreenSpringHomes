@@ -56,7 +56,6 @@ const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
 const Admin = lazy(() => import("./pages/admin/Admin"));
 const UserManagement = lazy(() => import("./pages/admin/UserManagement"));
 const PropertyManagement = lazy(() => import("./pages/admin/PropertyManagement"));
-const PropertyVerification = lazy(() => import("./pages/admin/PropertyVerification"));
 const ServiceProviders = lazy(() => import("./pages/admin/ServiceProviders"));
 const Reports = lazy(() => import("./pages/admin/Reports"));
 const Payments = lazy(() => import("./pages/admin/Payments"));
@@ -182,7 +181,6 @@ const App = () => {
     <Route element={<AdminLayout />}>
       <Route path="/admin/" element={<Admin />} />
       <Route path="/admin/properties" element={<PropertyManagement />} />
-      <Route path="/admin/property-verification" element={<PropertyVerification />} />
       <Route path="/admin/service-providers" element={<ServiceProviders />} />
       <Route path="/admin/reports" element={<Reports />} />
       <Route path="/admin/payments" element={<Payments />} />

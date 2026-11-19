@@ -61,7 +61,8 @@ const AdminPropertyDetails = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [updating, setUpdating] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
-
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [priority, setPriority] = useState("0");
   const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
@@ -84,6 +85,9 @@ const AdminPropertyDetails = () => {
         if (cancelled) return;
 
         setProperty(response.data.property);
+        setIsFeatured(response.data.property.isFeatured);
+        setPriority(String(response.data.property.priority ?? 0));
+        setRejectionReason(response.data.property.rejectionReason ?? "");
         setRejectionReason(response.data.property.rejectionReason ?? "");
         setError(null);
       } catch (error: unknown) {
@@ -137,7 +141,46 @@ const AdminPropertyDetails = () => {
       "Unknown owner"
     );
   };
+  const handlePromotionUpdate = async () => {
+  if (!property) return;
 
+  const priorityValue = Number(priority);
+
+  if (
+    !Number.isInteger(priorityValue) ||
+    priorityValue < 0
+  ) {
+    toast.error("Priority must be a non-negative whole number.");
+    return;
+  }
+
+  try {
+    setUpdating(true);
+
+    const response = await api.patch<PropertyResponse>(
+      `/api/admin/properties/${property._id}/promotion`,
+      {
+        isFeatured,
+        priority: priorityValue,
+      }
+    );
+
+    if (!response.data.success) {
+      throw new Error("Failed to update property promotion settings");
+    }
+
+    setProperty(response.data.property);
+    setIsFeatured(response.data.property.isFeatured);
+    setPriority(String(response.data.property.priority));
+
+    toast.success(response.data.message);
+  } catch (error: unknown) {
+    console.error("Promotion update error:", error);
+    toast.error("Unable to update property promotion settings.");
+  } finally {
+    setUpdating(false);
+  }
+};
   const handleVerification = async (
     verificationStatus: "verified" | "rejected"
   ) => {
@@ -573,55 +616,143 @@ const AdminPropertyDetails = () => {
           </section>
 
           {/* Metadata */}
-          <section className="rounded-xl border border-gray-200 bg-white p-5">
-            <h2 className="font-semibold text-gray-900">
-              Listing Information
-            </h2>
+         
+{/* Listing Promotion Management */}
+<section className="rounded-xl border border-gray-200 bg-white p-5">
+  <div>
+    <h2 className="font-semibold text-gray-900">
+      Promotion Management
+    </h2>
+    <p className="mt-1 text-xs leading-5 text-gray-500">
+      Control how this property is promoted and ranked on the platform.
+    </p>
+  </div>
 
-            <div className="mt-5 space-y-4 text-sm">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-gray-500">Featured</span>
-                <span className="flex items-center gap-1 font-medium text-gray-800">
-                  <Star size={15} />
-                  {property.isFeatured ? "Yes" : "No"}
-                </span>
-              </div>
+  <div className="mt-5 space-y-5">
 
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">Priority</span>
-                <span className="font-medium text-gray-800">
-                  {property.priority}
-                </span>
-              </div>
+    {/* Featured Toggle */}
+    <div className="flex items-center justify-between gap-3">
+      <div>
+        <p className="text-sm font-medium text-gray-800">
+          Featured Property
+        </p>
+        <p className="mt-1 text-xs text-gray-400">
+          Highlight this property on the platform.
+        </p>
+      </div>
 
-              <div className="flex items-start justify-between gap-3">
-                <span className="text-gray-500">Date Added</span>
-                <span className="text-right font-medium text-gray-800">
-                  {formatDate(property.createdAt)}
-                </span>
-              </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={isFeatured}
+        disabled={updating}
+        onClick={() => setIsFeatured((previous) => !previous)}
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-50 ${
+          isFeatured ? "bg-green-600" : "bg-gray-300"
+        }`}
+      >
+        <span
+          className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow transition-transform ${
+            isFeatured ? "translate-x-6" : "translate-x-1"
+          }`}
+        />
+      </button>
+    </div>
 
-              <div className="flex items-start justify-between gap-3">
-                <span className="flex items-center gap-1 text-gray-500">
-                  <CalendarDays size={15} />
-                  Last Updated
-                </span>
-                <span className="text-right font-medium text-gray-800">
-                  {formatDate(property.updatedAt)}
-                </span>
-              </div>
+    <div className="rounded-lg bg-gray-50 p-3">
+      <div className="flex items-center gap-2">
+        <Star
+          size={17}
+          className={isFeatured ? "fill-yellow-400 text-yellow-500" : "text-gray-400"}
+        />
 
-              <div className="flex items-start justify-between gap-3">
-                <span className="flex items-center gap-1 text-gray-500">
-                  <Building2 size={15} />
-                  Property ID
-                </span>
-                <span className="max-w-36 break-all text-right text-xs text-gray-500">
-                  {property._id}
-                </span>
-              </div>
-            </div>
-          </section>
+        <span className="text-sm font-medium text-gray-700">
+          {isFeatured ? "Featured listing enabled" : "Standard listing"}
+        </span>
+      </div>
+    </div>
+
+    {/* Priority */}
+    <div>
+      <label
+        htmlFor="property-priority"
+        className="block text-sm font-medium text-gray-700"
+      >
+        Listing Priority
+      </label>
+
+      <p className="mt-1 text-xs leading-5 text-gray-400">
+        Higher priority values can be used to rank this property ahead of
+        lower-priority listings.
+      </p>
+
+      <input
+        id="property-priority"
+        type="number"
+        min="0"
+        step="1"
+        value={priority}
+        disabled={updating}
+        onChange={(e) => setPriority(e.target.value)}
+        className="mt-3 w-full rounded-lg border border-gray-200 bg-white px-3 py-3 text-sm outline-none focus:border-green-600 disabled:opacity-50"
+      />
+    </div>
+
+    {/* Save Changes */}
+    <button
+      type="button"
+      onClick={() => void handlePromotionUpdate()}
+      disabled={updating}
+      className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-green-800 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {updating ? (
+        <>
+          <RefreshCw size={16} className="animate-spin" />
+          Saving Changes...
+        </>
+      ) : (
+        "Save Promotion Settings"
+      )}
+    </button>
+  </div>
+</section>
+
+{/* Listing Information */}
+<section className="rounded-xl border border-gray-200 bg-white p-5">
+  <h2 className="font-semibold text-gray-900">
+    Listing Information
+  </h2>
+
+  <div className="mt-5 space-y-4 text-sm">
+    <div className="flex items-center justify-between">
+      <span className="text-gray-500">Date Added</span>
+      <span className="text-right font-medium text-gray-800">
+        {formatDate(property.createdAt)}
+      </span>
+    </div>
+
+    <div className="flex items-start justify-between gap-3">
+      <span className="flex items-center gap-1 text-gray-500">
+        <CalendarDays size={15} />
+        Last Updated
+      </span>
+      <span className="text-right font-medium text-gray-800">
+        {formatDate(property.updatedAt)}
+      </span>
+    </div>
+
+    <div className="flex items-start justify-between gap-3">
+      <span className="flex items-center gap-1 text-gray-500">
+        <Building2 size={15} />
+        Property ID
+      </span>
+      <span className="max-w-36 break-all text-right text-xs text-gray-500">
+        {property._id}
+      </span>
+    </div>
+  </div>
+</section>
+
         </div>
       </div>
 
