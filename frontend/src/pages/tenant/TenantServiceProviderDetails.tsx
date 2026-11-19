@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { FiArrowLeft, FiMapPin, FiClock, FiPhone, FiMessageCircle, } from "react-icons/fi";
+import { FiArrowLeft, FiMapPin, FiClock, FiPhone, } from "react-icons/fi";
+import { MessageCircle,} from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../services/api";
 
@@ -33,6 +34,8 @@ const TenantServiceProviderDetails = () => {
       try {
         const response = await api.get(`/api/service-providers/${id}`);
         setProvider(response.data.serviceProvider);
+        console.log(response.data.serviceProvider);
+        
       } catch (error: unknown) {
         console.error("Fetch provider details error:", error);
         toast.error("Unable to load provider details.");
@@ -44,15 +47,17 @@ const TenantServiceProviderDetails = () => {
     getProvider();
   }, [id]);
 
-  const getWhatsAppLink = (number: string) => {
-    let formattedNumber = number.replace(/\D/g, "");
+ const getWhatsAppLink = (number: string) => {
+  const formattedNumber = number.replace(/\D/g, "");
 
-    if (formattedNumber.startsWith("0")) {
-      formattedNumber = `234${formattedNumber.slice(1)}`;
-    }
+  const internationalNumber = formattedNumber.startsWith("0")
+    ? `234${formattedNumber.slice(1)}`
+    : formattedNumber;
 
-    return `https://wa.me/${formattedNumber}`;
-  };
+  const message = `Hello ${provider?.provider.firstname}, I found your service provider profile on GreenSpringHomes. I am interested in your ${provider?.service.toLowerCase()} service. Please, I would like to discuss further details with you.`;
+
+  return `https://wa.me/${internationalNumber}?text=${encodeURIComponent(message)}`;
+};
 
   if (loading) {
     return (
@@ -174,15 +179,15 @@ const TenantServiceProviderDetails = () => {
                 provider.provider.whatsappNumber) ? (
                 <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                   {provider.provider.whatsappNumber && (
-                    <a
-                      href={getWhatsAppLink(provider.provider.whatsappNumber)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
-                    >
-                      <FiMessageCircle />
-                      Contact on WhatsApp
-                    </a>
+                   <a
+                    href={getWhatsAppLink(provider.provider.whatsappNumber!)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 rounded-lg bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700"
+                  >
+                    <MessageCircle size={18} />
+                    WhatsApp
+                  </a>
                   )}
 
                   {provider.provider.phoneNumber && (

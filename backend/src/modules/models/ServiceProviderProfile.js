@@ -1,56 +1,67 @@
-    import mongoose from "mongoose";
+import mongoose from "mongoose";
+import { ALL_SERVICE_PROVIDER_SKILLS, SERVICE_PROVIDER_CATEGORIES } from "../../utils/serviceProviderSkills.js";
 
-    const serviceProviderProfileSchema = new mongoose.Schema(
-        {
-            user: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "User",
-                required: true,
-                unique: true
-            },
+const serviceProviderProfileSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true,
+    },
 
-            service: {
-                type: String,
-                required: true,
-                trim: true
-            },
+    category: {
+      type: String,
+      required: true,
+      enum: SERVICE_PROVIDER_CATEGORIES,
+      trim: true,
+    },
 
-            description: {
-                type: String,
-                required: true,
-                trim: true,
-                maxlength: 1000
-            },
+    service: {
+      type: String,
+      required: true,
+      enum: ALL_SERVICE_PROVIDER_SKILLS,
+      trim: true,
+    },
 
-            experience: {
-                type: Number,
-                required: true,
-                min: 0
-            },
-            image: {
-            url: {
-                type: String,
-                required: true
-            },
-            publicId: {
-                type: String,
-                required: true
-            }
-            },
-            location: {
-                type: String,
-                required: true,
-                trim: true
-            }
-        },
-        {
-            timestamps: true
-        }
-    );
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 1000,
+    },
 
-    const ServiceProviderProfile = mongoose.model(
-        "ServiceProviderProfile",
-        serviceProviderProfileSchema
-    );
+    experience: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
 
-    export default ServiceProviderProfile;
+    image: {
+      url: {
+        type: String,
+        required: true,
+      },
+      publicId: {
+        type: String,
+        required: true,
+      },
+    },
+
+    location: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const ServiceProviderProfile = mongoose.model(
+  "ServiceProviderProfile",
+  serviceProviderProfileSchema
+);
+
+export default ServiceProviderProfile;
