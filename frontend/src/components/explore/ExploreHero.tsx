@@ -7,11 +7,11 @@ const ExploreHero = () => {
             <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 lg:grid-cols-2 lg:py-24">
     
               <div>
-                <span className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-green-700">
+                {/* <span className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-green-700">
                   <FiHome />
                   Find your next home
                 </span>
-    
+     */}
                 <h1 className="mt-7 max-w-xl text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
                   Find a place
                   <span className="text-green-600">

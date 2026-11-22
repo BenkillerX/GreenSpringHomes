@@ -125,8 +125,6 @@ export async function completeServiceProviderOnboarding(req, res) {
 
     const { category, service, description, experience, location, phoneNumber, whatsappNumber, contactVisibility, } = req.body;
     console.log("Onboarding request body:", req.body);
-console.log("Service value:", service);
-console.log("Service type:", typeof service);
     // Validate required fields
     if ( !category?.trim() || !service?.trim() || !description?.trim() || experience === undefined || !location?.trim() || !phoneNumber?.trim() || !whatsappNumber?.trim() ) {
       return res.status(400).json({
