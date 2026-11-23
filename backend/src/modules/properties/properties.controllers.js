@@ -2,12 +2,16 @@ import { uploadToCloudinary } from "../../utils/uploadToCloudinary.js";
 import Property from "../models/Property.js";
 import mongoose from "mongoose";
 import { deleteFromCloudinary } from "../../utils/deleteFromCloudinary.js";
+
 export async function addProperty(req, res) {
   try {
     const { title, description, propertyType, listingType, price, bedrooms, bathrooms, location, } = req.body;
 
+    const images = req.files?.images || [];
+    const video = req.files?.video?.[0] || null;
+
     // Make sure at least one image was uploaded
-    if (!req.files || req.files.length === 0) {
+    if (images.length === 0) {
       return res.status(400).json({
         message: "Please upload at least one property image.",
       });
@@ -15,16 +19,35 @@ export async function addProperty(req, res) {
 
     // Upload all images to Cloudinary
     const uploadedImages = await Promise.all(
-      req.files.map((file) =>
-        uploadToCloudinary(file.buffer, "greenspringhomes/properties")
+      images.map((file) =>
+        uploadToCloudinary(
+          file.buffer,
+          "greenspringhomes/properties"
+        )
       )
     );
 
-    // Extract only the URLs we need
+    // Extract image URLs and public IDs
     const imageUrls = uploadedImages.map((image) => ({
-    url: image.secure_url,
-    publicId: image.public_id,
-  }));
+      url: image.secure_url,
+      publicId: image.public_id,
+    }));
+
+    // Upload video to Cloudinary if provided
+    let videoData = null;
+
+    if (video) {
+      const uploadedVideo = await uploadToCloudinary(
+        video.buffer,
+        "greenspringhomes/videos",
+        "video"
+      );
+
+      videoData = {
+        url: uploadedVideo.secure_url,
+        publicId: uploadedVideo.public_id,
+      };
+    }
 
     // Create property
     const property = new Property({
@@ -41,6 +64,7 @@ export async function addProperty(req, res) {
       location,
 
       images: imageUrls,
+      video: videoData,
 
       status: "active",
       verificationStatus: "pending",
@@ -54,14 +78,15 @@ export async function addProperty(req, res) {
     });
 
   } catch (error) {
-  console.error("ADD PROPERTY ERROR:", error);
+    console.error("ADD PROPERTY ERROR:", error);
 
-  return res.status(500).json({
-    message: "Unable to add property.",
-    error: error.message,
-  });
+    return res.status(500).json({
+      message: "Unable to add property.",
+      error: error.message,
+    });
+  }
 }
-}
+
 
 export async function getProperties(req, res) {
   try {

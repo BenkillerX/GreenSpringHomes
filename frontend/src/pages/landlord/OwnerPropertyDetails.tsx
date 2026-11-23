@@ -31,6 +31,10 @@ interface Property {
   };
   createdAt: string;
   updatedAt: string;
+  video?: {
+  url: string;
+  publicId: string;
+} | null;
 }
 
 const OwnerPropertyDetails = () => {
@@ -252,50 +256,85 @@ const OwnerPropertyDetails = () => {
           </p>
         </div>
 
-        {/* Images */}
-        <section className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-          {images.length > 0 ? (
-            <>
-              <div className="h-64 bg-gray-100 sm:h-96">
-                <img
-                  src={images[activeImage]?.url || images[0].url}
-                  alt={property.title}
-                  className="h-full w-full object-cover"
-                />
-              </div>
+{/* Property Media */}
+      <section className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
 
-              {images.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto p-4">
-                  {images.map((image, index) => (
-                    <button
-                      type="button"
-                      key={image.publicId || image.url}
-                      onClick={() => setActiveImage(index)}
-                      aria-label={`View image ${index + 1}`}
-                      aria-pressed={activeImage === index}
-                      className={`h-20 w-28 shrink-0 overflow-hidden rounded-lg border-2 transition ${
-                        activeImage === index
-                          ? "border-green-600"
-                          : "border-transparent hover:border-gray-300"
-                      }`}
-                    >
-                      <img
-                        src={image.url}
-                        alt={`${property.title} ${index + 1}`}
-                        className="h-full w-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="flex h-64 flex-col items-center justify-center bg-gray-100 text-gray-400">
-              <FiImage size={42} />
-              <p className="mt-3 text-sm">No images uploaded</p>
+        {/* Images */}
+        {images.length > 0 ? (
+          <>
+            <div className="h-64 bg-gray-100 sm:h-96">
+              <img
+                src={images[activeImage]?.url || images[0].url}
+                alt={property.title}
+                className="h-full w-full object-cover"
+              />
             </div>
-          )}
-        </section>
+
+            {images.length > 1 && (
+              <div className="flex gap-3 overflow-x-auto p-4">
+                {images.map((image, index) => (
+                  <button
+                    type="button"
+                    key={image.publicId || image.url}
+                    onClick={() => setActiveImage(index)}
+                    aria-label={`View image ${index + 1}`}
+                    aria-pressed={activeImage === index}
+                    className={`h-20 w-28 shrink-0 overflow-hidden rounded-lg border-2 transition ${
+                      activeImage === index
+                        ? "border-green-600"
+                        : "border-transparent hover:border-gray-300"
+                    }`}
+                  >
+                    <img
+                      src={image.url}
+                      alt={`${property.title} ${index + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="flex h-64 flex-col items-center justify-center bg-gray-100 text-gray-400">
+            <FiImage size={42} />
+            <p className="mt-3 text-sm">No images uploaded</p>
+          </div>
+        )}
+
+        {/* Property Video */}
+        {property.video?.url && (
+          <div className="border-t border-gray-100 p-4 sm:p-6">
+
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-gray-900">
+                Property Video
+              </h2>
+
+              <p className="mt-1 text-sm text-gray-500">
+                Watch the property walkthrough.
+              </p>
+            </div>
+
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              className="max-h-[500px] w-full rounded-xl bg-black"
+            >
+              <source
+                src={property.video.url}
+                type="video/mp4"
+              />
+
+              Your browser does not support video playback.
+            </video>
+
+          </div>
+        )}
+
+      </section>
+
 
         {/* Price and statistics */}
         <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">

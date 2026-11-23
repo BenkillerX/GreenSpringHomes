@@ -8,7 +8,7 @@ import { upload } from "../../middleware/upload.middleware.js"
 
 const propertyRoutes = Router()
 
-propertyRoutes.post('/',authenticateToken , authorizeRoles("propertyOwner"), upload.array("images", 5),propertyValidator, validateRequest ,addProperty)
+propertyRoutes.post( '/', authenticateToken, authorizeRoles("propertyOwner"), upload.fields([ { name: "images", maxCount: 5 }, { name: "video", maxCount: 1 }, ]), propertyValidator, validateRequest, addProperty );
 propertyRoutes.get('/', authenticateToken, authorizeRoles("propertyOwner"), getProperties)
 propertyRoutes.get("/search", searchProperties);
 propertyRoutes.get("/all", getAllProperties);

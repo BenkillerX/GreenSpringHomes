@@ -52,6 +52,10 @@ export interface Property {
   updatedAt: string;
   isFeatured: boolean;
   priority: number;
+  video?: {
+  url: string;
+  publicId: string;
+} | null;
 }
 
 const OwnerHome = () => {

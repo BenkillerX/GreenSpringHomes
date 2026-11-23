@@ -1,7 +1,7 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FiArrowLeft, FiHome, FiPlus,} from "react-icons/fi";
+import { FiArrowLeft, FiHome, FiPlus, FiVideo, FiX, } from "react-icons/fi";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import BasicInformation from "./BasicInformation";
@@ -24,6 +24,7 @@ const Addproperties = () => {
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [video, setVideo] = useState<File | null>(null);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -41,6 +42,50 @@ const Addproperties = () => {
   const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
+  const handleVideoChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const selectedVideo = e.target.files?.[0];
+
+  if (!selectedVideo) return;
+
+  const allowedTypes = [
+    "video/mp4",
+    "video/webm",
+    "video/quicktime",
+  ];
+
+  if (!allowedTypes.includes(selectedVideo.type)) {
+    setError("Please upload an MP4, WebM or MOV video.");
+    e.target.value = "";
+    return;
+  }
+
+  if (selectedVideo.size > 50 * 1024 * 1024) {
+    setError("Video size cannot exceed 50MB.");
+    e.target.value = "";
+    return;
+  }
+
+  setVideo(selectedVideo);
+  setError("");
+  e.target.value = "";
+};
+
+const removeVideo = () => {
+  setVideo(null);
+};
+const videoPreview = useMemo(() => {
+  if (!video) return "";
+
+  return URL.createObjectURL(video);
+}, [video]);
+
+useEffect(() => {
+  return () => {
+    if (videoPreview) {
+      URL.revokeObjectURL(videoPreview);
+    }
+  };
+}, [videoPreview]);
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -53,8 +98,6 @@ const Addproperties = () => {
         setLoading(false);
         return;
       }
-console.log("Images state:", images);
-console.log("Number of images:", images.length);
       const formData = new FormData();
 
       formData.append("title", title);
@@ -62,21 +105,21 @@ console.log("Number of images:", images.length);
       formData.append("propertyType", propertyType);
       formData.append("listingType", listingType);
       formData.append("price", price);
-if (!["land", "car", "other"].includes(propertyType)) {
-  formData.append("bedrooms", bedrooms);
-  formData.append("bathrooms", bathrooms);
-}
-
+      if (!["land", "car", "other"].includes(propertyType)) {
+        formData.append("bedrooms", bedrooms);
+        formData.append("bathrooms", bathrooms);
+      }
       formData.append("location[state]", state);
       formData.append("location[city]", city);
       formData.append("location[area]", area);
       formData.append("location[address]", address);
 
      images.forEach((image) => {
-  formData.append("images", image);
-});
-
-console.log("FormData images:");
+      formData.append("images", image);
+    });
+    if (video) {
+      formData.append("video", video);
+    }
 
 for (const [key, value] of formData.entries()) {
   console.log(key, value);
@@ -196,6 +239,83 @@ const handlePropertyTypeChange = (value: string) => {
         handleImageChange={handleImageChange}
         removeImage={removeImage}
       />
+
+{/* PROPERTY VIDEO */}
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
+
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Property Video
+          </h2>
+
+          <p className="mt-1 text-sm text-gray-500">
+            Upload a video walkthrough of your property (optional).
+          </p>
+        </div>
+
+        {!video ? (
+          <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 px-6 py-10 text-center transition hover:border-green-500 hover:bg-green-50">
+
+            <FiVideo size={32} className="mb-3 text-green-600" />
+
+            <span className="text-sm font-semibold text-gray-700">
+              Click to upload property video
+            </span>
+
+            <span className="mt-2 text-xs text-gray-500">
+              MP4, WebM or MOV (Maximum 50MB)
+            </span>
+
+            <input
+              type="file"
+              accept="video/mp4,video/webm,video/quicktime"
+              onChange={handleVideoChange}
+              className="hidden"
+            />
+
+          </label>
+        ) : (
+          <div className="relative overflow-hidden rounded-xl border border-gray-200">
+
+            {videoPreview && (
+              <video
+                src={videoPreview}
+                controls
+                playsInline
+                preload="metadata"
+                className="max-h-80 w-full bg-black object-contain"
+              />
+            )}
+
+            <div className="flex items-center justify-between gap-3 p-3">
+
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium text-gray-800">
+                  {video.name}
+                </p>
+
+                <p className="text-xs text-gray-500">
+                  {(video.size / (1024 * 1024)).toFixed(2)} MB
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={removeVideo}
+                className="shrink-0 rounded-lg p-2 text-red-500 transition hover:bg-red-50"
+                aria-label="Remove video"
+              >
+                <FiX size={20} />
+              </button>
+
+            </div>
+
+          </div>
+        )}
+
+      </div>
+
         {/* PUBLISH INFORMATION                        */}
 
         <div className="rounded-2xl border border-green-100 bg-green-50 p-5 sm:p-6">
