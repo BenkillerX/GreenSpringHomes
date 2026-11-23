@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiSearch, FiMapPin, FiArrowRight, } from "react-icons/fi";
@@ -10,26 +9,26 @@ const ExplorePage = () => {
   const [userPorperties, setUserPorperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-useEffect(() => {
-  const getUserProperties = async () => {
-    try {
-      setLoading(true);
-      setError("");
+  useEffect(() => {
+      const getUserProperties = async () => {
+        try {
+          setLoading(true);
+          setError("");
 
-      const response = await api.get("/api/properties/all");
+          const response = await api.get("/api/properties/all");
 
-      setUserPorperties(response.data.properties || []);
+          setUserPorperties(response.data.properties || []);
 
-    } catch (error) {
-      console.error("Error fetching properties:", error);
-      setError("Unable to load properties. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+        } catch (error) {
+          console.error("Error fetching properties:", error);
+          setError("Unable to load properties. Please try again.");
+        } finally {
+          setLoading(false);
+        }
+      };
 
-  getUserProperties();
-}, []);
+      getUserProperties();
+  }, []);
   const [search, setSearch] = useState("");
   const [listingType, setListingType] = useState("all");
   const [propertyType, setPropertyType] = useState("all");

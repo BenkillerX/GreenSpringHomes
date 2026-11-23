@@ -1,152 +1,196 @@
-import { Link } from "react-router-dom"
-import { FiArrowRight, FiCheckCircle, FiHome, FiShield, FiTool, FiShoppingBag, FiGrid, FiMessageCircle, } from "react-icons/fi";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { FiArrowRight, FiSearch, FiMessageCircle, FiKey, FiCamera, FiUserCheck, FiHome, FiTool, FiCalendar, FiStar, FiUsers, } from "react-icons/fi";
+
+const ROLES = [
+  {
+    id: "tenant",
+    tab: "Find a home",
+    icon: FiHome,
+    headline: "Find a place you can trust, without the runaround.",
+    cta: { label: "Search rentals", to: "/explore" },
+    steps: [
+      {
+        icon: FiSearch,
+        title: "Search by area and budget",
+        text: "Filter listings by location, rent and size.",
+      },
+      {
+        icon: FiMessageCircle,
+        title: "Talk to the owner directly",
+        text: "Ask questions and arrange an inspection in the chat.",
+      },
+      {
+        icon: FiKey,
+        title: "Move in",
+        text: "Need repairs or fittings? Hire a vetted artisan on the same platform.",
+      },
+    ],
+  },
+  {
+    id: "owner",
+    tab: "List a property",
+    icon: FiUsers,
+    headline: "Put your property in front of people who are looking.",
+    cta: { label: "List a property", to: "/register" },
+    steps: [
+      {
+        icon: FiCamera,
+        title: "Add photos, videos and details",
+        text: "Set your rent, location and what's included.",
+      },
+      {
+        icon: FiUserCheck,
+        title: "Get verified",
+        text: "A verified badge shows tenants your listing is real.",
+      },
+      {
+        icon: FiMessageCircle,
+        title: "Receive enquiries",
+        text: "Reply to interested tenants and book inspections.",
+      },
+    ],
+  },
+  {
+    id: "artisan",
+    tab: "Offer a service",
+    icon: FiTool,
+    headline: "Get hired for the work you already do well.",
+    cta: { label: "Join as an artisan", to: "/register" },
+    steps: [
+      {
+        icon: FiTool,
+        title: "Create your service profile",
+        text: "List your trade, your area and examples of past work.",
+      },
+      {
+        icon: FiCalendar,
+        title: "Receive job requests",
+        text: "Tenants and property owners near you send requests.",
+      },
+      {
+        icon: FiStar,
+        title: "Build your reputation",
+        text: "Reviews from completed jobs bring you more work.",
+      },
+    ],
+  },
+];
 
 const HowItWorksHero = () => {
+  const [active, setActive] = useState("tenant");
+  const role = ROLES.find((r) => r.id === active);
+
   return (
-    <section className="overflow-hidden border-b border-gray-100 bg-white">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 sm:px-6 md:py-20 lg:grid-cols-2 lg:px-8 lg:py-24">
-    
-        {/* Left content */}
+    <section className="border-b border-emerald-950/10 bg-[#F3F6F2] min-h-screen">
+      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-6 md:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:px-8 lg:py-24">
+        {/* Left: framing + role picker */}
         <div className="max-w-xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-green-100 bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700">
-            <span className="h-2 w-2 rounded-full bg-green-500" />
-            Discover more with GreenSpringHomes
-          </div>
-    
-          <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-[3.5rem]">
-            Find opportunities.
-            <span className="block text-green-600">
-              Make connections.
-            </span>
-            Build something better.
+          <h1 className="text-4xl font-semibold leading-[1.1] tracking-tight text-emerald-950 sm:text-5xl lg:text-[3.4rem]">
+            One platform for homes, owners and the people who fix them.
           </h1>
-    
-          <p className="mt-6 max-w-lg text-base leading-8 text-gray-500">
-            Whether you're searching for a place to call home, looking to
-            list a property, offering professional services or selling
-            products, GreenSpringHomes brings opportunities together.
+
+          <p className="mt-6 max-w-md text-base leading-7 text-emerald-950/70">
+            GreenSpringHomes connects tenants, property owners and artisans
+            across Nigeria. Choose what you want to do to see how it works.
           </p>
-    
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+
+          <div
+            role="tablist"
+            aria-label="Choose what you want to do"
+            className="mt-8 inline-flex w-full flex-col gap-1 rounded-2xl bg-emerald-950/6 p-1 sm:w-auto sm:flex-row"
+          >
+            {ROLES.map((r) => {
+              const Icon = r.icon;
+              const selected = r.id === active;
+              return (
+                <button
+                  key={r.id}
+                  role="tab"
+                  type="button"
+                  aria-selected={selected}
+                  aria-controls="hiw-panel"
+                  onClick={() => setActive(r.id)}
+                  className={`flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 ${
+                    selected
+                      ? "bg-white text-emerald-950 shadow-sm"
+                      : "text-emerald-950/60 hover:text-emerald-950"
+                  }`}
+                >
+                  <Icon size={16} />
+                  {r.tab}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+           {role?.cta.to && (
             <Link
-              to="/register"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700"
+              to={role.cta.to}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-800 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
             >
-              Get Started
-              <FiArrowRight size={17} />
+              {role.cta.label}
+              <FiArrowRight size={16} />
             </Link>
-    
+          )}
+
+          <Link
+            to="/explore"
+            className="inline-flex items-center justify-center px-2 py-3.5 text-sm font-semibold text-emerald-950/70 underline-offset-4 transition hover:text-emerald-950 hover:underline"
+          >
+            Browse the platform first
+          </Link>
             <Link
               to="/explore"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3.5 text-sm font-semibold text-gray-700 transition hover:border-green-200 hover:bg-green-50 hover:text-green-700"
+              className="inline-flex items-center justify-center px-2 py-3.5 text-sm font-semibold text-emerald-950/70 underline-offset-4 transition hover:text-emerald-950 hover:underline"
             >
-              Explore Platform
+              Browse the platform first
             </Link>
           </div>
-    
-          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-gray-500">
-            <span className="flex items-center gap-2">
-              <FiCheckCircle className="text-green-600" />
-              Discover properties
-            </span>
-            <span className="flex items-center gap-2">
-              <FiCheckCircle className="text-green-600" />
-              Connect with people
-            </span>
-          </div>
         </div>
-    
-        {/* Right visual */}
-        <div className="relative mx-auto w-full max-w-lg">
-          <div className="rounded-3xl border border-gray-100 bg-gray-50 p-5 shadow-sm sm:p-7">
-    
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-400">
-                  GREENSPRINGHOMES
-                </p>
-                <h3 className="mt-1 text-lg font-bold text-gray-900">
-                  Explore possibilities
-                </h3>
-              </div>
-    
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100 text-green-600">
-                <FiGrid size={20} />
-              </div>
-            </div>
-    
-            <div className="mt-6 grid grid-cols-2 gap-3">
-    
-              <div className="rounded-2xl border border-gray-100 bg-white p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-green-600">
-                  <FiHome size={21} />
-                </div>
-                <h4 className="mt-4 text-sm font-semibold text-gray-900">
-                  Properties
-                </h4>
-                <p className="mt-1 text-xs leading-5 text-gray-500">
-                  Find or list your next home.
-                </p>
-              </div>
-    
-              <div className="rounded-2xl border border-gray-100 bg-white p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                  <FiTool size={21} />
-                </div>
-                <h4 className="mt-4 text-sm font-semibold text-gray-900">
-                  Services
-                </h4>
-                <p className="mt-1 text-xs leading-5 text-gray-500">
-                  Discover skilled professionals.
-                </p>
-              </div>
-    
-              <div className="rounded-2xl border border-gray-100 bg-white p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
-                  <FiShoppingBag size={21} />
-                </div>
-                <h4 className="mt-4 text-sm font-semibold text-gray-900">
-                  Marketplace
-                </h4>
-                <p className="mt-1 text-xs leading-5 text-gray-500">
-                  Discover products and sellers.
-                </p>
-              </div>
-    
-              <div className="rounded-2xl border border-gray-100 bg-white p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
-                  <FiMessageCircle size={21} />
-                </div>
-                <h4 className="mt-4 text-sm font-semibold text-gray-900">
-                  Connections
-                </h4>
-                <p className="mt-1 text-xs leading-5 text-gray-500">
-                  Connect and explore opportunities.
-                </p>
-              </div>
-    
-            </div>
-    
-            <div className="mt-4 flex items-center gap-3 rounded-xl border border-green-100 bg-green-50 p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-green-600">
-                <FiShield size={20} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-900">
-                  A platform built around trust
-                </p>
-                <p className="mt-1 text-xs text-gray-500">
-                  Discover, connect and grow with confidence.
-                </p>
-              </div>
-            </div>
-    
-          </div>
+
+        {/* Right: steps for the chosen role */}
+        <div
+          id="hiw-panel"
+          role="tabpanel"
+          aria-live="polite"
+          className="rounded-3xl bg-emerald-950 p-6 text-white sm:p-8"
+        >
+          <p className="text-xl font-medium leading-snug sm:text-2xl">
+            {role?.headline}
+          </p>
+
+          <ol className="relative mt-8">
+            {/* connecting line */}
+            <span
+              aria-hidden="true"
+              className="absolute left-4.75 top-5 bottom-5 w-px bg-white/15"
+            />
+            {role?.steps.map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <li
+                  key={`${role.id}-${i}`}
+                  className="relative flex gap-4 pb-7 last:pb-0"
+                >
+                  <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-400 text-emerald-950">
+                    <Icon size={18} />
+                  </span>
+                  <div className="pt-1.5">
+                    <h3 className="text-base font-semibold">{step.title}</h3>
+                    <p className="mt-1 max-w-sm text-sm leading-6 text-white/65">
+                      {step.text}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
         </div>
-    
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default HowItWorksHero
+export default HowItWorksHero;
