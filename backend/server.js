@@ -17,10 +17,7 @@ const app = express()
 const PORT = process.env.PORT
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
-console.log(
-  "Google OAuth configured:",
-  Boolean(googleClientId && googleClientSecret)
-);
+console.log( "Google OAuth configured:", Boolean(googleClientId && googleClientSecret) );
 
 app.use(express.json())
 app.use(cors())
@@ -32,11 +29,7 @@ app.use("/api/email", emailRouter);
 app.use("/api/saved-properties", savedPropertiesRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/service-providers', serviceProviderRoutes);
-app.get('/', (_, res)=>{
-    return res.json({
-        message:"Welcome to GreenSpringHomes"
-    })
-})
+app.get('/', (_, res)=>{ return res.json({ message:"Welcome to GreenSpringHomes" }) })
 console.log(PORT);
 
 connectDb().then(()=>{
