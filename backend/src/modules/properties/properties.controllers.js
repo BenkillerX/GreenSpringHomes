@@ -191,6 +191,7 @@ export const getPropertyById = async (req, res) => {
     });
   }
 };
+
 export async function deleteProperty(req, res) {
   try {
     const { id } = req.params;
@@ -219,20 +220,37 @@ export async function deleteProperty(req, res) {
     }
 
     const images = property.images || [];
+    const video = property.video;
 
-    // Ensure all images have public IDs
+    // Validate image public IDs
     if (images.some((image) => !image.publicId)) {
       return res.status(409).json({
         message: "Some images are missing Cloudinary public IDs",
       });
     }
 
-    // Delete all images from Cloudinary
-    const results = await Promise.allSettled(
-      images.map((image) =>
-        deleteFromCloudinary(image.publicId)
-      )
-    );
+    // Validate video public ID if a video exists
+    if (video?.url && !video.publicId) {
+      return res.status(409).json({
+        message: "Property video is missing its Cloudinary public ID",
+      });
+    }
+
+    // Prepare Cloudinary deletion tasks
+    const deletionTasks = [
+      ...images.map((image) =>
+        deleteFromCloudinary(image.publicId, "image")
+      ),
+    ];
+
+    if (video?.publicId) {
+      deletionTasks.push(
+        deleteFromCloudinary(video.publicId, "video")
+      );
+    }
+
+    // Delete all media from Cloudinary
+    const results = await Promise.allSettled(deletionTasks);
 
     // Check deletion results
     const failed = results.some(
@@ -245,7 +263,7 @@ export async function deleteProperty(req, res) {
       console.error("CLOUDINARY DELETE RESULTS:", results);
 
       return res.status(502).json({
-        message: "Some property images could not be deleted. Please retry.",
+        message: "Some property media could not be deleted. Please retry.",
       });
     }
 
@@ -253,7 +271,7 @@ export async function deleteProperty(req, res) {
     await Property.findByIdAndDelete(id);
 
     return res.status(200).json({
-      message: "Property and images deleted successfully",
+      message: "Property, images and video deleted successfully",
     });
 
   } catch (error) {
@@ -264,6 +282,7 @@ export async function deleteProperty(req, res) {
     });
   }
 }
+
 export const searchProperties = async (req, res) => {
   try {
     const { location, propertyType, maxPrice } = req.query;

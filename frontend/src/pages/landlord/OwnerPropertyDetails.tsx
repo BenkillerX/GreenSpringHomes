@@ -320,7 +320,7 @@ const OwnerPropertyDetails = () => {
               controls
               playsInline
               preload="metadata"
-              className="max-h-[500px] w-full rounded-xl bg-black"
+              className="max-h-125 w-full rounded-xl bg-black"
             >
               <source
                 src={property.video.url}

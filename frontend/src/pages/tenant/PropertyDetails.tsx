@@ -314,7 +314,7 @@ if (error || !property) {
         controls
         playsInline
         preload="metadata"
-        className="max-h-[550px] w-full rounded-xl bg-black"
+        className="max-h-137.5 w-full rounded-xl bg-black"
       >
         Your browser does not support video playback.
       </video>
