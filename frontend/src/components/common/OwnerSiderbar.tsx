@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
-
 import { FiHome, FiBriefcase, FiSettings, FiLogOut, FiChevronLeft, FiChevronRight, FiTool, } from "react-icons/fi";
 
 type SidebarLinkProps = {
@@ -68,18 +67,30 @@ const handleLogout = async () => {
       className={` hidden md:flex h-screen flex-col bg-white border-r border-gray-200 transition-all duration-300 shrink-0 sticky top-0 ${isCollapsed ? "w-20" : "w-65"} `}
     >
       {/* Logo */}
-      <div
-        className={` h-20 flex items-center border-b border-gray-100 ${isCollapsed ? "justify-center" : "px-6"} `}
+     <div
+        className={`flex shrink-0 items-center border-b border-gray-100 p-4 ${
+          isCollapsed
+            ? "flex-col justify-center gap-2 py-3"
+            : "min-h-20 justify-between"
+        }`}
       >
-        {!isCollapsed ? (
-          <h1 className="text-xl font-bold ">
-            Green<span className="text-green-600">Spring</span>Homes
-          </h1>
-        ) : (
-          <span className="text-xl font-bold text-green-600">
-            G
-          </span>
-        )}
+        <div
+          className={`flex min-w-0 items-center ${
+            isCollapsed ? "justify-center" : "gap-2"
+          }`}
+        >
+          <img
+            src="/GreenSpringLogo.jpeg"
+            alt="GreenSpringHomes"
+            className="h-10 w-10 shrink-0 rounded-lg object-cover"
+          />
+
+          {!isCollapsed && (
+            <h1 className="whitespace-nowrap font-semibold text-gray-800">
+              Green<span className="text-green-500">Spring</span>Home
+            </h1>
+          )}
+        </div>
       </div>
 
       {/* Profile */}

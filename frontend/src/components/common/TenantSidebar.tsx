@@ -22,10 +22,8 @@ const TenantSidebar = ({
 }: TenantSidebarProps) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
   const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
-
   const userInitial =
     currentUser?.firstname?.charAt(0).toUpperCase() || "?";
 
