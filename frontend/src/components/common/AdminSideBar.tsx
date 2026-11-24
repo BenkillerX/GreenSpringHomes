@@ -34,6 +34,11 @@ const navigation = [
     icon: Flag,
   },
   {
+    title: "Customer Support",
+    path: "/admin/customer-support",
+    icon: Flag,
+  },
+  {
     title: "Payments & Revenue",
     path: "/admin/payments",
     icon: Wallet,

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FiHome, FiBriefcase, FiBell, FiSettings, FiLogOut, FiChevronLeft, FiChevronRight, } from "react-icons/fi";
+import { FiHome, FiBriefcase, FiBell, FiSettings, FiLogOut, FiChevronLeft, FiChevronRight, FiHeadphones, } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth";
 
@@ -154,6 +154,12 @@ const ServiceProviderSidebar = ({
             label="Notifications"
             to="/service-provider/notifications"
             collapsed={isCollapsed}
+          />
+          <SidebarLink
+                  icon={<FiHeadphones />}
+                  label="Help & Support"
+                  to="/tenant/support"
+                  collapsed={isCollapsed}
           />
 
           <SidebarLink

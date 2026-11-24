@@ -10,6 +10,7 @@ import emailRouter from "./src/modules/email/email.route.js";
 import savedPropertiesRoutes from "./src/modules/savedProperties/savedPropertyRoutes.js";
 import adminRoutes from "./src/modules/admin/admin.routes.js";
 import serviceProviderRoutes from "./src/modules/serviceProviders/service-providers.routes.js";
+import supportRoutes from "./src/modules/customer-support/support.routes.js";
 
 
 
@@ -29,6 +30,7 @@ app.use("/api/email", emailRouter);
 app.use("/api/saved-properties", savedPropertiesRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/service-providers', serviceProviderRoutes);
+app.use('/api/support', supportRoutes);
 app.get('/', (_, res)=>{ return res.json({ message:"Welcome to GreenSpringHomes" }) })
 console.log(PORT);
 

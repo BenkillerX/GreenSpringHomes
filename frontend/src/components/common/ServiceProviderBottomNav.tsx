@@ -7,6 +7,7 @@ import {
   FiBell,
   FiSettings,
   FiLogOut,
+  FiHeadphones,
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth";
@@ -52,6 +53,12 @@ const ServiceProviderBottomNav = () => {
       label: "Notifications",
       to: "/service-provider/notifications",
       icon: FiBell,
+      end: false,
+    },
+    {
+      label: "Help",
+      to: "/service-provider/support",
+      icon: FiHeadphones,
       end: false,
     },
     {

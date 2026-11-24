@@ -7,6 +7,7 @@ import {
   FiBriefcase,
   FiSettings,
   FiLogOut,
+  FiHeadphones,
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth";
@@ -32,10 +33,16 @@ const OwnerBottomNav = () => {
       end: true,
     },
     {
-      label: "My Properties",
+      label: "Properties",
       icon: FiBriefcase,
       to: "/owner/properties",
       end: true,
+    },
+    {
+      label: "Help",
+      icon: FiHeadphones,
+      to: "/owner/support",
+      end: false,
     },
     {
       label: "Settings",

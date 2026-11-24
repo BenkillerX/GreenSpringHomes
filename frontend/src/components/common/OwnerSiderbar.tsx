@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
-import { FiHome, FiBriefcase, FiSettings, FiLogOut, FiChevronLeft, FiChevronRight, FiTool, } from "react-icons/fi";
+import { FiHome, FiBriefcase, FiSettings, FiLogOut, FiChevronLeft, FiChevronRight, FiTool, FiHeadphones, } from "react-icons/fi";
 
 type SidebarLinkProps = {
   icon: React.ReactNode;
@@ -151,6 +151,12 @@ const handleLogout = async () => {
           to="/owner/service-providers"
           collapsed={isCollapsed}
         />
+        <SidebarLink
+      icon={<FiHeadphones />}
+      label="Help & Support"
+      to="/owner/support"
+      collapsed={isCollapsed}
+    />
         <SidebarLink
           icon={<FiSettings />}
           label="Settings"

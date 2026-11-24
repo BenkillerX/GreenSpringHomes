@@ -1,6 +1,14 @@
+
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FiHome, FiHeart, FiUser, FiTool, FiLogOut, } from "react-icons/fi";
+import {
+  FiHome,
+  FiHeart,
+  FiUser,
+  FiTool,
+  FiLogOut,
+  FiHeadphones,
+} from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth";
 
@@ -18,9 +26,15 @@ const navItems = [
     end: false,
   },
   {
-    label: "Service Providers",
+    label: "Providers",
     to: "/tenant/service-providers",
     icon: FiTool,
+    end: false,
+  },
+  {
+    label: "Help",
+    to: "/tenant/support",
+    icon: FiHeadphones,
     end: false,
   },
   {
@@ -61,7 +75,7 @@ const TenantBottomNav = () => {
         aria-label="Tenant navigation"
         className="fixed inset-x-0 bottom-0 z-50 border-t border-gray-200 bg-white/95 backdrop-blur-md md:hidden"
       >
-        <div className="mx-auto flex h-16 max-w-lg items-stretch justify-around px-1">
+        <div className="mx-auto flex h-16 w-full max-w-lg items-stretch justify-around px-1">
           {navItems.map(({ label, to, icon: Icon, end }) => (
             <NavLink
               key={label}

@@ -1,14 +1,6 @@
 import { useState } from "react";
-import {
-  FiSearch,
-  FiShield,
-  FiHome,
-  FiUser,
-  FiCreditCard,
-  FiChevronDown,
-  FiArrowUpRight,
-  FiHeadphones,
-} from "react-icons/fi";
+import { FiSearch, FiShield, FiHome, FiUser, FiCreditCard, FiChevronDown, FiArrowUpRight, FiHeadphones, } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const topics = [
   {
@@ -230,10 +222,13 @@ const Help = () => {
               </div>
             </div>
 
-            <button className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3.5 text-sm font-semibold text-white shadow-md shadow-green-600/25 transition hover:bg-green-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-green-300">
+            <Link to="/login">
+               <button className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3.5 text-sm font-semibold text-white shadow-md shadow-green-600/25 transition hover:bg-green-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-green-300">
               <FiHeadphones size={18} />
               Contact support
             </button>
+            </Link>
+           
           </div>
         </section>
       </main>

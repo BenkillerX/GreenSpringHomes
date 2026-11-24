@@ -64,15 +64,22 @@ const Notifications = lazy(() => import("./pages/admin/Notifications"));
 const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
 const AuditLogs = lazy(() => import("./pages/admin/AuditLogs"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const AdminSupport = lazy(()=> import("./pages/admin/AdminSupport"))
+
 // Onboarding pages
 const TenantOnboarding = lazy( () => import("./pages/onboarding/TenantOnboarding") ); 
 const ServiceProviderOnboarding = lazy( () => import("./pages/onboarding/ServiceProviderOnboarding") ); 
 const PropertyOwnerOnboarding = lazy( () => import("./pages/onboarding/PropertyOwnerOnboarding") );
+
 // Common pages
 //Service Provider pages
 const MyServices = lazy(() => import("./pages/serviceProvider/MyServices"));
 const ServiceSettings = lazy(() => import("./pages/serviceProvider/ServiceSettings"));
 const SeerviceNotification = lazy(() => import("./pages/serviceProvider/SeerviceNotification"));
+
+//Support Pages
+
+const SupportPage = lazy(()=>import("./pages/support/SupportPage"))
 const App = () => {
   const { pathname } = useLocation();
 
@@ -137,40 +144,45 @@ const App = () => {
   <Route element={<ProtectedRoute />}>
 
     {/* Tenant Pages */}
-    <Route element={<TenantLayout />}>
-      <Route path="/tenant/" element={<TenantHome />} />
-      <Route path="/tenant/saved-properties" element={<SavedProperties />} />
-      <Route path="/tenant/settings" element={<Settings />} />
-      <Route path="/tenant/details/:id" element={<PropertyDetails />} />
-      <Route path="/tenant/service-providers" element={<TenantServiceProviders />} />
-      <Route
-        path="/tenant/service-providers/:id"
-        element={<TenantServiceProviderDetails />}
-      />
-    </Route>
+  <Route element={<TenantLayout />}>
+  <Route path="/tenant/" element={<TenantHome />} />
+  <Route path="/tenant/saved-properties" element={<SavedProperties />} />
+  <Route path="/tenant/settings" element={<Settings />} />
+  <Route path="/tenant/details/:id" element={<PropertyDetails />} />
+  <Route path="/tenant/service-providers" element={<TenantServiceProviders />} />
+  <Route
+    path="/tenant/service-providers/:id"
+    element={<TenantServiceProviderDetails />}
+  />
 
+  <Route path="/tenant/support" element={<SupportPage />} />
+</Route>
     {/* Property Owner Pages */}
-    <Route element={<OwnerLayout />}>
-      <Route path="/owner/" element={<OwnerHome />} />
-      <Route path="/owner/properties" element={<OwnerProperties />} />
-      <Route path="/owner/properties/add" element={<Addproperties />} />
-      <Route path="/owner/messages" element={<OwnerMessages />} />
-      <Route path="/owner/notifications" element={<OwnerNotifications />} />
-      <Route path="/owner/settings" element={<OwnerSettings />} />
-      <Route path="/owner/update" element={<UpdateInfo />} />
-      <Route path="/owner/properties/edit/:id" element={<EditProperty />} />
-      <Route path="/owner/properties/:id" element={<OwnerPropertyDetails />} />
-      <Route path="/owner/service-providers" element={<LandlordServiceProviders />} />
-      <Route path="/owner/service-providers/:id" element={<LandlordServiceProvidersDetails />} />
-    </Route>
+ <Route element={<OwnerLayout />}>
+  <Route path="/owner/" element={<OwnerHome />} />
+  <Route path="/owner/properties" element={<OwnerProperties />} />
+  <Route path="/owner/properties/add" element={<Addproperties />} />
+  <Route path="/owner/messages" element={<OwnerMessages />} />
+  <Route path="/owner/notifications" element={<OwnerNotifications />} />
+  <Route path="/owner/settings" element={<OwnerSettings />} />
+  <Route path="/owner/update" element={<UpdateInfo />} />
+  <Route path="/owner/properties/edit/:id" element={<EditProperty />} />
+  <Route path="/owner/properties/:id" element={<OwnerPropertyDetails />} />
+  <Route path="/owner/service-providers" element={<LandlordServiceProviders />} />
+  <Route path="/owner/service-providers/:id" element={<LandlordServiceProvidersDetails />} />
+
+  <Route path="/owner/support" element={<SupportPage />} />
+</Route>
 
     {/* Service Provider Pages */}
-    <Route element={<ServiceProviderLayout />}>
-      <Route path="/service-provider/" element={<ServiceHome />} />
-      <Route path="/service-provider/services" element={<MyServices />} />
-      <Route path="/service-provider/settings" element={<ServiceSettings />} />
-      <Route path="/service-provider/notifications" element={<SeerviceNotification />} />
-    </Route>
+  <Route element={<ServiceProviderLayout />}>
+  <Route path="/service-provider/" element={<ServiceHome />} />
+  <Route path="/service-provider/services" element={<MyServices />} />
+  <Route path="/service-provider/settings" element={<ServiceSettings />} />
+  <Route path="/service-provider/notifications" element={<SeerviceNotification />} />
+
+  <Route path="/service-provider/support" element={<SupportPage />} />
+</Route>
 
     {/* Onboarding */}
     <Route path="/tenant/onboarding" element={<TenantOnboarding />} />
@@ -194,9 +206,12 @@ const App = () => {
       <Route
       path="/admin/properties/:propertyId"
       element={<AdminPropertyDetails />}
-    />
+      />
+      <Route
+      path="/admin/customer-support"
+      element={<AdminSupport />}
+      />
     </Route>
-
   </Route>
 </Routes>
 
