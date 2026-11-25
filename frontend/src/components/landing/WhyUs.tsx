@@ -33,9 +33,6 @@ const WhyUs = () => {
       <div className="mx-auto max-w-7xl">
         {/* Heading */}
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-sm font-semibold uppercase tracking-wide text-green-600">
-            Why choose us
-          </span>
 
           <h2 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">
             Why Green<span className="text-green-600">Spring</span>Homes
