@@ -9,6 +9,7 @@ const ExplorePage = () => {
   const [userPorperties, setUserPorperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  
   useEffect(() => {
       const getUserProperties = async () => {
         try {
@@ -33,38 +34,36 @@ const ExplorePage = () => {
   const [listingType, setListingType] = useState("all");
   const [propertyType, setPropertyType] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
+const filteredProperties = useMemo(() => {
+  return userPorperties
+    .filter((property) => {
+      const location = property.location || {};
 
-  const filteredProperties = useMemo(() => {
-  return userPorperties.filter((property) => {
-    const location = property.location || {};
+      const searchable = [
+        property.title,
+        location.state,
+        location.city,
+        location.area,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
 
-    const searchable = [
-      property.title,
-      location.state,
-      location.city,
-      location.area,
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
+      return (
+        searchable.includes(search.toLowerCase()) &&
+        (listingType === "all" || property.listingType === listingType) &&
+        (propertyType === "all" || property.propertyType === propertyType) &&
+        (!maxPrice || property.price <= Number(maxPrice))
+      );
+    })
+    .sort((a, b) => {
+      if (b.priority !== a.priority) {
+        return b.priority - a.priority;
+      }
 
-    return (
-      searchable.includes(search.toLowerCase()) &&
-      (listingType === "all" ||
-        property.listingType === listingType) &&
-      (propertyType === "all" ||
-        property.propertyType === propertyType) &&
-      (!maxPrice || property.price <= Number(maxPrice))
-    );
-  });
-}, [
-  userPorperties,
-  search,
-  listingType,
-  propertyType,
-  maxPrice,
-]);
-
+      return Number(b.isFeatured) - Number(a.isFeatured);
+    });
+}, [userPorperties, search, listingType, propertyType, maxPrice]);
   const formatPrice = (price:number) =>
     new Intl.NumberFormat("en-NG", {
       style: "currency",
