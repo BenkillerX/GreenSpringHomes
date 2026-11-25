@@ -11,6 +11,7 @@ import savedPropertiesRoutes from "./src/modules/savedProperties/savedPropertyRo
 import adminRoutes from "./src/modules/admin/admin.routes.js";
 import serviceProviderRoutes from "./src/modules/serviceProviders/service-providers.routes.js";
 import supportRoutes from "./src/modules/customer-support/support.routes.js";
+import { apiLimiter } from "./src/middleware/rate-limit.middleware.js";
 
 
 
@@ -22,6 +23,7 @@ console.log( "Google OAuth configured:", Boolean(googleClientId && googleClientS
 
 app.use(express.json())
 app.use(cors())
+app.use("/api", apiLimiter);
 app.use('/api/auth', authRoutes)
 app.use('/api/onboarding', onboardingRoutes)
 app.use('/api/properties', propertyRoutes)

@@ -2,6 +2,24 @@ import { uploadToCloudinary } from "../../utils/uploadToCloudinary.js";
 import Property from "../models/Property.js";
 import mongoose from "mongoose";
 import { deleteFromCloudinary } from "../../utils/deleteFromCloudinary.js";
+import { v2 as cloudinary } from "cloudinary";
+const MAX_IMAGES = 5;
+const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime"];
+const NO_ROOMS = ["land", "car", "other"];
+
+// Best-effort cleanup: a failed delete should never fail the whole update
+const destroyAsset = async (publicId, resourceType = "image") => {
+  if (!publicId) return;
+
+  try {
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
+  } catch (error) {
+    console.error(`Failed to delete Cloudinary ${resourceType}:`, publicId, error);
+  }
+};
+
 
 export async function addProperty(req, res) {
   try {
@@ -110,6 +128,7 @@ export async function getProperties(req, res) {
     });
   }
 }
+
 export async function getAllProperties(req, res) {
   try {
     const properties = await Property.find();
@@ -341,6 +360,7 @@ export const searchProperties = async (req, res) => {
   }
 };
 
+
 export const updateProperty = async (req, res) => {
   try {
     const { id } = req.params;
@@ -367,12 +387,33 @@ export const updateProperty = async (req, res) => {
       });
     }
 
+    // With upload.fields(), files arrive as { images: [...], video: [...] }
+    const newImages = req.files?.images || [];
+    const newVideo = req.files?.video?.[0] || null;
+    const removeVideo = req.body.removeVideo === "true";
+
+    // ---- Validate uploads BEFORE touching the database or Cloudinary ----
+    if (property.images.length + newImages.length > MAX_IMAGES) {
+      return res.status(400).json({
+        message: `A property can have a maximum of ${MAX_IMAGES} images.`,
+      });
+    }
+
+    if (newVideo && !ALLOWED_VIDEO_TYPES.includes(newVideo.mimetype)) {
+      return res.status(400).json({
+        message: "Please upload an MP4, WebM or MOV video.",
+      });
+    }
+
+    // ---- Text fields ----
     const allowedFields = [
       "title",
       "description",
       "propertyType",
       "listingType",
       "price",
+      "bedrooms",
+      "bathrooms",
       "location",
     ];
 
@@ -414,23 +455,54 @@ export const updateProperty = async (req, res) => {
       property[field] = req.body[field];
     }
 
-    // Upload new images to Cloudinary
-    if (req.files?.length) {
-      const uploadedImages = await Promise.all(
-        req.files.map(async (file) => {
-          const result = await uploadToCloudinary(file.path);
-
-          return {
-            url: result.secure_url,
-            publicId: result.public_id,
-          };
-        })
-      );
-
-      property.images.push(...uploadedImages);
+    // Types without rooms shouldn't keep stale bedroom/bathroom counts
+    if (NO_ROOMS.includes(property.propertyType)) {
+      property.bedrooms = undefined;
+      property.bathrooms = undefined;
     }
 
-    await property.save();
+    // ---- New images ----
+    if (newImages.length) {
+      const uploadedImages = await Promise.all(
+        newImages.map((file) =>
+          uploadToCloudinary(file.buffer, "greenspringhomes/properties")
+        )
+      );
+
+      property.images.push(
+        ...uploadedImages.map((image) => ({
+          url: image.secure_url,
+          publicId: image.public_id,
+        }))
+      );
+    }
+
+    // ---- Video: replace or remove ----
+    const oldVideoPublicId = property.video?.publicId;
+
+    if (newVideo) {
+      // Upload the new one first so a failed upload never leaves the listing without a video
+      const uploadedVideo = await uploadToCloudinary(
+        newVideo.buffer,
+        "greenspringhomes/videos",
+        "video"
+      );
+
+      property.video = {
+        url: uploadedVideo.secure_url,
+        publicId: uploadedVideo.public_id,
+      };
+
+      await property.save();
+      await destroyAsset(oldVideoPublicId, "video");
+    } else if (removeVideo && oldVideoPublicId) {
+      property.video = null;
+
+      await property.save();
+      await destroyAsset(oldVideoPublicId, "video");
+    } else {
+      await property.save();
+    }
 
     return res.status(200).json({
       message: "Property updated successfully",

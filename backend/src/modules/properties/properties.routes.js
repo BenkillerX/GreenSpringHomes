@@ -14,5 +14,5 @@ propertyRoutes.get("/search", searchProperties);
 propertyRoutes.get("/all", getAllProperties);
 propertyRoutes.get("/:id", getPropertyById);
 propertyRoutes.delete("/:id",authenticateToken, authorizeRoles("propertyOwner"), deleteProperty);
-propertyRoutes.patch( "/:id", authenticateToken, authorizeRoles("propertyOwner"), upload.array("images", 5), updateProperty );
+propertyRoutes.patch( "/:id", authenticateToken, authorizeRoles("propertyOwner"), upload.fields([ { name: "images", maxCount: 5 }, { name: "video", maxCount: 1 }, ]), updateProperty )
 export default propertyRoutes

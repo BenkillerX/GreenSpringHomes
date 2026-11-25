@@ -1,7 +1,7 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { isAxiosError } from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { FiArrowLeft, FiSave, FiUpload, FiX, FiMapPin, FiHome, FiImage, } from "react-icons/fi";
+import { FiArrowLeft, FiSave, FiUpload, FiX, FiMapPin, FiHome, FiImage,  FiVideo,} from "react-icons/fi";
 import toast from "react-hot-toast";
 import api from "../../services/api";
 
@@ -18,6 +18,10 @@ interface Property {
     url: string;
     publicId: string;
   }[];
+  video?: {
+    url: string;
+    publicId: string;
+  } | null;
   location: {
     state: string;
     city: string;
@@ -65,7 +69,13 @@ const EditProperty = () => {
   const [newImages, setNewImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [existingVideo, setExistingVideo] = useState<
+    Property["video"]
+  >(null);
 
+  const [newVideo, setNewVideo] = useState<File | null>(null);
+  const [removeExistingVideo, setRemoveExistingVideo] = useState(false);
+  const [newVideoPreview, setNewVideoPreview] = useState("");
   useEffect(() => {
     if (!id) {
       toast.error("Property ID is missing");
@@ -99,6 +109,7 @@ const EditProperty = () => {
         });
 
         setExistingImages(property.images ?? []);
+        setExistingVideo(property.video ?? null);
       } catch (error: unknown) {
         if (cancelled) return;
 
@@ -122,7 +133,13 @@ const EditProperty = () => {
       cancelled = true;
     };
   }, [id, navigate]);
-
+useEffect(() => {
+  return () => {
+    if (newVideoPreview) {
+      URL.revokeObjectURL(newVideoPreview);
+    }
+  };
+}, [newVideoPreview]);;
   const handleChange = (
     event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -135,7 +152,40 @@ const EditProperty = () => {
       [name]: value,
     }));
   };
+const handleVideoChange = (
+  event: ChangeEvent<HTMLInputElement>
+) => {
+  const file = event.target.files?.[0];
 
+  if (!file) return;
+
+  const allowedTypes = [
+    "video/mp4",
+    "video/webm",
+    "video/quicktime",
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    toast.error("Only MP4, WebM and MOV videos are allowed");
+    event.target.value = "";
+    return;
+  }
+
+  const previewUrl = URL.createObjectURL(file);
+
+  setNewVideo(file);
+  setNewVideoPreview(previewUrl);
+  setRemoveExistingVideo(false);
+
+  event.target.value = "";
+};
+const handleRemoveExistingVideo = () => {
+  setRemoveExistingVideo(true);
+};
+const removeNewVideo = () => {
+  setNewVideo(null);
+  setNewVideoPreview("");
+};
   const handleImageChange = (
     event: ChangeEvent<HTMLInputElement>
   ) => {
@@ -231,6 +281,12 @@ const EditProperty = () => {
         payload.append("images", image);
       });
 
+      if (newVideo) {
+      payload.append("video", newVideo);
+    }
+    if (removeExistingVideo && !newVideo) {
+  payload.append("removeVideo", "true");
+}
       await api.patch(`/api/properties/${id}`, payload);
 
       toast.success("Property updated successfully", {
@@ -604,6 +660,134 @@ const EditProperty = () => {
               {existingImages.length + newImages.length} of 5 images selected.
             </p>
           </section>
+
+      {/* Property Video */}
+        <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-7">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-green-700">
+              <FiVideo size={20} />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Property Video
+              </h2>
+              <p className="text-sm text-gray-500">
+                Add a video tour of your property or replace an existing one.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-5">
+            {/* Existing video */}
+            {existingVideo && !removeExistingVideo && (
+              <div className="rounded-xl border border-gray-200 p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-sm font-semibold text-gray-800">
+                    Current video
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={handleRemoveExistingVideo}
+                    className="flex items-center gap-1 text-sm font-medium text-red-600 hover:text-red-700"
+                  >
+                    <FiX size={16} />
+                    Remove
+                  </button>
+                </div>
+
+                <video
+                  src={existingVideo.url}
+                  controls
+                  className="max-h-72 w-full rounded-lg bg-black"
+                />
+              </div>
+            )}
+
+            {/* Existing video marked for removal */}
+            {existingVideo && removeExistingVideo && (
+              <div className="flex items-center justify-between rounded-xl border border-red-200 bg-red-50 p-4">
+                <p className="text-sm text-red-700">
+                  Your existing video will be removed.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => setRemoveExistingVideo(false)}
+                  className="text-sm font-semibold text-green-700 hover:text-green-800"
+                >
+                  Undo
+                </button>
+              </div>
+            )}
+
+            {/* Newly selected video */}
+            {newVideo && (
+              <div className="rounded-xl border border-green-200 p-4">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-gray-800">
+                      New video
+                    </p>
+                    <p className="truncate text-xs text-gray-500">
+                      {newVideo.name}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={removeNewVideo}
+                    aria-label="Remove selected video"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600 hover:bg-red-100"
+                  >
+                    <FiX size={17} />
+                  </button>
+                </div>
+
+                <video
+                  src={newVideoPreview}
+                  controls
+                  className="max-h-72 w-full rounded-lg bg-black"
+                />
+
+                <p className="mt-2 text-xs text-green-700">
+                  This video will be uploaded when you save your changes.
+                </p>
+              </div>
+            )}
+
+            {/* Video upload input */}
+            {!newVideo && (
+              <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 px-5 py-8 text-center transition hover:border-green-400 hover:bg-green-50/50">
+                <FiUpload size={24} className="text-green-600" />
+
+                <span className="mt-3 text-sm font-semibold text-gray-800">
+                  {existingVideo && !removeExistingVideo
+                    ? "Replace property video"
+                    : "Upload property video"}
+                </span>
+
+                <span className="mt-1 text-xs text-gray-500">
+                  MP4, WebM or MOV
+                </span>
+
+                <input
+                  type="file"
+                  accept="video/mp4,video/webm,video/quicktime"
+                  onChange={handleVideoChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+
+            <p className="text-xs text-gray-500">
+              A property can have one video. Uploading a replacement will replace
+              the existing video.
+            </p>
+          </div>
+        </section>
+
 
           {/* Submit */}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
