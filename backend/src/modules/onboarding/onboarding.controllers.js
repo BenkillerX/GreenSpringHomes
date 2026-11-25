@@ -115,7 +115,6 @@ export async function completePropertyOwnerOnboarding(req, res) {
         });
     }
 }
-
 export async function completeServiceProviderOnboarding(req, res) {
   let uploadedImage;
   let createdProfile;
