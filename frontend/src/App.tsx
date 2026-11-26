@@ -12,7 +12,7 @@ import TenantServiceProviderDetails from "./pages/tenant/TenantServiceProviderDe
 import AdminPropertyDetails from "./pages/admin/AdminPropertyDetails";
 import LandlordServiceProviders from "./pages/landlord/LandlordServiceProviders";
 import LandlordServiceProvidersDetails from "./pages/landlord/LandlordServiceProvidersDetails";
-
+import { SpeedInsights } from "@vercel/speed-insights/react"
 // Layouts
 const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
 const TenantLayout = lazy(() => import("./layouts/TenantLayout"));
@@ -93,9 +93,8 @@ const App = () => {
   return (
     <>
       <ScrollToTop />
-
       <Analytics />
-
+      <SpeedInsights/>
       <Toaster
         position="top-right"
         toastOptions={{ duration: 3000, style: { background: "#fff", color: "#333", }, }}
