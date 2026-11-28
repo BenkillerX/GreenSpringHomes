@@ -98,24 +98,45 @@ const [profile, setProfile] = useState<ProfileForm>({
   const saveButtonClass =
     "inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60";
 
-  // Connect this handler to your real profile-update API.
-  const handleProfileSave = async (event: React.FormEvent<HTMLFormElement>) => {
+   const handleProfileSave = async ( event: React.FormEvent<HTMLFormElement> ) => {
     event.preventDefault();
-    setSaveMessage("");
-
+  
     if (!profile.firstname.trim() || !profile.lastname.trim()) {
-      setSaveMessage("First name and last name are required.");
+      toast.error("First name and last name are required.");
       return;
     }
-
+  
     setIsSaving(true);
-
+  
     try {
-      // TODO: Call your profile-update endpoint here.
-      // Do not show success until the API confirms the update.
-      setSaveMessage(
-        "Profile API is not connected yet. Your changes have not been saved."
+      const response = await api.patch("/api/auth/me", {
+        firstname: profile.firstname.trim(),
+        lastname: profile.lastname.trim(),
+        phoneNumber: profile.phone.trim(),
+      });
+  
+      const updatedUser = response.data.user;
+  
+      setProfile((prev) => ({
+        ...prev,
+        firstname: updatedUser.firstname,
+        lastname: updatedUser.lastname,
+        phone: updatedUser.phoneNumber ?? "",
+        whatsapp: updatedUser.whatsappNumber ?? "",
+      }));
+  
+      toast.success(
+        response.data.message || "Profile updated successfully."
       );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message ||
+            "Failed to update your profile."
+        );
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
     } finally {
       setIsSaving(false);
     }

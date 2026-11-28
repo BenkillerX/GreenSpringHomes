@@ -662,13 +662,7 @@ export async function getCurrentUser(req, res) {
 
 export const updateCurrentUser = async (req, res) => {
   try {
-    const {
-      firstname,
-      lastname,
-      phoneNumber,
-      whatsappNumber,
-      contactVisibility,
-    } = req.body;
+    const { firstname, lastname, phoneNumber, whatsappNumber, contactVisibility, } = req.body;
 
     // Disable email changes until verification is implemented
     if (Object.prototype.hasOwnProperty.call(req.body, "email")) {
@@ -711,14 +705,6 @@ export const updateCurrentUser = async (req, res) => {
       phoneNumber !== undefined ||
       whatsappNumber !== undefined ||
       contactVisibility !== undefined;
-
-    // Only property owners can update contact information
-    if (contactFieldsProvided && user.role !== "propertyOwner") {
-      return res.status(403).json({
-        message:
-          "Only property owners can update property contact information",
-      });
-    }
 
     // Validate international phone number format
     const phoneRegex = /^\+[1-9]\d{7,14}$/;
