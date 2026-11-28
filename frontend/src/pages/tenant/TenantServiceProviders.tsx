@@ -126,7 +126,7 @@ const TenantServiceProviders = () => {
             </h2>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-2 sm:gap-3">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 sm:gap-3">
             <button
               type="button"
               aria-pressed={!activeCategory}

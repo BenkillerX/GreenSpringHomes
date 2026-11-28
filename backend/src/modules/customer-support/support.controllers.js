@@ -135,14 +135,10 @@ export const getTicketMessages = async (req, res) => {
 };
 export async function ticketHistory(req, res) {
   try {
-    console.log("Authenticated user:", req.user);
 
     const tickets = await SupportTicket.find({
       user: req.user.id,
     }).sort({ createdAt: -1 });
-
-    console.log("User ID:", req.user.id);
-    console.log("Tickets found:", tickets);
 
     return res.status(200).json({
       success: true,
