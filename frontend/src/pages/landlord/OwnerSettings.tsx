@@ -6,13 +6,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-type SettingsTab =
-  | "profile"
-  | "business"
-  | "listings"
-  | "security"
-  | "notifications"
-  | "account";
+type SettingsTab = | "profile" | "business" | "listings" | "security" | "notifications" | "account";
 
 const OwnerSettings = () => {
   const { currentUser, logout } = useAuth();
@@ -70,24 +64,50 @@ const OwnerSettings = () => {
     return initials || "GS";
   };
 
-  const handleProfileSave = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+ const handleProfileSave = async ( event: React.FormEvent<HTMLFormElement> ) => {
+  event.preventDefault();
 
-    if (!profile.firstname.trim() || !profile.lastname.trim()) {
-      toast.error("First name and last name are required.");
-      return;
+  if (!profile.firstname.trim() || !profile.lastname.trim()) {
+    toast.error("First name and last name are required.");
+    return;
+  }
+
+  setIsSaving(true);
+
+  try {
+    const response = await api.patch("/api/auth/me", {
+      firstname: profile.firstname.trim(),
+      lastname: profile.lastname.trim(),
+      phoneNumber: profile.phone.trim(),
+      whatsappNumber: profile.whatsapp.trim(),
+    });
+
+    const updatedUser = response.data.user;
+
+    setProfile((prev) => ({
+      ...prev,
+      firstname: updatedUser.firstname,
+      lastname: updatedUser.lastname,
+      phone: updatedUser.phoneNumber ?? "",
+      whatsapp: updatedUser.whatsappNumber ?? "",
+    }));
+
+    toast.success(
+      response.data.message || "Profile updated successfully."
+    );
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to update your profile."
+      );
+    } else {
+      toast.error("An unexpected error occurred.");
     }
-
-    setIsSaving(true);
-
-    try {
-      // Connect this to your profile update endpoint.
-      // No success message until the backend confirms the update.
-      toast.error("Profile update endpoint is not connected yet.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   const handlePasswordSave = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
